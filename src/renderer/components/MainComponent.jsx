@@ -78,6 +78,10 @@ const MainComponent = ({ data, setData, sessionData }) => {
   const handleMouseClick = () => {
     if (hoveredCell) {
       const { row, col } = hoveredCell;
+      // if not dropping an item, return
+      if (!sessionData.droppingItem.isDroppingItem) {
+        return;
+      }
       handleGridPress(row, col, sessionData.droppingItem.item, data, setData);
     }
   };

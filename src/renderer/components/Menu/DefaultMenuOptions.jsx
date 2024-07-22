@@ -8,6 +8,20 @@ import {
 
 const DefaultMenuOptions = ({ sessionData, setSessionData }) => {
   const startDroppingBoardObject = (item) => {
+    // if already on, turn off
+    if (
+      sessionData?.droppingItem.isDroppingItem &&
+      sessionData?.droppingItem.item.type === item.type
+    ) {
+      setSessionData({
+        ...sessionData,
+        droppingItem: {
+          isDroppingItem: false,
+          item: null,
+        },
+      });
+      return;
+    }
     setSessionData({
       ...sessionData,
       droppingItem: {
