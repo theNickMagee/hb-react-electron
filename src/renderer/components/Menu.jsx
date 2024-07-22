@@ -1,8 +1,20 @@
-const Menu = (data, setData, sessionData, setSessionData) => {
+import {
+  defaultWavFile,
+  defaultAmp,
+  defaultMidi,
+  defaultOscillator,
+  defaultSwitch,
+} from '../defaults/BoardObjectDefaults';
+import DefaultMenuOptions from './Menu/DefaultMenuOptions';
+
+const Menu = ({ data, setData, sessionData, setSessionData }) => {
   return (
     <div className="menu">
       {/* display options of activeBoardObject */}
-      <DefaultMenuOptions />
+      <DefaultMenuOptions
+        sessionData={sessionData}
+        setSessionData={setSessionData}
+      />
       {/* if not, displayboardObjects as options  */}
       {/* always display - play, create wire, cut wire */}
       <ControlMenuOptions />
@@ -11,19 +23,6 @@ const Menu = (data, setData, sessionData, setSessionData) => {
 };
 
 export default Menu;
-
-const DefaultMenuOptions = () => {
-  return (
-    // buttons for wavFile, Amp, Midi, Oscillator, Switch
-    <div className="default-menu-options">
-      <BoardItemOption title="WavFile" />
-      <BoardItemOption title="Amp" />
-      <BoardItemOption title="Midi" />
-      <BoardItemOption title="Oscillator" />
-      <BoardItemOption title="Switch" />
-    </div>
-  );
-};
 
 const ControlMenuOptions = () => {
   return (
@@ -34,8 +33,4 @@ const ControlMenuOptions = () => {
       <div className="default-button">Cut Wire</div>
     </div>
   );
-};
-
-const BoardItemOption = ({ image, title, on, onColor, offColor, onClick }) => {
-  return <div className="default-button">{title}</div>;
 };

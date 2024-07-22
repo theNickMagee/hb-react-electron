@@ -12,6 +12,10 @@ function MainApp() {
     activeBoardObject: null,
     activeBoardObjectIndex: null,
     activeBoardObjectOptions: [],
+    droppingItem: {
+      isDroppingItem: false,
+      item: null,
+    },
   });
 
   return (

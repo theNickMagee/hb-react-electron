@@ -82,3 +82,7 @@ body {
   color: var(--base);
   transition: 0.2s;
 }
+
+.bio-on {
+  background-color: var(--tertiary);
+}
