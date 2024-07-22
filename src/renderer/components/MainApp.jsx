@@ -20,7 +20,7 @@ function MainApp() {
 
   return (
     <div className="main-app">
-      <MainComponent />
+      <MainComponent data={data} setData={setData} sessionData={sessionData} />
       <Menu
         data={data}
         setData={setData}

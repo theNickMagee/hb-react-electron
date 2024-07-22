@@ -1,6 +1,10 @@
+import midiImage from '../../../assets/icons/device.png';
+import wavImage from '../../../assets/gems/Icon2.png';
+import ampImage from '../../../assets/icons/horn.png';
+
 const defaultWavFile = {
   name: 'default.wav',
-  icon: 'default.png',
+  icon: wavImage,
   type: 'WavFile',
   options: [
     {
@@ -11,7 +15,7 @@ const defaultWavFile = {
 
 const defaultAmp = {
   name: 'defaultAmp',
-  icon: 'default.png',
+  icon: ampImage,
   type: 'Amp',
   options: [
     {
@@ -28,7 +32,7 @@ const defaultAmp = {
 
 const defaultMidi = {
   name: 'defaultMidi',
-  icon: 'default.png',
+  icon: midiImage,
   type: 'Midi',
   options: [],
 };

@@ -40,7 +40,7 @@ body {
 
 .menu {
   width: 20%;
-  height: 40vh;
+  height: 50vh;
   background-color: var(--base);
   display: flex;
   flex-direction: column;
