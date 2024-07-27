@@ -62,4 +62,3 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
 };
 
 export default BoardObjectOptions;
-```
