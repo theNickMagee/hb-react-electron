@@ -18,6 +18,14 @@ const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
     handleGridPress(row, col, sessionData, data, setData, setSessionData);
   };
 
+  const isEditingObject = (obj) => {
+    return (
+      sessionData.options?.open &&
+      sessionData.options.currentEditItem?.row === obj.row &&
+      sessionData.options.currentEditItem?.col === obj.col
+    );
+  };
+
   return (
     <div
       className="main-component"
@@ -38,7 +46,7 @@ const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
         }}
       >
         {data.wires.map((wire, index) =>
-          //  if wire does not have a start and end, do not render
+          // if wire does not have a start and end, do not render
           !wire.start || !wire.end ? null : (
             <line
               key={index}
@@ -59,6 +67,8 @@ const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
           const boardObject = data.boardObjects.find(
             (obj) => obj.row === row && obj.col === col,
           );
+          const editing = boardObject && isEditingObject(boardObject);
+
           return (
             <div
               key={`${row}-${col}`}
@@ -69,7 +79,7 @@ const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
                 width: cellSize,
                 height: cellSize,
                 backgroundColor: isHovered ? '#333333' : 'transparent',
-                border: '1px solid black',
+                border: editing ? '2px solid white' : '1px solid black',
                 boxSizing: 'border-box',
               }}
               onMouseOver={() => handleMouseOver(row, col)}

@@ -17,6 +17,10 @@ function MainApp() {
       isDroppingItem: false,
       item: null,
     },
+    options: {
+      open: false,
+      currentEditItem: null,
+    },
   });
 
   return (

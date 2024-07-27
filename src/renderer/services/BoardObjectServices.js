@@ -7,14 +7,47 @@ const handleGridPress = (
   setSessionData,
 ) => {
   console.log('Grid pressed at:', row, col);
+
+  // Check if there's a board object at this position
+  const boardObject = data.boardObjects.find(
+    (obj) => obj.row === row && obj.col === col,
+  );
+
+  // Determine if the same board object is being clicked again
+  const isSameObjectClicked =
+    sessionData.options?.currentEditItem &&
+    sessionData.options.currentEditItem.row === row &&
+    sessionData.options.currentEditItem.col === col;
+
+  // Proceed based on session state and board object presence
   if (sessionData.droppingItem.isDroppingItem) {
     console.log('Dropping item at:', row, col);
-    // if dropping item, place item
     placeItem(row, col, sessionData, data, setData, setSessionData);
   } else if (sessionData.isCreatingWire) {
-    // if creating wire, drop wire
     console.log('Dropping wire at:', row, col);
     dropWire(row, col, sessionData, setSessionData, data, setData);
+  } else if (boardObject && !sessionData.droppingItem.isDroppingItem) {
+    if (isSameObjectClicked) {
+      // If the same object is clicked, toggle the edit options off
+      console.log('Toggling edit options off for:', boardObject);
+      setSessionData({
+        ...sessionData,
+        options: {
+          open: false,
+          currentEditItem: null,
+        },
+      });
+    } else {
+      // Open edit options for the new or different board object
+      console.log('Opening edit options for:', boardObject);
+      setSessionData({
+        ...sessionData,
+        options: {
+          open: true,
+          currentEditItem: boardObject,
+        },
+      });
+    }
   }
 };
 
