@@ -6,6 +6,7 @@ import {
   defaultSwitch,
 } from '../defaults/BoardObjectDefaults';
 import DefaultMenuOptions from './Menu/DefaultMenuOptions';
+import { startCreatingWire } from '../services/BoardObjectServices';
 
 const Menu = ({ data, setData, sessionData, setSessionData }) => {
   return (
@@ -17,7 +18,10 @@ const Menu = ({ data, setData, sessionData, setSessionData }) => {
       />
       {/* if not, displayboardObjects as options  */}
       {/* always display - play, create wire, cut wire */}
-      <ControlMenuOptions sessionData={sessionData} setSessionData={setSessionData} />
+      <ControlMenuOptions
+        sessionData={sessionData}
+        setSessionData={setSessionData}
+      />
     </div>
   );
 };
@@ -25,43 +29,22 @@ const Menu = ({ data, setData, sessionData, setSessionData }) => {
 export default Menu;
 
 const ControlMenuOptions = ({ sessionData, setSessionData }) => {
-
-  const startCreatingWire = () => {
-    // if already on, turn off
-    if (sessionData.isCreatingWire) {
-      setSessionData({
-        ...sessionData,
-        isCreatingWire: false,
-        pendingWire: {
-          start: null,
-          end: null,
-        },
-      });
-      return;
-    }
-    let newSessionData = { ...sessionData };
-    // set dropping item to null
-    newSessionData.droppingItem = {
-      isDroppingItem: false,
-      item: null,
-    };
-    // start creating wire
-    newSessionData.isCreatingWire = true;
-    newSessionData.pendingWire ={
-      start: null,
-      end: null,
-    }
-    setSessionData(newSessionData);
+  const handleCreateWirePress = () => {
+    startCreatingWire(sessionData, setSessionData);
   };
-
-
 
   return (
     // buttons for play, create wire, cut wire
     <div className="control-menu-options">
       <div className="default-button">Play</div>
-      <div className={"default-button" + (sessionData.isCreatingWire ? " bio-on" : "")}
-      onClick={startCreatingWire}>Create Wire</div>
+      <div
+        className={
+          'default-button' + (sessionData.isCreatingWire ? ' bio-on' : '')
+        }
+        onClick={handleCreateWirePress}
+      >
+        Create Wire
+      </div>
       <div className="default-button">Cut Wire</div>
     </div>
   );

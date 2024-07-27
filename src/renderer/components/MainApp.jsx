@@ -6,6 +6,7 @@ import MainComponent from './MainComponent';
 function MainApp() {
   const [data, setData] = useState({
     boardObjects: [],
+    wires: [],
   });
 
   const [sessionData, setSessionData] = useState({
@@ -20,7 +21,12 @@ function MainApp() {
 
   return (
     <div className="main-app">
-      <MainComponent data={data} setData={setData} sessionData={sessionData} />
+      <MainComponent
+        data={data}
+        setData={setData}
+        sessionData={sessionData}
+        setSessionData={setSessionData}
+      />
       <Menu
         data={data}
         setData={setData}

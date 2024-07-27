@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { handleGridPress } from '../services/BoardObjectServices';
 
-const MainComponent = ({ data, setData, sessionData }) => {
+const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
   const gridSize = 8;
   const cellSize = 50; // size of each cell in the grid
   const [hoveredCell, setHoveredCell] = useState(null);
@@ -15,10 +15,7 @@ const MainComponent = ({ data, setData, sessionData }) => {
   };
 
   const handleMouseClick = (row, col) => {
-    if (!sessionData.droppingItem.isDroppingItem) {
-      return;
-    }
-    handleGridPress(row, col, sessionData.droppingItem.item, data, setData);
+    handleGridPress(row, col, sessionData, data, setData, setSessionData);
   };
 
   return (
@@ -28,8 +25,33 @@ const MainComponent = ({ data, setData, sessionData }) => {
         position: 'relative',
         width: gridSize * cellSize,
         height: gridSize * cellSize,
+        overflow: 'hidden', // Ensure wires don't extend beyond the component
       }}
     >
+      <svg
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+        }}
+      >
+        {data.wires.map((wire, index) =>
+          //  if wire does not have a start and end, do not render
+          !wire.start || !wire.end ? null : (
+            <line
+              key={index}
+              x1={wire.start.col * cellSize + cellSize / 2}
+              y1={wire.start.row * cellSize + cellSize / 2}
+              x2={wire.end.col * cellSize + cellSize / 2}
+              y2={wire.end.row * cellSize + cellSize / 2}
+              stroke="white"
+              strokeWidth="2"
+            />
+          ),
+        )}
+      </svg>
       {Array.from({ length: gridSize }, (_, row) =>
         Array.from({ length: gridSize }, (_, col) => {
           const isHovered =
