@@ -1,23 +1,25 @@
-import {
-  defaultWavFile,
-  defaultAmp,
-  defaultMidi,
-  defaultOscillator,
-  defaultSwitch,
-} from '../defaults/BoardObjectDefaults';
+import React from 'react';
 import DefaultMenuOptions from './Menu/DefaultMenuOptions';
-import { startCreatingWire } from '../services/BoardObjectServices';
-
+import BoardObjectOptions from './options/BoardObjectOptions';
 const Menu = ({ data, setData, sessionData, setSessionData }) => {
   return (
     <div className="menu">
-      {/* display options of activeBoardObject */}
-      <DefaultMenuOptions
-        sessionData={sessionData}
-        setSessionData={setSessionData}
-      />
-      {/* if not, displayboardObjects as options  */}
-      {/* always display - play, create wire, cut wire */}
+      {/* Conditionally display options of the active board object */}
+      {sessionData.options.open && sessionData.options.currentEditItem ? (
+        <BoardObjectOptions
+          sessionData={sessionData}
+          setSessionData={setSessionData}
+          data={data}
+          setData={setData}
+        />
+      ) : (
+        <DefaultMenuOptions
+          sessionData={sessionData}
+          setSessionData={setSessionData}
+        />
+      )}
+
+      {/* Control options like play, create wire, cut wire */}
       <ControlMenuOptions
         sessionData={sessionData}
         setSessionData={setSessionData}
