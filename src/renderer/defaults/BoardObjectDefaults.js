@@ -1,6 +1,8 @@
 import midiImage from '../../../assets/icons/device.png';
-import wavImage from '../../../assets/gems/Icon2.png';
+import wavImage from '../../../assets/gems/Icon9.png';
 import ampImage from '../../../assets/icons/horn.png';
+import oscillatorImage from '../../../assets/gems/Icon33.png';
+import switchImage from '../../../assets/gems/Icon22.png';
 
 const defaultWavFile = {
   name: 'default.wav',
@@ -39,7 +41,7 @@ const defaultMidi = {
 
 const defaultOscillator = {
   name: 'defaultOscillator',
-  icon: 'default.png',
+  icon: oscillatorImage,
   type: 'Oscillator',
   options: [
     {
@@ -50,7 +52,7 @@ const defaultOscillator = {
 
 const defaultSwitch = {
   name: 'defaultSwitch',
-  icon: 'default.png',
+  icon: switchImage,
   type: 'Switch',
   options: [
     {

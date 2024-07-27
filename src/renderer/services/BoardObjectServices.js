@@ -90,6 +90,8 @@ const dropWire = (row, col, sessionData, setSessionData, data, setData) => {
       ...data,
       wires: newWires,
     });
+    // stop creating wire
+    newSessionData.isCreatingWire = false;
   }
   setSessionData(newSessionData);
 };
