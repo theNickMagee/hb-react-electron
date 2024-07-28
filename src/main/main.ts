@@ -98,6 +98,18 @@ const createWindow = async () => {
     mainWindow = null;
   });
 
+  ipcMain.handle('open-file-dialog', async (event) => {
+    if (!mainWindow) {
+      console.error('Main window is not available.');
+      return;
+    }
+    const { filePaths } = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openFile'],
+      filters: [{ name: 'Audio', extensions: ['wav', 'mp3', 'ogg'] }],
+    });
+    return filePaths[0]; // Return the path of the first selected file
+  });
+
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 

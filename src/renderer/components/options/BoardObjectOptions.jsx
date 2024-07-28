@@ -1,12 +1,14 @@
+import FileExplorer from './FileExplorer';
+
 const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
   if (!sessionData.options.currentEditItem) return null;
 
-  const handleOptionChange = (index, newValue) => {
+  const handleOptionChange = (index, filePath) => {
     const newBoardObjects = data.boardObjects.map((obj, idx) => {
       if (idx === sessionData.options.currentEditItemIndex) {
         const newOptions = obj.options.map((option, optionIndex) => {
           if (optionIndex === index) {
-            return { ...option, value: newValue };
+            return { ...option, file: filePath }; // Update the file path
           }
           return option;
         });
@@ -37,7 +39,6 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
     <div className="board-object-options">
       {currentBoardObject.options.map((option, index) => (
         <div key={index}>
-          {/* Placeholder for different option types */}
           {option.component === 'slider' && (
             <div>
               <label>{option.label}</label>
@@ -51,7 +52,14 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
               />
             </div>
           )}
-          {/* Add other components as needed */}
+          {option.component === 'FileExplorer' && (
+            <FileExplorer
+              initialFileName={
+                option.file ? option.file.split('/').pop() : undefined
+              }
+              onFileSelect={(path) => handleOptionChange(index, path)}
+            />
+          )}
         </div>
       ))}
       <div className="default-button" onClick={handleDeleteBoardObject}>

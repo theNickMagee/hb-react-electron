@@ -86,3 +86,14 @@ body {
 .bio-on {
   background-color: var(--tertiary);
 }
+
+.small-font {
+  font-size: 0.75rem;
+}
+
+.text-wrap-button {
+  overflow: hidden; /* Ensures the content is clipped to the div boundaries */
+  white-space: normal; /* Allows the text to wrap as needed */
+  text-overflow: clip; /* Clips the text */
+  word-wrap: break-word; /* Ensures that long words do not overflow */
+}
