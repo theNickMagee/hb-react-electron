@@ -1,6 +1,8 @@
 import React from 'react';
 import DefaultMenuOptions from './Menu/DefaultMenuOptions';
 import BoardObjectOptions from './options/BoardObjectOptions';
+import { startCreatingWire } from '../services/BoardObjectServices';
+
 const Menu = ({ data, setData, sessionData, setSessionData }) => {
   return (
     <div className="menu">

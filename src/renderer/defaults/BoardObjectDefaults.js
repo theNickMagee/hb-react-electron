@@ -11,6 +11,7 @@ const defaultWavFile = {
   options: [
     {
       component: 'FileExplorer',
+      file: null,
     },
   ],
 };
