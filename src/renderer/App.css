@@ -21,9 +21,9 @@ body {
 
 /* root color vars */
 :root {
-  --primary: #14535b;
+  --primary: #3d145b;
   --secondary: #eeeeee;
-  --tertiary: #7a2c9e;
+  --tertiary: #9e2c2c;
   --base: #191919;
   --secondary-mid: #c4c4c46d;
   --base-mid: #2b2b2b;

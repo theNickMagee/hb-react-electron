@@ -35,6 +35,21 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
 
   const currentBoardObject = sessionData.options.currentEditItem;
 
+  const handleSliderChange = (index, value) => {
+    const newBoardObjects = data.boardObjects.map((obj, idx) => {
+      if (idx === sessionData.options.currentEditItemIndex) {
+        const newOptions = obj.options.map((option, optionIndex) => {
+          if (optionIndex === index) {
+            return { ...option, value: value };
+          }
+          return option;
+        });
+        return { ...obj, options: newOptions };
+      }
+      return obj;
+    });
+    setData({ ...data, boardObjects: newBoardObjects });
+  };
   return (
     <div className="board-object-options">
       {currentBoardObject.options.map((option, index) => (
@@ -47,8 +62,11 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
                 min={option.min}
                 max={option.max}
                 step={option.step}
-                value={option.value}
-                onChange={(e) => handleOptionChange(index, e.target.value)}
+                value={
+                  data.boardObjects[sessionData.options.currentEditItemIndex]
+                    .options[index].value
+                }
+                onChange={(e) => handleSliderChange(index, e.target.value)}
               />
             </div>
           )}

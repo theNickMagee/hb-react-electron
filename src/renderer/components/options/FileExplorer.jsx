@@ -24,7 +24,8 @@ const FileExplorer = ({ onFileSelect, initialFileName }) => {
       className="default-button small-font text-wrap-button"
       onClick={handleOpenFileDialog}
     >
-      {fileName}
+      {/* display filename after last \ */}
+      {fileName?.split(/[/\\]/).pop()}
     </div>
   );
 };
