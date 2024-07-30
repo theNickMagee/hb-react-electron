@@ -1,4 +1,8 @@
 import FileExplorer from './FileExplorer';
+import {
+  getInputWiresOnBoardObject,
+  getOutputWiresOnBoardObject,
+} from '../../services/WireServices';
 
 const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
   if (!sessionData.options.currentEditItem) return null;
@@ -33,7 +37,19 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
     });
   };
 
+  const handleDeleteWire = (wireIndex) => {
+    const newWires = [...data.wires];
+    newWires.splice(wireIndex, 1);
+    setData({ ...data, wires: newWires });
+  };
+
   const currentBoardObject = sessionData.options.currentEditItem;
+
+  const inputWires = getInputWiresOnBoardObject(data.wires, currentBoardObject);
+  const outputWires = getOutputWiresOnBoardObject(
+    data.wires,
+    currentBoardObject,
+  );
 
   const handleSliderChange = (index, value) => {
     const newBoardObjects = data.boardObjects.map((obj, idx) => {
@@ -82,6 +98,38 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
       ))}
       <div className="default-button" onClick={handleDeleteBoardObject}>
         Delete
+      </div>
+      <div className="wire-section">
+        <div className="small-font">Input Wires:</div>
+        {inputWires.map((wire, idx) => (
+          <div key={idx} className="wire-listing">
+            <span>
+              ({wire.start.row}, {wire.start.col}) ➔ ({wire.end.row},{' '}
+              {wire.end.col})
+            </span>
+            <button
+              className="delete-wire-button"
+              onClick={() => handleDeleteWire(idx)}
+            >
+              X
+            </button>
+          </div>
+        ))}
+        <div className="small-font">Output Wires:</div>
+        {outputWires.map((wire, idx) => (
+          <div key={idx} className="wire-listing">
+            <span>
+              ({wire.start.row}, {wire.start.col}) ➔ ({wire.end.row},{' '}
+              {wire.end.col})
+            </span>
+            <button
+              className="delete-wire-button"
+              onClick={() => handleDeleteWire(idx)}
+            >
+              X
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );
