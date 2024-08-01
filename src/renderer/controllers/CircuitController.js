@@ -1,5 +1,9 @@
 const { getOrderedPaths } = require('../services/CircuitServices');
-import { loadWavData, createInitialWavData } from '../services/WavFileServices';
+import {
+  loadWavData,
+  createInitialWavData,
+  playWavData,
+} from '../services/WavFileServices';
 
 const playCircuit = (data) => {
   // console.log('data: ', JSON.stringify(data, null, 2));
@@ -17,6 +21,7 @@ const playCircuit = (data) => {
       let newWavData = applyEffectOnWavData(boardObject, wavData);
 
       // if we are at the end fo the path, play the wavData
+      playWavData(newWavData);
     }
   }
 };

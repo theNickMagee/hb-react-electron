@@ -32,8 +32,55 @@ const handleWavData = (boardObjectOptions, wavData) => {
   // load file, and return wavData
 };
 
-const playWavData = (wavData) => {
-  // play the wavData
+const playWavData = async (wavData) => {
+  console.log('Playing wavData:', wavData);
+
+  // Ensure audioData is resolved if it's a Promise
+  const audioData = await wavData.audioData;
+
+  // Debugging: Check the length of audioData
+  console.log('Audio data length:', audioData.length);
+
+  if (audioData.length === 0) {
+    console.error('Audio data is empty');
+    return;
+  }
+
+  // Create an AudioContext
+  const audioContext = new AudioContext();
+
+  // Calculate the number of samples per channel
+  const numSamplesPerChannel = audioData.length / wavData.numChannels;
+
+  // Debugging: Check number of samples per channel
+  console.log('Number of samples per channel:', numSamplesPerChannel);
+
+  // Create an audio buffer
+  const audioBuffer = audioContext.createBuffer(
+    wavData.numChannels,
+    numSamplesPerChannel,
+    wavData.sampleRate,
+  );
+
+  // Assuming the data is interleaved for stereo
+  for (let channel = 0; channel < wavData.numChannels; channel++) {
+    const channelData = audioBuffer.getChannelData(channel);
+    for (
+      let i = 0, j = channel;
+      j < audioData.length;
+      i++, j += wavData.numChannels
+    ) {
+      channelData[i] = audioData[j] / 32768.0; // Convert Int16 to Float32
+    }
+  }
+
+  // Create a source node
+  const source = audioContext.createBufferSource();
+  source.buffer = audioBuffer;
+  source.connect(audioContext.destination);
+  source.start();
+
+  console.log('Playback started');
 };
 
 const loadWavData = (boardObjectOptions) => {
@@ -98,4 +145,5 @@ export {
   createInitialWavData,
   handleWavData,
   loadWavData,
+  playWavData,
 };
