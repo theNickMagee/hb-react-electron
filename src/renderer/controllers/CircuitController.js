@@ -4,13 +4,12 @@ import {
   createInitialWavData,
   playWavData,
 } from '../services/WavFileServices';
+import { applyAmp } from '../services/AmpServices';
 
-const playCircuit = (data) => {
+const playCircuit = async (data) => {
   // console.log('data: ', JSON.stringify(data, null, 2));
   // play the circuit
   const orderedPaths = getOrderedPaths(data.wires, data.boardObjects);
-
-  console.log('orderedPaths: ', orderedPaths);
 
   // for each ordered path, have a wavData object that stores wavData
   for (let i = 0; i < orderedPaths.length; i++) {
@@ -18,20 +17,23 @@ const playCircuit = (data) => {
     let wavData = createInitialWavData();
     for (let j = 0; j < path.length; j++) {
       const boardObject = path[j];
-      let newWavData = applyEffectOnWavData(boardObject, wavData);
+      let newWavData = await applyEffectOnWavData(boardObject, wavData);
 
       // if we are at the end fo the path, play the wavData
-      playWavData(newWavData);
+      if (j === path.length - 1) {
+        playWavData(newWavData);
+      }
+      wavData = newWavData;
     }
   }
 };
 
 const applyEffectOnWavData = (boardObject, wavData) => {
   if (boardObject.type === 'WavFile') {
-    console.log('boardObject wav: ', boardObject);
     return loadWavData(boardObject.options);
     // apply the wavFileData to wavData
   } else if (boardObject.type === 'Amp') {
+    return applyAmp(boardObject.options, wavData);
     // apply the amp effect to wavData
   } else if (boardObject.type === 'Midi') {
     // apply the midi effect to wavData

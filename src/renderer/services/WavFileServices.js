@@ -32,11 +32,11 @@ const handleWavData = (boardObjectOptions, wavData) => {
   // load file, and return wavData
 };
 
-const playWavData = async (wavData) => {
+const playWavData = (wavData) => {
   console.log('Playing wavData:', wavData);
 
   // Ensure audioData is resolved if it's a Promise
-  const audioData = await wavData.audioData;
+  const audioData = wavData.audioData;
 
   // Debugging: Check the length of audioData
   console.log('Audio data length:', audioData.length);
@@ -83,7 +83,7 @@ const playWavData = async (wavData) => {
   console.log('Playback started');
 };
 
-const loadWavData = (boardObjectOptions) => {
+const loadWavData = async (boardObjectOptions) => {
   // Look through the options to find the fileExplorer option
   let fileData;
   for (const option of boardObjectOptions) {
@@ -99,7 +99,7 @@ const loadWavData = (boardObjectOptions) => {
     sampleRate: 44100,
     numChannels: 2,
     bitsPerSample: 16,
-    audioData: convertFileDataToAudioData(fileData),
+    audioData: await convertFileDataToAudioData(fileData),
   };
 };
 
@@ -107,21 +107,15 @@ const loadWavData = (boardObjectOptions) => {
 const convertFileDataToAudioData = async (fileDataPromise) => {
   try {
     const fileData = await fileDataPromise; // Wait for the promise to resolve
-    console.log('Received file data with byte length:', fileData.byteLength);
 
     if (fileData instanceof Uint8Array) {
       const properLength = fileData.byteLength - (fileData.byteLength % 2);
-      console.log('Proper length for Int16Array:', properLength);
 
       if (properLength > 0 && fileData.byteOffset % 2 === 0) {
         const audioData = new Int16Array(
           fileData.buffer,
           fileData.byteOffset,
           properLength / 2,
-        );
-        console.log(
-          'Successfully created Int16Array with length:',
-          audioData.length,
         );
         return audioData;
       } else {
