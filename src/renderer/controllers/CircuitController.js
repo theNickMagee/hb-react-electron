@@ -6,6 +6,13 @@ import {
 } from '../services/WavFileServices';
 import { applyAmp } from '../services/AmpServices';
 
+// handleMidiMessage
+const handleMidiMessage = (midiMessage) => {
+  // find the listening/live midi input - could be single key or keyboard
+  // if keyboard, find the key that was pressed and play the corresponding note
+  // if single key, play the note
+};
+
 const playCircuit = async (data) => {
   // console.log('data: ', JSON.stringify(data, null, 2));
   // play the circuit
