@@ -14,3 +14,16 @@ export const getOutputWiresOnBoardObject = (wires, boardObject) => {
       wire.start.row === boardObject.row && wire.start.col === boardObject.col,
   );
 };
+
+// Determine if a board object has any incoming wires
+export const hasIncomingWires = (boardObject, wires) =>
+  wires.some(
+    (wire) =>
+      wire.end.row === boardObject.row && wire.end.col === boardObject.col,
+  );
+
+export const hasNoOutgoingWires = (boardObject, wires) =>
+  wires.every(
+    (wire) =>
+      wire.start.row !== boardObject.row || wire.start.col !== boardObject.col,
+  );

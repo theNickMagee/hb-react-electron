@@ -2,6 +2,7 @@ import React from 'react';
 import DefaultMenuOptions from './Menu/DefaultMenuOptions';
 import BoardObjectOptions from './options/BoardObjectOptions';
 import { startCreatingWire } from '../services/BoardObjectServices';
+import { playCircuit } from '../controllers/CircuitController';
 
 const Menu = ({ data, setData, sessionData, setSessionData }) => {
   return (
@@ -25,6 +26,7 @@ const Menu = ({ data, setData, sessionData, setSessionData }) => {
       <ControlMenuOptions
         sessionData={sessionData}
         setSessionData={setSessionData}
+        data={data}
       />
     </div>
   );
@@ -32,15 +34,22 @@ const Menu = ({ data, setData, sessionData, setSessionData }) => {
 
 export default Menu;
 
-const ControlMenuOptions = ({ sessionData, setSessionData }) => {
+const ControlMenuOptions = ({ sessionData, setSessionData, data }) => {
   const handleCreateWirePress = () => {
     startCreatingWire(sessionData, setSessionData);
+  };
+
+  const handlePlay = () => {
+    // play the circuit
+    playCircuit(data);
   };
 
   return (
     // buttons for play, create wire, cut wire
     <div className="control-menu-options">
-      <div className="default-button">Play</div>
+      <div className="default-button" onClick={handlePlay}>
+        Play
+      </div>
       <div
         className={
           'default-button' + (sessionData.isCreatingWire ? ' bio-on' : '')

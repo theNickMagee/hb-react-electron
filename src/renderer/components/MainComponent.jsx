@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { handleGridPress } from '../services/BoardObjectServices';
+import { hasNoOutgoingWires } from '../services/WireServices';
 
 const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
   const gridSize = 8;
@@ -46,7 +47,6 @@ const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
         }}
       >
         {data.wires.map((wire, index) =>
-          // if wire does not have a start and end, do not render
           !wire.start || !wire.end ? null : (
             <line
               key={index}
@@ -81,6 +81,10 @@ const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
                 backgroundColor: isHovered ? '#333333' : 'transparent',
                 border: editing ? '2px solid white' : '1px solid black',
                 boxSizing: 'border-box',
+                boxShadow:
+                  boardObject && hasNoOutgoingWires(boardObject, data.wires)
+                    ? '0 0 6px 2px #cc020260'
+                    : 'none',
               }}
               onMouseOver={() => handleMouseOver(row, col)}
               onMouseLeave={handleMouseLeave}

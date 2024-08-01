@@ -5,6 +5,7 @@ import {
   defaultOscillator,
   defaultSwitch,
 } from '../../defaults/BoardObjectDefaults';
+import { generateRandomId } from '../../services/util';
 
 const DefaultMenuOptions = ({ sessionData, setSessionData }) => {
   const startDroppingBoardObject = (item) => {
@@ -26,7 +27,7 @@ const DefaultMenuOptions = ({ sessionData, setSessionData }) => {
       ...sessionData,
       droppingItem: {
         isDroppingItem: true,
-        item,
+        item: { ...item, id: generateRandomId() },
       },
     });
   };
