@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import Menu from './Menu';
 import MainComponent from './MainComponent';
+import MidiListener from './MidiListener';
 
 function MainApp() {
   const [data, setData] = useState({
@@ -26,6 +27,8 @@ function MainApp() {
     events: {},
   });
 
+  // on window load
+
   return (
     <div className="main-app">
       <MainComponent
@@ -40,6 +43,7 @@ function MainApp() {
         sessionData={sessionData}
         setSessionData={setSessionData}
       />
+      <MidiListener />
     </div>
   );
 }
