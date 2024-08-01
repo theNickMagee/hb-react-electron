@@ -7,12 +7,12 @@ import {
 const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
   if (!sessionData.options.currentEditItem) return null;
 
-  const handleOptionChange = (index, filePath) => {
+  const handleOptionChange = (index, filePath, fileData) => {
     const newBoardObjects = data.boardObjects.map((obj, idx) => {
       if (idx === sessionData.options.currentEditItemIndex) {
         const newOptions = obj.options.map((option, optionIndex) => {
           if (optionIndex === index) {
-            return { ...option, file: filePath }; // Update the file path
+            return { ...option, file: filePath, fileData: fileData };
           }
           return option;
         });
@@ -91,7 +91,8 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
               initialFileName={
                 option.file ? option.file.split('/').pop() : undefined
               }
-              onFileSelect={(path) => handleOptionChange(index, path)}
+              onFileSelect={handleOptionChange}
+              index={index}
             />
           )}
         </div>

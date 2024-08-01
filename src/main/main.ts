@@ -14,6 +14,7 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+const fs = require('fs').promises; // Import the promise version of the fs module
 
 class AppUpdater {
   constructor() {
@@ -108,6 +109,20 @@ const createWindow = async () => {
       filters: [{ name: 'Audio', extensions: ['wav', 'mp3', 'ogg'] }],
     });
     return filePaths[0]; // Return the path of the first selected file
+  });
+
+  ipcMain.handle('read-file', async (event, filePath) => {
+    try {
+      const data = await fs.readFile(filePath);
+      if (data.byteLength % 2 !== 0) {
+        console.error('Data is misaligned for Int16Array');
+        return new Uint8Array(); // Return an empty Uint8Array in case of misalignment
+      }
+      return data; // Return the file data to the renderer process
+    } catch (error) {
+      console.error('Failed to read file:', error);
+      return new Uint8Array(); // Return empty Uint8Array or handle the error as needed
+    }
   });
 
   const menuBuilder = new MenuBuilder(mainWindow);
