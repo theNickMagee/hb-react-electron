@@ -1,3 +1,5 @@
+import './styles/pianoRoll.css';
+
 const PianoRoll = ({ value, setValue, bpm }) => {
   const returnTimePerBeat = (bpm) => {
     // return a float with 2 decimal places
@@ -11,11 +13,15 @@ const PianoRoll = ({ value, setValue, bpm }) => {
 
   return (
     <div className="midi-options">
-      Midi Options / Piano Roll
       <div className="top-midi-options">
         {/* time signature dropdown */}
         {/* total time per measure */}
         {/* calculated time per beat */}
+      </div>
+      <div className="middle-midi-section">
+        <div className="piano-roll"></div>
+      </div>
+      <div className="bottom-midi-options">
         <div className="small-font">
           Time per beat: {returnTimePerBeat(bpm)}s
         </div>
@@ -23,10 +29,6 @@ const PianoRoll = ({ value, setValue, bpm }) => {
           Time per measure: {returnTimePerMeasure(bpm, value.timeSignatureTop)}s
         </div>
       </div>
-      <div className="middle-midi-section">
-        <div className="piano-roll"></div>
-      </div>
-      <div className="bottom-midi-options"></div>
     </div>
   );
 };

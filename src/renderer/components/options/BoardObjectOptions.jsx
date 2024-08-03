@@ -4,6 +4,7 @@ import {
   getOutputWiresOnBoardObject,
 } from '../../services/WireServices';
 import PianoRoll from './boardObjectOptions/PianoRoll';
+import './styles/boardObjectOptions.css';
 
 const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
   if (!sessionData.options.currentEditItem) return null;
@@ -76,7 +77,7 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
         Delete
       </div>
       {currentBoardObject.options.map((option, index) => (
-        <div key={index}>
+        <div key={index} className="board-object-option-container">
           {option.component === 'slider' && (
             <div>
               <label>{option.label}</label>
