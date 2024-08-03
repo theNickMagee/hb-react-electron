@@ -124,3 +124,27 @@ body {
 .small-font {
   font-size: 0.75rem;
 }
+
+.w-25 {
+  width: 25%;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-75 {
+  width: 75%;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.float-right {
+  margin-left: auto;
+}
+
+.float-left {
+  margin-right: auto;
+}

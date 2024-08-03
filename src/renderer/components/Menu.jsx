@@ -27,6 +27,7 @@ const Menu = ({ data, setData, sessionData, setSessionData }) => {
         sessionData={sessionData}
         setSessionData={setSessionData}
         data={data}
+        setData={setData}
       />
     </div>
   );
@@ -34,7 +35,7 @@ const Menu = ({ data, setData, sessionData, setSessionData }) => {
 
 export default Menu;
 
-const ControlMenuOptions = ({ sessionData, setSessionData, data }) => {
+const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
   const handleCreateWirePress = () => {
     startCreatingWire(sessionData, setSessionData);
   };
@@ -42,6 +43,13 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data }) => {
   const handlePlay = () => {
     // play the circuit
     playCircuit(data);
+  };
+
+  const toggleDisplayWires = () => {
+    setSessionData({
+      ...sessionData,
+      displayWires: !sessionData.displayWires,
+    });
   };
 
   return (
@@ -58,7 +66,20 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data }) => {
       >
         Create Wire
       </div>
-      <div className="default-button">Cut Wire</div>
+      <div className="default-button" onClick={toggleDisplayWires}>
+        Display Wires
+      </div>
+      {/* bpm slider */}
+      <input
+        type="range"
+        min="60"
+        max="240"
+        step="1"
+        value={data.bpm}
+        onChange={(e) => setData({ ...data, bpm: e.target.value })}
+      />
+      {/* display bpm */}
+      <div className="small-font">BPM: {data.bpm}</div>
     </div>
   );
 };

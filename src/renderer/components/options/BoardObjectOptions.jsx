@@ -3,6 +3,7 @@ import {
   getInputWiresOnBoardObject,
   getOutputWiresOnBoardObject,
 } from '../../services/WireServices';
+import PianoRoll from './boardObjectOptions/PianoRoll';
 
 const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
   if (!sessionData.options.currentEditItem) return null;
@@ -68,6 +69,12 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
   };
   return (
     <div className="board-object-options">
+      <div
+        className="default-button w-25 float-right"
+        onClick={handleDeleteBoardObject}
+      >
+        Delete
+      </div>
       {currentBoardObject.options.map((option, index) => (
         <div key={index}>
           {option.component === 'slider' && (
@@ -95,43 +102,53 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
               index={index}
             />
           )}
+          {
+            // if option.component === 'midiPattern'
+            option.component === 'PianoRoll' && (
+              <PianoRoll
+                index={index}
+                bpm={data.bpm}
+                value={option.value}
+                setValue={(value) => handleOptionChange(index, null, value)}
+              />
+            )
+          }
         </div>
       ))}
-      <div className="default-button" onClick={handleDeleteBoardObject}>
-        Delete
-      </div>
-      <div className="wire-section">
-        <div className="small-font">Input Wires:</div>
-        {inputWires.map((wire, idx) => (
-          <div key={idx} className="wire-listing">
-            <span>
-              ({wire.start.row}, {wire.start.col}) ➔ ({wire.end.row},{' '}
-              {wire.end.col})
-            </span>
-            <button
-              className="delete-wire-button"
-              onClick={() => handleDeleteWire(idx)}
-            >
-              X
-            </button>
-          </div>
-        ))}
-        <div className="small-font">Output Wires:</div>
-        {outputWires.map((wire, idx) => (
-          <div key={idx} className="wire-listing">
-            <span>
-              ({wire.start.row}, {wire.start.col}) ➔ ({wire.end.row},{' '}
-              {wire.end.col})
-            </span>
-            <button
-              className="delete-wire-button"
-              onClick={() => handleDeleteWire(idx)}
-            >
-              X
-            </button>
-          </div>
-        ))}
-      </div>
+      {sessionData.displayWires && (
+        <div className="wire-section">
+          <div className="small-font">Input Wires:</div>
+          {inputWires.map((wire, idx) => (
+            <div key={idx} className="wire-listing">
+              <span>
+                ({wire.start.row}, {wire.start.col}) ➔ ({wire.end.row},{' '}
+                {wire.end.col})
+              </span>
+              <button
+                className="delete-wire-button"
+                onClick={() => handleDeleteWire(idx)}
+              >
+                X
+              </button>
+            </div>
+          ))}
+          <div className="small-font">Output Wires:</div>
+          {outputWires.map((wire, idx) => (
+            <div key={idx} className="wire-listing">
+              <span>
+                ({wire.start.row}, {wire.start.col}) ➔ ({wire.end.row},{' '}
+                {wire.end.col})
+              </span>
+              <button
+                className="delete-wire-button"
+                onClick={() => handleDeleteWire(idx)}
+              >
+                X
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

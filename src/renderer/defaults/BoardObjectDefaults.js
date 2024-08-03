@@ -3,7 +3,10 @@ import wavImage from '../../../assets/gems/Icon9.png';
 import ampImage from '../../../assets/icons/horn.png';
 import oscillatorImage from '../../../assets/gems/Icon33.png';
 import switchImage from '../../../assets/gems/Icon22.png';
-
+import {
+  createMiddleCNoteEvent,
+  createMiddleCNoteOffEvent,
+} from '../services/MidiServices';
 const defaultWavFile = {
   name: 'default.wav',
   icon: wavImage,
@@ -37,7 +40,19 @@ const defaultMidi = {
   name: 'defaultMidi',
   icon: midiImage,
   type: 'Midi',
-  options: [],
+  options: [
+    {
+      component: 'PianoRoll',
+      value: {
+        timeSignatureTop: 4,
+        timeSignatureBottom: 4,
+        events: [
+          { ...createMiddleCNoteEvent() },
+          { ...createMiddleCNoteOffEvent() },
+        ],
+      },
+    },
+  ],
 };
 
 const defaultOscillator = {
