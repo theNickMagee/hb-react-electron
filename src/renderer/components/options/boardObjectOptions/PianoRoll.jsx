@@ -156,7 +156,7 @@ const PianoGrid = ({ events, setEvents, octave, numMeasures }) => {
             {Array.from({ length: numMeasures }, (_, measure) => (
               <div
                 key={measure}
-                className={`meeasure ${
+                className={`measure ${
                   checkIfEventInNote(events, octave, note, measure) && 'active'
                 }`}
                 onClick={() =>
