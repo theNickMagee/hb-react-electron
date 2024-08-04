@@ -46,6 +46,7 @@ const defaultMidi = {
       value: {
         timeSignatureTop: 4,
         timeSignatureBottom: 4,
+        octave: 4,
         events: [
           { ...createMiddleCNoteEvent() },
           { ...createMiddleCNoteOffEvent() },

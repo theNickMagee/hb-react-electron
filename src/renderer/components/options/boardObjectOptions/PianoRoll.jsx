@@ -1,3 +1,7 @@
+import {
+  checkIfEventInNote,
+  createEventsFromClick,
+} from '../../../services/MidiServices';
 import './styles/pianoRoll.css';
 import React, { useEffect } from 'react';
 
@@ -138,7 +142,7 @@ const PianoGrid = ({ events, setEvents, octave, numMeasures }) => {
   return (
     <div className="piano-grid">
       {octaveNotes.map((note, idx) => (
-        <div className="piano-row">
+        <div className="piano-row" key={idx}>
           <div className="note-label">{note}</div>
 
           <div
@@ -150,7 +154,13 @@ const PianoGrid = ({ events, setEvents, octave, numMeasures }) => {
           >
             {/* for every measure */}
             {Array.from({ length: numMeasures }, (_, measure) => (
-              <div className="measure"></div>
+              <div
+                key={measure}
+                className="measure"
+                onClick={() => createEventsFromClick(events, note, octave)}
+              >
+                {checkIfEventInNote(events, octave, note, measure) ? 'X' : ''}
+              </div>
             ))}
           </div>
         </div>
