@@ -5,9 +5,14 @@ import {
 } from '../../services/WireServices';
 import PianoRoll from './boardObjectOptions/PianoRoll';
 import './styles/boardObjectOptions.css';
+import React, { useEffect } from 'react';
 
 const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
   if (!sessionData.options.currentEditItem) return null;
+
+  useEffect(() => {
+    console.log('BoardObjectOptions render:', { data, sessionData });
+  }, [data, sessionData]);
 
   const handleOptionChange = (index, filePath, fileData) => {
     const newBoardObjects = data.boardObjects.map((obj, idx) => {
@@ -68,6 +73,25 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
     });
     setData({ ...data, boardObjects: newBoardObjects });
   };
+
+  const setValue = (index, newValue) => {
+    const newBoardObjects = data.boardObjects.map((obj, idx) => {
+      if (idx === sessionData.options.currentEditItemIndex) {
+        const newOptions = obj.options.map((option, optionIndex) => {
+          if (optionIndex === index) {
+            return { ...option, value: newValue }; // Directly set new value
+          }
+          return option;
+        });
+        return { ...obj, options: newOptions };
+      }
+      return obj;
+    });
+
+    console.log('newBoardObjects after setValue:', newBoardObjects);
+    setData({ ...data, boardObjects: newBoardObjects });
+  };
+
   return (
     <div className="board-object-options">
       <div
@@ -103,17 +127,21 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
               index={index}
             />
           )}
-          {
-            // if option.component === 'midiPattern'
-            option.component === 'PianoRoll' && (
+          {option.component === 'PianoRoll' && (
+            <>
+              {console.log('PianoRoll render:', option.value)}
               <PianoRoll
                 index={index}
                 bpm={data.bpm}
-                value={option.value}
-                setValue={(value) => handleOptionChange(index, null, value)}
+                value={
+                  data.boardObjects[sessionData.options.currentEditItemIndex]
+                    .options[index].value
+                }
+                setValue={(newValue) => setValue(index, newValue)}
+                key={option.value} // Add key prop to trigger re-render on value change
               />
-            )
-          }
+            </>
+          )}
         </div>
       ))}
       {sessionData.displayWires && (

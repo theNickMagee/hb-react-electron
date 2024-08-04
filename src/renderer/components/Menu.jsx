@@ -5,9 +5,10 @@ import { startCreatingWire } from '../services/BoardObjectServices';
 import { playCircuit } from '../controllers/CircuitController';
 
 const Menu = ({ data, setData, sessionData, setSessionData }) => {
+  console.log('Menu render:', { data, sessionData });
+
   return (
     <div className="menu">
-      {/* Conditionally display options of the active board object */}
       {sessionData.options.open && sessionData.options.currentEditItem ? (
         <BoardObjectOptions
           sessionData={sessionData}
@@ -22,7 +23,6 @@ const Menu = ({ data, setData, sessionData, setSessionData }) => {
         />
       )}
 
-      {/* Control options like play, create wire, cut wire */}
       <ControlMenuOptions
         sessionData={sessionData}
         setSessionData={setSessionData}
@@ -41,7 +41,6 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
   };
 
   const handlePlay = () => {
-    // play the circuit
     playCircuit(data);
   };
 
@@ -53,7 +52,6 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
   };
 
   return (
-    // buttons for play, create wire, cut wire
     <div className="control-menu-options">
       <div className="default-button" onClick={handlePlay}>
         Play
@@ -69,16 +67,14 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
       <div className="default-button" onClick={toggleDisplayWires}>
         Display Wires
       </div>
-      {/* bpm slider */}
       <input
         type="range"
         min="60"
         max="240"
         step="1"
         value={data.bpm}
-        onChange={(e) => setData({ ...data, bpm: e.target.value })}
+        onChange={(e) => setData({ ...data, bpm: parseInt(e.target.value) })}
       />
-      {/* display bpm */}
       <div className="small-font">BPM: {data.bpm}</div>
     </div>
   );
