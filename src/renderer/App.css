@@ -75,6 +75,14 @@ body {
   padding: 0.5rem 1rem;
   cursor: pointer;
   border-radius: 0.25rem;
+  user-select: none;
+  width: 90%;
+}
+
+.default-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 /* default button hover */

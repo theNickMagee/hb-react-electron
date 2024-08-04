@@ -44,13 +44,6 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
     playCircuit(data);
   };
 
-  const toggleDisplayWires = () => {
-    setSessionData({
-      ...sessionData,
-      displayWires: !sessionData.displayWires,
-    });
-  };
-
   return (
     <div className="control-menu-options">
       <div className="default-button" onClick={handlePlay}>
@@ -64,9 +57,7 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
       >
         Create Wire
       </div>
-      <div className="default-button" onClick={toggleDisplayWires}>
-        Display Wires
-      </div>
+
       <input
         type="range"
         min="60"

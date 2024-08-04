@@ -92,14 +92,60 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
     setData({ ...data, boardObjects: newBoardObjects });
   };
 
+  const toggleDisplayWires = () => {
+    setSessionData({
+      ...sessionData,
+      displayWires: !sessionData.displayWires,
+    });
+  };
+
   return (
     <div className="board-object-options">
-      <div
-        className="default-button w-25 float-right"
-        onClick={handleDeleteBoardObject}
-      >
-        Delete
+      <div className="default-row">
+        <div className="default-button" onClick={toggleDisplayWires}>
+          Display Wires
+        </div>
+        <div
+          className="default-button w-25 float-right"
+          onClick={handleDeleteBoardObject}
+        >
+          Delete
+        </div>
       </div>
+      {sessionData.displayWires && (
+        <div className="wire-section">
+          <div className="small-font">Input Wires:</div>
+          {inputWires.map((wire, idx) => (
+            <div key={idx} className="wire-listing">
+              <span>
+                ({wire.start.row}, {wire.start.col}) ➔ ({wire.end.row},{' '}
+                {wire.end.col})
+              </span>
+              <button
+                className="delete-wire-button"
+                onClick={() => handleDeleteWire(idx)}
+              >
+                X
+              </button>
+            </div>
+          ))}
+          <div className="small-font">Output Wires:</div>
+          {outputWires.map((wire, idx) => (
+            <div key={idx} className="wire-listing">
+              <span>
+                ({wire.start.row}, {wire.start.col}) ➔ ({wire.end.row},{' '}
+                {wire.end.col})
+              </span>
+              <button
+                className="delete-wire-button"
+                onClick={() => handleDeleteWire(idx)}
+              >
+                X
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
       {currentBoardObject.options.map((option, index) => (
         <div key={index} className="board-object-option-container">
           {option.component === 'slider' && (
@@ -144,40 +190,6 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
           )}
         </div>
       ))}
-      {sessionData.displayWires && (
-        <div className="wire-section">
-          <div className="small-font">Input Wires:</div>
-          {inputWires.map((wire, idx) => (
-            <div key={idx} className="wire-listing">
-              <span>
-                ({wire.start.row}, {wire.start.col}) ➔ ({wire.end.row},{' '}
-                {wire.end.col})
-              </span>
-              <button
-                className="delete-wire-button"
-                onClick={() => handleDeleteWire(idx)}
-              >
-                X
-              </button>
-            </div>
-          ))}
-          <div className="small-font">Output Wires:</div>
-          {outputWires.map((wire, idx) => (
-            <div key={idx} className="wire-listing">
-              <span>
-                ({wire.start.row}, {wire.start.col}) ➔ ({wire.end.row},{' '}
-                {wire.end.col})
-              </span>
-              <button
-                className="delete-wire-button"
-                onClick={() => handleDeleteWire(idx)}
-              >
-                X
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 };
