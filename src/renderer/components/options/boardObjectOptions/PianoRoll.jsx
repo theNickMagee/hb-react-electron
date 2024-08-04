@@ -39,6 +39,53 @@ const PianoRoll = ({ value, setValue, bpm }) => {
             <option value="7">7</option>
           </select>
         </div>
+        <div className="default-dd">
+          Octave
+          <select
+            value={value.octave}
+            onChange={(e) => {
+              const newValue = {
+                ...value,
+                octave: parseInt(e.target.value),
+              };
+              setValue(newValue);
+            }}
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+          </select>
+          {/* move up an octave */}
+          <div
+            className="default-button"
+            onClick={() => {
+              const newValue = {
+                ...value,
+                octave: value.octave > 6 ? 7 : value.octave + 1,
+              };
+              setValue(newValue);
+            }}
+          >
+            +
+          </div>
+          {/* move down an octave */}
+          <div
+            className="default-button"
+            onClick={() => {
+              const newValue = {
+                ...value,
+                octave: value.octave < 2 ? 1 : value.octave - 1,
+              };
+              setValue(newValue);
+            }}
+          >
+            -
+          </div>
+        </div>
       </div>
       <div className="middle-midi-section">
         <div className="piano-roll"></div>
@@ -57,3 +104,5 @@ const PianoRoll = ({ value, setValue, bpm }) => {
 };
 
 export default PianoRoll;
+
+const PianoGrid = ({ events, setEvents, octave, numMeasures }) => {};
