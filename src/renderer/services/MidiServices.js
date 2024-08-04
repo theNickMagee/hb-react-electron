@@ -113,6 +113,24 @@ const returnTimePerBeat = (bpm) => {
   return Math.round((60 / bpm) * 1000) / 1000; // Use milliseconds
 };
 
+const findPairsInNoteAndOctave = (bpm, numMeasures, events, note, octave) => {
+  const timePerMeasure = returnTimePerMeasure(bpm, numMeasures);
+  const noteEvents = events.filter(
+    (event) => event.note === `${note}${octave}`,
+  );
+  const notePairs = [];
+
+  for (let i = 0; i < noteEvents.length; i += 2) {
+    const noteOn = noteEvents[i];
+    const noteOff = noteEvents[i + 1];
+
+    const measure = Math.floor(noteOn.time / timePerMeasure);
+    notePairs.push({ noteOn, noteOff, measure });
+  }
+
+  return notePairs;
+};
+
 export {
   createMiddleCNoteEvent,
   createMiddleCNoteOffEvent,
@@ -120,4 +138,5 @@ export {
   checkIfEventInNote,
   returnTimePerMeasure,
   returnTimePerBeat,
+  findPairsInNoteAndOctave,
 };

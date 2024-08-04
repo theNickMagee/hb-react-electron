@@ -1,6 +1,7 @@
 import {
   checkIfEventInNote,
   createEventsFromClick,
+  findPairsInNoteAndOctave,
   returnTimePerBeat,
   returnTimePerMeasure,
 } from '../../../services/MidiServices';
@@ -130,45 +131,54 @@ const PianoGrid = ({ events, setEvents, octave, numMeasures, bpm }) => {
   };
 
   return (
-    <div className="piano-grid">
-      {octaveNotes.map((note, idx) => (
-        <div className="piano-row" key={idx}>
-          <div className="note-label">{note}</div>
-
-          <div
-            key={idx}
-            className="piano-key"
-            style={{
-              backgroundColor: isWhiteKey(note) ? '#221' : '#111',
-            }}
-          >
-            {/* for every measure */}
-            {Array.from({ length: numMeasures }, (_, measure) => (
-              <div
-                key={measure}
-                className={`measure ${
-                  checkIfEventInNote(
-                    events,
-                    octave,
-                    note,
-                    measure,
-                    bpm,
-                    numMeasures,
-                  ) && 'active'
-                }`}
-                onClick={() =>
-                  createEventsFromClick(
-                    events,
-                    setEvents,
-                    note,
-                    octave,
-                    measure,
-                    bpm,
-                    numMeasures,
-                  )
-                }
-              >
-                {/* {checkIfEventInNote(
+    <>
+      <div className="piano-grid">
+        {/* absolute positioned notes with length */}
+        {/*  for every event pair */}
+        {octaveNotes.map((note, idx) => (
+          <div className="piano-row" key={idx}>
+            <div className="note-label">{note}</div>
+            <EventNotes
+              events={events}
+              octave={octave}
+              numMeasures={numMeasures}
+              note={note}
+              bpm={bpm}
+            />
+            <div
+              key={idx}
+              className="piano-key"
+              style={{
+                backgroundColor: isWhiteKey(note) ? '#221' : '#111',
+              }}
+            >
+              {/* for every measure */}
+              {Array.from({ length: numMeasures }, (_, measure) => (
+                <div
+                  key={measure}
+                  className={`measure ${
+                    checkIfEventInNote(
+                      events,
+                      octave,
+                      note,
+                      measure,
+                      bpm,
+                      numMeasures,
+                    ) && 'active'
+                  }`}
+                  onClick={() =>
+                    createEventsFromClick(
+                      events,
+                      setEvents,
+                      note,
+                      octave,
+                      measure,
+                      bpm,
+                      numMeasures,
+                    )
+                  }
+                >
+                  {/* {checkIfEventInNote(
                   events,
                   octave,
                   note,
@@ -176,11 +186,43 @@ const PianoGrid = ({ events, setEvents, octave, numMeasures, bpm }) => {
                   bpm,
                   numMeasures,
                 ) && 'x'} */}
-              </div>
-            ))}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </>
+  );
+};
+
+const EventNotes = ({ events, octave, numMeasures, note, bpm }) => {
+  // display events on current note absolute positions with margin left correct ontop of row
+
+  const noteEvents = events.filter((event) => event.note.includes(note));
+  const timePerEntireLine =
+    returnTimePerMeasure(bpm, numMeasures) * numMeasures;
+
+  return findPairsInNoteAndOctave(bpm, numMeasures, events, note, octave).map(
+    ({ noteOn, noteOff, measure }) => {
+      const noteLength = noteOff.time - noteOn.time;
+      const notePosition = (noteOn.time / timePerEntireLine) * 100;
+      const noteWidth = (noteLength / timePerEntireLine) * 100;
+
+      return (
+        <div
+          key={noteOn.time}
+          className="event-note"
+          style={{
+            left: `0`,
+            marginLeft: `${notePosition}%`,
+            width: `${noteWidth}%`,
+            position: 'absolute',
+            backgroundColor: 'rgba(255, 3, 255, 0.5)',
+            height: '100%',
+          }}
+        ></div>
+      );
+    },
   );
 };
