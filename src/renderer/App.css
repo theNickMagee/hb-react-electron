@@ -159,5 +159,5 @@ body {
 }
 
 .active {
-  background-color: var(--primary);
+  background-color: var(--secondary-mid);
 }

@@ -5,8 +5,6 @@ import { startCreatingWire } from '../services/BoardObjectServices';
 import { playCircuit } from '../controllers/CircuitController';
 
 const Menu = ({ data, setData, sessionData, setSessionData }) => {
-  console.log('Menu render:', { data, sessionData });
-
   return (
     <div className="menu">
       {sessionData.options.open && sessionData.options.currentEditItem ? (

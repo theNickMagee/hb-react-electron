@@ -10,10 +10,6 @@ import React, { useEffect } from 'react';
 const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
   if (!sessionData.options.currentEditItem) return null;
 
-  useEffect(() => {
-    console.log('BoardObjectOptions render:', { data, sessionData });
-  }, [data, sessionData]);
-
   const handleOptionChange = (index, filePath, fileData) => {
     const newBoardObjects = data.boardObjects.map((obj, idx) => {
       if (idx === sessionData.options.currentEditItemIndex) {
@@ -175,7 +171,6 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
           )}
           {option.component === 'PianoRoll' && (
             <div className="h-100">
-              {console.log('PianoRoll render:', option.value)}
               <PianoRoll
                 index={index}
                 bpm={data.bpm}

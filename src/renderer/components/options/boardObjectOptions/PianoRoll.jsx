@@ -7,7 +7,6 @@ import React, { useEffect } from 'react';
 
 const PianoRoll = ({ value, setValue, bpm }) => {
   useEffect(() => {
-    console.log('PianoRoll render with value:', value);
     // look for changes in any of the values
   }, [value, value && value.timeSignatureTop, bpm]);
 
