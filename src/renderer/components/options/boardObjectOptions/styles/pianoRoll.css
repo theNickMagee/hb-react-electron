@@ -5,3 +5,30 @@
   width: 100%;
   height: 70%;
 }
+
+.piano-key {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  /* text hover - text position absolute non effectiobve */
+  /* text-align: unset; */
+}
+
+.piano-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.note-label {
+  width: 2rem;
+  color: #ffffff3c;
+}
+
+.measure {
+  width: 100%;
+}
+
+.measure:hover {
+  background-color: var(--primary);
+}

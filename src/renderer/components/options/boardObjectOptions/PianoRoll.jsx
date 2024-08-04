@@ -88,7 +88,17 @@ const PianoRoll = ({ value, setValue, bpm }) => {
         </div>
       </div>
       <div className="middle-midi-section">
-        <div className="piano-roll"></div>
+        <div className="piano-roll">
+          <PianoGrid
+            events={value.events}
+            setEvents={(events) => {
+              const newValue = { ...value, events };
+              setValue(newValue);
+            }}
+            octave={value.octave}
+            numMeasures={value.timeSignatureTop}
+          />
+        </div>
       </div>
       <div className="bottom-midi-options">
         {/* Time Signature: {value.timeSignatureTop}/4 */}
@@ -105,4 +115,46 @@ const PianoRoll = ({ value, setValue, bpm }) => {
 
 export default PianoRoll;
 
-const PianoGrid = ({ events, setEvents, octave, numMeasures }) => {};
+const PianoGrid = ({ events, setEvents, octave, numMeasures }) => {
+  const octaveNotes = [
+    'C',
+    'C#',
+    'D',
+    'D#',
+    'E',
+    'F',
+    'F#',
+    'G',
+    'G#',
+    'A',
+    'A#',
+    'B',
+  ];
+
+  const isWhiteKey = (note) => {
+    return !note.includes('#');
+  };
+
+  return (
+    <div className="piano-grid">
+      {octaveNotes.map((note, idx) => (
+        <div className="piano-row">
+          <div className="note-label">{note}</div>
+
+          <div
+            key={idx}
+            className="piano-key"
+            style={{
+              backgroundColor: isWhiteKey(note) ? '#221' : '#111',
+            }}
+          >
+            {/* for every measure */}
+            {Array.from({ length: numMeasures }, (_, measure) => (
+              <div className="measure"></div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
