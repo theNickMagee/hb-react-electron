@@ -128,7 +128,7 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
             />
           )}
           {option.component === 'PianoRoll' && (
-            <>
+            <div className="h-100">
               {console.log('PianoRoll render:', option.value)}
               <PianoRoll
                 index={index}
@@ -140,7 +140,7 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
                 setValue={(newValue) => setValue(index, newValue)}
                 key={option.value} // Add key prop to trigger re-render on value change
               />
-            </>
+            </div>
           )}
         </div>
       ))}

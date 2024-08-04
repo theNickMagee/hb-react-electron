@@ -19,6 +19,7 @@ const PianoRoll = ({ value, setValue, bpm }) => {
     <div className="midi-options">
       <div className="top-midi-options">
         <div className="default-dd">
+          Beats per measure
           <select
             value={value.timeSignatureTop}
             onChange={(e) => {
@@ -26,7 +27,6 @@ const PianoRoll = ({ value, setValue, bpm }) => {
                 ...value,
                 timeSignatureTop: parseInt(e.target.value),
               };
-              console.log('Setting new value:', newValue);
               setValue(newValue);
             }}
           >
@@ -44,7 +44,7 @@ const PianoRoll = ({ value, setValue, bpm }) => {
         <div className="piano-roll"></div>
       </div>
       <div className="bottom-midi-options">
-        Time Signature: {value.timeSignatureTop}/4
+        {/* Time Signature: {value.timeSignatureTop}/4 */}
         <div className="small-font">
           Time per beat: {returnTimePerBeat(bpm)}s
         </div>
