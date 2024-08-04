@@ -33,7 +33,7 @@ const createDefaultNotesForClick = (
       type: 'noteoff',
       note: `${letter}${octave}`,
       velocity: 127,
-      time: timePerMeasure * measure + 10,
+      time: timePerMeasure * measure + 1,
     },
   ];
 };
@@ -77,6 +77,7 @@ const createEventsFromClick = (
   ) {
     setEvents(removeNoteFromEvents(events, noteOn, noteOff));
   } else {
+    console.log('adding events: ', notes);
     setEvents(addNotesToEvents(events, notes));
   }
 };
@@ -89,24 +90,17 @@ const checkIfEventInNote = (
   bpm,
   timeSignatureTop,
 ) => {
-  console.log(
-    'checkIfEventInNote: ',
-    events,
-    noteOctave,
-    noteLetter,
-    noteMeasure,
-  );
   const timePerMeasure = returnTimePerMeasure(bpm, timeSignatureTop);
 
   const measureStartTime = timePerMeasure * noteMeasure;
   const measureEndTime = measureStartTime + timePerMeasure;
 
   return events.some((event) => {
-    const eventTime = event.time || 0;
+    const eventTime = event.time;
     return (
       event.note === `${noteLetter}${noteOctave}` &&
-      eventTime >= measureStartTime &&
-      eventTime <= measureEndTime
+      eventTime > measureStartTime &&
+      eventTime < measureEndTime
     );
   });
 };

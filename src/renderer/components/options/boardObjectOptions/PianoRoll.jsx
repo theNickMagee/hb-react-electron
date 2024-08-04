@@ -168,14 +168,14 @@ const PianoGrid = ({ events, setEvents, octave, numMeasures, bpm }) => {
                   )
                 }
               >
-                {checkIfEventInNote(
+                {/* {checkIfEventInNote(
                   events,
                   octave,
                   note,
                   measure,
                   bpm,
                   numMeasures,
-                ) && 'x'}
+                ) && 'x'} */}
               </div>
             ))}
           </div>
