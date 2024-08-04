@@ -157,3 +157,7 @@ body {
 .float-left {
   margin-right: auto;
 }
+
+.active {
+  background-color: var(--primary);
+}

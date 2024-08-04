@@ -41,30 +41,24 @@ const removeNoteFromEvents = (events, note) => {
   return events.filter((event) => event.note !== note.note);
 };
 
-const createEventsFromClick = (events, letter, octave) => {
+const createEventsFromClick = (events, setEvents, letter, octave) => {
   console.log('createEventsFromClick: ', events, letter, octave);
-  const note = createDefaultNotesForClick(letter, octave);
-  if (events.some((event) => event.note === note[0].note)) {
-    return removeNoteFromEvents(events, note[0]);
+  const note = `${letter}${octave}`;
+  const noteOn = createDefaultNotesForClick(letter, octave)[0];
+  const noteOff = createDefaultNotesForClick(letter, octave)[1];
+  if (checkIfEventInNote(events, octave, letter, 1)) {
+    setEvents(removeNoteFromEvents(events, noteOn));
+    setEvents(removeNoteFromEvents(events, noteOff));
   } else {
-    return addNoteToEvents(events, note[0]);
+    setEvents(addNoteToEvents(events, noteOn));
+    setEvents(addNoteToEvents(events, noteOff));
   }
 };
 
 // return length of noteOn - noteOff if found - for now just return true if found
 const checkIfEventInNote = (events, noteOctave, noteLetter, noteMeasure) => {
-  console.log(
-    'checkIfEventInNote: ',
-    events,
-    noteOctave,
-    noteLetter,
-    noteMeasure,
-  );
   return events.some((event) => {
-    return (
-      event.note === `${noteLetter}${noteOctave}` &&
-      event.measure === noteMeasure
-    );
+    return event.note === `${noteLetter}${noteOctave}`;
   });
 };
 
