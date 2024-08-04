@@ -1,23 +1,13 @@
 import {
   checkIfEventInNote,
   createEventsFromClick,
+  returnTimePerBeat,
+  returnTimePerMeasure,
 } from '../../../services/MidiServices';
 import './styles/pianoRoll.css';
 import React, { useEffect } from 'react';
 
 const PianoRoll = ({ value, setValue, bpm }) => {
-  useEffect(() => {
-    // look for changes in any of the values
-  }, [value, value && value.timeSignatureTop, bpm]);
-
-  const returnTimePerBeat = (bpm) => {
-    return Math.round((60 / bpm) * 100) / 100;
-  };
-
-  const returnTimePerMeasure = (bpm, timeSignatureTop) => {
-    return Math.round((60 / bpm) * timeSignatureTop * 100) / 100;
-  };
-
   return (
     <div className="midi-options">
       <div className="top-midi-options">
@@ -100,6 +90,7 @@ const PianoRoll = ({ value, setValue, bpm }) => {
             }}
             octave={value.octave}
             numMeasures={value.timeSignatureTop}
+            bpm={bpm}
           />
         </div>
       </div>
@@ -118,7 +109,7 @@ const PianoRoll = ({ value, setValue, bpm }) => {
 
 export default PianoRoll;
 
-const PianoGrid = ({ events, setEvents, octave, numMeasures }) => {
+const PianoGrid = ({ events, setEvents, octave, numMeasures, bpm }) => {
   const octaveNotes = [
     'C',
     'C#',
@@ -156,13 +147,35 @@ const PianoGrid = ({ events, setEvents, octave, numMeasures }) => {
               <div
                 key={measure}
                 className={`measure ${
-                  checkIfEventInNote(events, octave, note, measure) && 'active'
+                  checkIfEventInNote(
+                    events,
+                    octave,
+                    note,
+                    measure,
+                    bpm,
+                    numMeasures,
+                  ) && 'active'
                 }`}
                 onClick={() =>
-                  createEventsFromClick(events, setEvents, note, octave)
+                  createEventsFromClick(
+                    events,
+                    setEvents,
+                    note,
+                    octave,
+                    measure,
+                    bpm,
+                    numMeasures,
+                  )
                 }
               >
-                {checkIfEventInNote(events, octave, note, measure) ? 'X' : ''}
+                {checkIfEventInNote(
+                  events,
+                  octave,
+                  note,
+                  measure,
+                  bpm,
+                  numMeasures,
+                ) && 'x'}
               </div>
             ))}
           </div>
