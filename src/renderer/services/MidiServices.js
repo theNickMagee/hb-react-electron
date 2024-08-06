@@ -19,21 +19,30 @@ const createMiddleCNoteOffEvent = () => {
 const createDefaultNotesForClick = (
   letter,
   octave,
-  measure,
+  beat,
   timePerMeasure,
+  timeSignatureTop,
 ) => {
+  console.log(
+    'creating notes for click: ',
+    letter,
+    octave,
+    beat,
+    timePerMeasure,
+    timeSignatureTop,
+  );
   return [
     {
       type: 'noteon',
       note: `${letter}${octave}`,
       velocity: 127,
-      time: timePerMeasure * measure,
+      time: beat * (timePerMeasure / timeSignatureTop),
     },
     {
       type: 'noteoff',
       note: `${letter}${octave}`,
       velocity: 127,
-      time: timePerMeasure * measure + 1,
+      time: (beat + 1) * (timePerMeasure / timeSignatureTop),
     },
   ];
 };
@@ -57,24 +66,22 @@ const createEventsFromClick = (
   setEvents,
   letter,
   octave,
-  measure,
+  beat,
   bpm,
   timeSignatureTop,
 ) => {
-  console.log('createEventsFromClick: ', events, letter, octave, measure);
   const timePerMeasure = returnTimePerMeasure(bpm, timeSignatureTop);
   const notes = createDefaultNotesForClick(
     letter,
     octave,
-    measure,
+    beat,
     timePerMeasure,
+    timeSignatureTop,
   );
   const noteOn = notes[0];
   const noteOff = notes[1];
 
-  if (
-    checkIfEventInNote(events, octave, letter, measure, bpm, timeSignatureTop)
-  ) {
+  if (checkIfEventInNote(events, octave, letter, beat, bpm, timeSignatureTop)) {
     setEvents(removeNoteFromEvents(events, noteOn, noteOff));
   } else {
     console.log('adding events: ', notes);
@@ -86,22 +93,39 @@ const checkIfEventInNote = (
   events,
   noteOctave,
   noteLetter,
-  noteMeasure,
+  beatIndex,
   bpm,
   timeSignatureTop,
 ) => {
-  const timePerMeasure = returnTimePerMeasure(bpm, timeSignatureTop);
+  // Calculate the duration of one beat
+  const beatDuration = 60 / bpm; // seconds per beat
 
-  const measureStartTime = timePerMeasure * noteMeasure;
-  const measureEndTime = measureStartTime + timePerMeasure;
+  // Calculate start and end times of the beat
+  const startTime = beatDuration * beatIndex;
+  const endTime = startTime + beatDuration;
 
+  // Concatenate note and octave to match event.note format
+  const fullNoteName = `${noteLetter}${noteOctave}`;
+
+  // Check for an active note within the beat time range
   return events.some((event) => {
-    const eventTime = event.time;
-    return (
-      event.note === `${noteLetter}${noteOctave}` &&
-      eventTime > measureStartTime &&
-      eventTime < measureEndTime
-    );
+    if (event.note === fullNoteName) {
+      if (
+        event.type === 'noteon' &&
+        event.time >= startTime &&
+        event.time < endTime
+      ) {
+        // Check corresponding noteoff event
+        const noteOffEvent = events.find(
+          (offEvent) =>
+            offEvent.type === 'noteoff' &&
+            offEvent.note === fullNoteName &&
+            offEvent.time >= event.time,
+        );
+        return !noteOffEvent || noteOffEvent.time > startTime;
+      }
+    }
+    return false;
   });
 };
 
@@ -113,8 +137,8 @@ const returnTimePerBeat = (bpm) => {
   return Math.round((60 / bpm) * 1000) / 1000; // Use milliseconds
 };
 
-const findPairsInNoteAndOctave = (bpm, numMeasures, events, note, octave) => {
-  const timePerMeasure = returnTimePerMeasure(bpm, numMeasures);
+const findPairsInNoteAndOctave = (bpm, numBeats, events, note, octave) => {
+  const timePerMeasure = returnTimePerMeasure(bpm, numBeats);
   const noteEvents = events.filter(
     (event) => event.note === `${note}${octave}`,
   );

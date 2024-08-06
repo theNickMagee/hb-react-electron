@@ -67,7 +67,7 @@ const PianoRoll = ({ value, setValue, bpm }) => (
           events={value.events}
           setEvents={(newValue) => setValue({ ...value, events: newValue })}
           octave={value.octave}
-          numMeasures={value.timeSignatureTop}
+          numBeats={value.timeSignatureTop}
           bpm={bpm}
         />
       </div>
@@ -81,7 +81,7 @@ const PianoRoll = ({ value, setValue, bpm }) => (
   </div>
 );
 
-const PianoGrid = ({ events, setEvents, octave, numMeasures, bpm }) => {
+const PianoGrid = ({ events, setEvents, octave, numBeats, bpm }) => {
   const octaveNotes = [
     'C',
     'C#',
@@ -105,7 +105,7 @@ const PianoGrid = ({ events, setEvents, octave, numMeasures, bpm }) => {
           <EventNotes
             events={events}
             octave={octave}
-            numMeasures={numMeasures}
+            numBeats={numBeats}
             note={note}
             bpm={bpm}
           />
@@ -113,19 +113,19 @@ const PianoGrid = ({ events, setEvents, octave, numMeasures, bpm }) => {
             className="piano-key"
             style={{ backgroundColor: note.includes('#') ? '#111' : '#221' }}
           >
-            {Array.from({ length: numMeasures }).map((_, measure) => (
+            {Array.from({ length: numBeats }).map((_, beat) => (
               <div
-                key={measure}
-                className={`measure ${checkIfEventInNote(events, octave, note, measure, bpm, numMeasures) ? 'active' : ''}`}
+                key={beat}
+                className={`beat ${checkIfEventInNote(events, octave, note, beat, bpm, numBeats) ? 'active' : ''}`}
                 onClick={() =>
                   createEventsFromClick(
                     events,
                     setEvents,
                     note,
                     octave,
-                    measure,
+                    beat,
                     bpm,
-                    numMeasures,
+                    numBeats,
                   )
                 }
               />
@@ -137,16 +137,15 @@ const PianoGrid = ({ events, setEvents, octave, numMeasures, bpm }) => {
   );
 };
 
-const EventNotes = ({ events, octave, numMeasures, note, bpm }) => {
+const EventNotes = ({ events, octave, numBeats, note, bpm }) => {
   const noteEvents = findPairsInNoteAndOctave(
     bpm,
-    numMeasures,
+    numBeats,
     events,
     note,
     octave,
   );
-  const timePerEntireLine =
-    returnTimePerMeasure(bpm, numMeasures) * numMeasures;
+  const timePerEntireLine = returnTimePerMeasure(bpm, numBeats) * numBeats;
 
   return noteEvents.map(({ noteOn, noteOff }, index) => {
     const noteLength = noteOff.time - noteOn.time;

@@ -26,11 +26,11 @@
   color: #ffffff3c;
 }
 
-.measure {
+.beat {
   width: 100%;
 }
 
-.measure:hover {
+.beat:hover {
   background-color: var(--primary);
 }
 
