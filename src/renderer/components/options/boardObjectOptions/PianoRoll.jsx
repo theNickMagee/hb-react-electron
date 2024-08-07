@@ -109,7 +109,7 @@ const PianoGrid = ({ events, setEvents, octave, numBeats, bpm }) => {
     <div className="piano-grid">
       {octaveNotes.map((note, idx) => (
         <div className="piano-row" key={note}>
-          {/* <div className="note-label">{note}</div> */}
+          <div className="note-label">{note}</div>
           <EventNotes
             events={events}
             octave={octave}

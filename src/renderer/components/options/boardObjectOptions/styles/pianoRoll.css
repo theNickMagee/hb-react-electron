@@ -24,7 +24,9 @@
 
 .note-label {
   width: 2rem;
-  color: #ffffff3c;
+  color: #ffffff9d;
+  position: absolute;
+  user-select: none;
 }
 
 .beat {
