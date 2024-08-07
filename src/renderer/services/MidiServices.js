@@ -155,6 +155,10 @@ const findPairsInNoteAndOctave = (bpm, numBeats, events, note, octave) => {
   return notePairs;
 };
 
+const clearCurrentMeasure = (value, setValue) => {
+  setValue(value.filter((event) => event.time >= 4));
+};
+
 export {
   createMiddleCNoteEvent,
   createMiddleCNoteOffEvent,
@@ -163,4 +167,5 @@ export {
   returnTimePerMeasure,
   returnTimePerBeat,
   findPairsInNoteAndOctave,
+  clearCurrentMeasure,
 };

@@ -48,8 +48,8 @@ const defaultMidi = {
         timeSignatureBottom: 4,
         octave: 4,
         events: [
-          { ...createMiddleCNoteEvent() },
-          { ...createMiddleCNoteOffEvent() },
+          // { ...createMiddleCNoteEvent() },
+          // { ...createMiddleCNoteOffEvent() },
         ],
       },
     },

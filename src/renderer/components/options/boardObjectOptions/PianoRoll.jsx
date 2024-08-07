@@ -6,6 +6,7 @@ import {
   findPairsInNoteAndOctave,
   returnTimePerBeat,
   returnTimePerMeasure,
+  clearCurrentMeasure,
 } from '../../../services/MidiServices';
 
 const PianoRoll = ({ value, setValue, bpm }) => (
@@ -77,6 +78,13 @@ const PianoRoll = ({ value, setValue, bpm }) => (
       <div className="small-font">
         Time per measure: {returnTimePerMeasure(bpm, value.timeSignatureTop)}s
       </div>
+      {/* clear measure */}
+      {/* <div
+        className="default-button"
+        onClick={() => clearCurrentMeasure(value, setValue)}
+      >
+        Clear Measure
+      </div> */}
     </div>
   </div>
 );
