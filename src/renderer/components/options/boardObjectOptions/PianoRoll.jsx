@@ -109,7 +109,7 @@ const PianoGrid = ({ events, setEvents, octave, numBeats, bpm }) => {
     <div className="piano-grid">
       {octaveNotes.map((note, idx) => (
         <div className="piano-row" key={note}>
-          <div className="note-label">{note}</div>
+          {/* <div className="note-label">{note}</div> */}
           <EventNotes
             events={events}
             octave={octave}
@@ -146,6 +146,8 @@ const PianoGrid = ({ events, setEvents, octave, numBeats, bpm }) => {
 };
 
 const EventNotes = ({ events, octave, numBeats, note, bpm }) => {
+  const totalLineTime = returnTimePerMeasure(bpm, numBeats); // Calculate time per measure based on bpm and beats per measure
+
   const noteEvents = findPairsInNoteAndOctave(
     bpm,
     numBeats,
@@ -153,23 +155,26 @@ const EventNotes = ({ events, octave, numBeats, note, bpm }) => {
     note,
     octave,
   );
-  const timePerEntireLine = returnTimePerMeasure(bpm, numBeats) * numBeats;
+
+  console.log('noteEvents: ', noteEvents);
 
   return noteEvents.map(({ noteOn, noteOff }, index) => {
-    const noteLength = noteOff.time - noteOn.time;
-    const notePosition = (noteOn.time / timePerEntireLine) * 100;
-    const noteWidth = (noteLength / timePerEntireLine) * 100;
+    const startTime = noteOn.time; // Start time of the note
+    const endTime = noteOff.time; // End time of the note
+    const duration = endTime - startTime; // Duration of the note
 
+    const notePosition = (startTime / totalLineTime) * 100; // Position of the note from the start of the grid
+    const noteWidth = (duration / totalLineTime) * 100; // Width of the note representing its duration
+
+    console.log('notePosition: ', notePosition);
     return (
       <div
         key={index}
-        className="event-note"
         style={{
-          left: `1.5rem`,
-          marginLeft: `${notePosition}%`,
-          width: `${noteWidth}%`,
+          left: `${notePosition}%`, // Position of the note from the start of the grid
+          width: `${noteWidth}%`, // Width of the note representing its duration
           position: 'absolute',
-          backgroundColor: 'rgba(255, 3, 255, 0.5)',
+          backgroundColor: 'rgba(255, 3, 255, 0.5)', // Visual style for the note
           height: '100%',
         }}
       ></div>
