@@ -107,26 +107,35 @@ const checkIfEventInNote = (
   // Concatenate note and octave to match event.note format
   const fullNoteName = `${noteLetter}${noteOctave}`;
 
-  // Check for an active note within the beat time range
-  return events.some((event) => {
-    if (event.note === fullNoteName) {
-      if (
-        event.type === 'noteon' &&
-        event.time >= startTime &&
-        event.time < endTime
-      ) {
-        // Check corresponding noteoff event
-        const noteOffEvent = events.find(
-          (offEvent) =>
-            offEvent.type === 'noteoff' &&
-            offEvent.note === fullNoteName &&
-            offEvent.time >= event.time,
-        );
-        return !noteOffEvent || noteOffEvent.time > startTime;
+  // Track active notes that start before or during the current beat and end after the start of the current beat
+  let activeDuringBeat = false;
+
+  // Check each event to find a 'noteon' event during the beat
+  events.forEach((event, index) => {
+    if (
+      event.note === fullNoteName &&
+      event.type === 'noteon' &&
+      event.time < endTime
+    ) {
+      // Find the closest subsequent 'noteoff' event for the same note
+      const noteOffIndex = events.findIndex(
+        (offEvent, offIndex) =>
+          offIndex > index &&
+          offEvent.type === 'noteoff' &&
+          offEvent.note === fullNoteName,
+      );
+
+      const noteOffTime =
+        noteOffIndex !== -1 ? events[noteOffIndex].time : Number.MAX_VALUE;
+
+      // If 'noteon' event starts before or during the beat and 'noteoff' is after the start of the beat
+      if (event.time >= startTime && noteOffTime > startTime) {
+        activeDuringBeat = true;
       }
     }
-    return false;
   });
+
+  return activeDuringBeat;
 };
 
 const returnTimePerMeasure = (bpm, timeSignatureTop) => {
