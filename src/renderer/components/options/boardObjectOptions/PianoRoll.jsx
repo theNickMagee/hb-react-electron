@@ -171,19 +171,32 @@ const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
 
     
     return (
-      <div
+      <MidiNote
         key={index}
-        style={{
-          left: `${notePosition}%`, // Position of the note from the start of the grid
-          width: `${noteWidth}%`, // Width of the note representing its duration
-          position: 'absolute',
-          backgroundColor: 'rgba(255, 3, 255, 0.5)', // Visual style for the note
-          height: '100%',
-        }}
-        onClick={() => setEvents(removeNoteFromEvents(events, noteOn, noteOff))}
+        events={events}
+        noteOn={noteOn}
+        noteOff={noteOff}
+        setEvents={setEvents}
+        notePosition={notePosition}
+        noteWidth={noteWidth}
       />
     );
   });
 };
 
 export default PianoRoll;
+
+const MidiNote = ({ events, noteOn, noteOff, setEvents, notePosition, noteWidth }) => {
+  return (
+    <div
+      style={{
+        left: `${notePosition}%`, // Position of the note from the start of the grid
+        width: `${noteWidth}%`, // Width of the note representing its duration
+        position: 'absolute',
+        backgroundColor: 'rgba(255, 3, 255, 0.5)', // Visual style for the note
+        height: '100%',
+      }}
+      onClick={() => setEvents(removeNoteFromEvents(events, noteOn, noteOff))}
+    />
+  );
+}
