@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './styles/pianoRoll.css';
 import {
   checkIfEventInNote,
@@ -9,6 +9,7 @@ import {
   clearCurrentMeasure,
   removeNoteFromEvents
 } from '../../../services/MidiServices';
+import { useState } from 'react';
 
 const PianoRoll = ({ value, setValue, bpm }) => (
   <div className="midi-options">
@@ -186,9 +187,21 @@ const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
 
 export default PianoRoll;
 
-const MidiNote = ({ events, noteOn, noteOff, setEvents, notePosition, noteWidth }) => {
+const MidiNote = ({ events, noteOn, noteOff, setEvents, notePosition, noteWidth,}) => {
 
-  const [hovered, setHovered] = useState(false);
+
+  const setEventHovered(noteOn, noteOff, events) => {
+    setEvents(
+      events.map((event) => {
+        if (event.noteOn === noteOn && event.noteOff === noteOff) {
+          return { ...event, hovered: true };
+        }
+        return { ...event, hovered: false };
+      }),
+    );
+
+  }
+  
   
   return (
     <div
@@ -199,6 +212,8 @@ const MidiNote = ({ events, noteOn, noteOff, setEvents, notePosition, noteWidth 
         backgroundColor: 'rgba(255, 3, 255, 0.5)', // Visual style for the note
         height: '100%',
       }}
+      onMouseEnter={() => setBoardObjectEventsHovered(
+      onMouseLeave={() => setHovered(false)}
       onClick={() => setEvents(removeNoteFromEvents(events, noteOn, noteOff))}
     />
   );

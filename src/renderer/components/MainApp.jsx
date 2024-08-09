@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Menu from './Menu';
 import MainComponent from './MainComponent';
 import MidiListener from './MidiListener';
+import KeypressedListener from './KeyListener';
 
 function MainApp() {
   const [data, setData] = useState({
@@ -45,6 +46,7 @@ function MainApp() {
         setSessionData={setSessionData}
       />
       <MidiListener />
+      <KeypressedListener onKeypress={() => console.log('key pressed')} />
     </div>
   );
 }
