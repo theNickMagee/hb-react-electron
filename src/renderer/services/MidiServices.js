@@ -80,8 +80,9 @@ const createEventsFromClick = (
   );
   const noteOn = notes[0];
   const noteOff = notes[1];
-
+console.log('events: ', events);
   if (checkIfEventInNote(events, octave, letter, beat, bpm, timeSignatureTop)) {
+    console.log('removing events: ', noteOn, noteOff);
     setEvents(removeNoteFromEvents(events, noteOn, noteOff));
   } else {
     console.log('adding events: ', notes);
@@ -168,6 +169,8 @@ const clearCurrentMeasure = (value, setValue) => {
   setValue(value.filter((event) => event.time >= 4));
 };
 
+
+
 export {
   createMiddleCNoteEvent,
   createMiddleCNoteOffEvent,
@@ -177,4 +180,6 @@ export {
   returnTimePerBeat,
   findPairsInNoteAndOctave,
   clearCurrentMeasure,
+  removeNoteFromEvents
+  
 };

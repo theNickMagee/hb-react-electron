@@ -7,6 +7,7 @@ import {
   returnTimePerBeat,
   returnTimePerMeasure,
   clearCurrentMeasure,
+  removeNoteFromEvents
 } from '../../../services/MidiServices';
 
 const PianoRoll = ({ value, setValue, bpm }) => (
@@ -116,6 +117,7 @@ const PianoGrid = ({ events, setEvents, octave, numBeats, bpm }) => {
             numBeats={numBeats}
             note={note}
             bpm={bpm}
+            setEvents={setEvents}
           />
           <div
             className="piano-key"
@@ -145,7 +147,7 @@ const PianoGrid = ({ events, setEvents, octave, numBeats, bpm }) => {
   );
 };
 
-const EventNotes = ({ events, octave, numBeats, note, bpm }) => {
+const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
   const totalLineTime = returnTimePerMeasure(bpm, numBeats); // Calculate time per measure based on bpm and beats per measure
 
   const noteEvents = findPairsInNoteAndOctave(
@@ -156,7 +158,6 @@ const EventNotes = ({ events, octave, numBeats, note, bpm }) => {
     octave,
   );
 
-  console.log('noteEvents: ', noteEvents);
 
   return noteEvents.map(({ noteOn, noteOff }, index) => {
     const startTime = noteOn.time; // Start time of the note
@@ -166,7 +167,9 @@ const EventNotes = ({ events, octave, numBeats, note, bpm }) => {
     const notePosition = (startTime / totalLineTime) * 100; // Position of the note from the start of the grid
     const noteWidth = (duration / totalLineTime) * 100; // Width of the note representing its duration
 
-    console.log('notePosition: ', notePosition);
+
+
+    
     return (
       <div
         key={index}
@@ -177,7 +180,8 @@ const EventNotes = ({ events, octave, numBeats, note, bpm }) => {
           backgroundColor: 'rgba(255, 3, 255, 0.5)', // Visual style for the note
           height: '100%',
         }}
-      ></div>
+        onClick={() => setEvents(removeNoteFromEvents(events, noteOn, noteOff))}
+      />
     );
   });
 };
