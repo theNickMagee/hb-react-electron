@@ -187,6 +187,9 @@ const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
 export default PianoRoll;
 
 const MidiNote = ({ events, noteOn, noteOff, setEvents, notePosition, noteWidth }) => {
+
+  const [hovered, setHovered] = useState(false);
+  
   return (
     <div
       style={{
