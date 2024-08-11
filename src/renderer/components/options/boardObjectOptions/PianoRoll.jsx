@@ -12,9 +12,20 @@ import {
   removeSelectedEvents,
 } from '../../../services/MidiServices';
 
-const PianoRoll = ({ value, setValue, bpm }) => (
+const PianoRoll = ({ value, setValue }) => (
   <div className="midi-options">
     <div className="top-midi-options">
+      <input
+        type="range"
+        min="60"
+        max="240"
+        step="1"
+        value={value.bpm}
+        onChange={(e) =>
+          setValue({ ...value, bpm: parseInt(e.target.value, 10) })
+        }
+      />
+      <div className="small-font">BPM: {value.bpm}</div>
       <div className="default-dd">
         Beats per measure
         <select
@@ -72,7 +83,7 @@ const PianoRoll = ({ value, setValue, bpm }) => (
           setEvents={(newValue) => setValue({ ...value, events: newValue })}
           octave={value.octave}
           numBeats={value.timeSignatureTop}
-          bpm={bpm}
+          bpm={value.bpm}
         />
       </div>
     </div>
@@ -93,9 +104,12 @@ const PianoRoll = ({ value, setValue, bpm }) => (
           Delete Selected
         </div>
       )}
-      <div className="small-font">Time per beat: {returnTimePerBeat(bpm)}s</div>
       <div className="small-font">
-        Time per measure: {returnTimePerMeasure(bpm, value.timeSignatureTop)}s
+        Time per beat: {returnTimePerBeat(value.bpm)}s
+      </div>
+      <div className="small-font">
+        Time per measure:{' '}
+        {returnTimePerMeasure(value.bpm, value.timeSignatureTop)}s
       </div>
       {/* clear measure */}
       {/* <div

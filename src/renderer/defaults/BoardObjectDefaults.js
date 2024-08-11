@@ -47,6 +47,7 @@ const defaultMidi = {
         timeSignatureTop: 4,
         timeSignatureBottom: 4,
         octave: 4,
+        bpm: 120,
         events: [
           // { ...createMiddleCNoteEvent() },
           // { ...createMiddleCNoteOffEvent() },

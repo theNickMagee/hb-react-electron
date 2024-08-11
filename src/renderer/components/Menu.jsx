@@ -55,16 +55,6 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
       >
         Create Wire
       </div>
-
-      <input
-        type="range"
-        min="60"
-        max="240"
-        step="1"
-        value={data.bpm}
-        onChange={(e) => setData({ ...data, bpm: parseInt(e.target.value) })}
-      />
-      <div className="small-font">BPM: {data.bpm}</div>
     </div>
   );
 };

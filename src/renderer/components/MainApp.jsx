@@ -8,7 +8,6 @@ function MainApp() {
   const [data, setData] = useState({
     boardObjects: [],
     wires: [],
-    bpm: 120,
   });
 
   const [sessionData, setSessionData] = useState({

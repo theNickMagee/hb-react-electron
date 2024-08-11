@@ -85,7 +85,8 @@ const setSelectedEvent = (events, noteOn, noteOff) => {
         event.time === noteOff.time &&
         event.type === 'noteoff')
     ) {
-      return { ...event, selected: true };
+      //  if
+      return { ...event, selected: !event.selected };
     }
     return { ...event, selected: false };
   });
