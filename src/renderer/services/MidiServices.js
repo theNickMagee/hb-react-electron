@@ -78,7 +78,9 @@ const setSelectedEvent = (events, noteOn, noteOff) => {
   // if event is noteOn or noteOff, set selected to true
   return events.map((event) => {
     if (
-      (event.note === noteOn.note && event.time === noteOn.time) ||
+      (event.note === noteOn.note &&
+        event.time === noteOn.time &&
+        event.type === 'noteon') ||
       (event.note === noteOff.note &&
         event.time === noteOff.time &&
         event.type === 'noteoff')
