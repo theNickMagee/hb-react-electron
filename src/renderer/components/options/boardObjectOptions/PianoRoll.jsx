@@ -123,7 +123,7 @@ const PianoRoll = ({ value, setValue }) => (
 );
 
 const PianoGrid = ({ events, setEvents, octave, numBeats, bpm }) => {
-  const octaveNotes = [
+  let octaveNotes = [
     'C',
     'C#',
     'D',
@@ -137,6 +137,9 @@ const PianoGrid = ({ events, setEvents, octave, numBeats, bpm }) => {
     'A#',
     'B',
   ];
+
+  // reverse octave notes
+  octaveNotes = octaveNotes.reverse();
 
   return (
     <div className="piano-grid">
