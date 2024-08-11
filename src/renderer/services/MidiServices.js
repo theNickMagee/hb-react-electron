@@ -61,6 +61,18 @@ const removeNoteFromEvents = (events, noteOn, noteOff) => {
   );
 };
 
+const setSelectedEvent = (events, noteOn, noteOff) => {
+  // set selected to true for note, set false for all other notes
+
+  return events.map((event) => {
+    if (event.note === noteOn.note && event.time === noteOn.time) {
+      return { ...event, selected: !event.selected };
+    } else {
+      return { ...event, selected: false };
+    }
+  });
+};
+
 const createEventsFromClick = (
   events,
   setEvents,
@@ -80,7 +92,7 @@ const createEventsFromClick = (
   );
   const noteOn = notes[0];
   const noteOff = notes[1];
-console.log('events: ', events);
+  console.log('events: ', events);
   if (checkIfEventInNote(events, octave, letter, beat, bpm, timeSignatureTop)) {
     console.log('removing events: ', noteOn, noteOff);
     setEvents(removeNoteFromEvents(events, noteOn, noteOff));
@@ -169,8 +181,6 @@ const clearCurrentMeasure = (value, setValue) => {
   setValue(value.filter((event) => event.time >= 4));
 };
 
-
-
 export {
   createMiddleCNoteEvent,
   createMiddleCNoteOffEvent,
@@ -180,6 +190,6 @@ export {
   returnTimePerBeat,
   findPairsInNoteAndOctave,
   clearCurrentMeasure,
-  removeNoteFromEvents
-  
+  removeNoteFromEvents,
+  setSelectedEvent,
 };

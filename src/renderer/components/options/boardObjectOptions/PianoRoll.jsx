@@ -7,7 +7,8 @@ import {
   returnTimePerBeat,
   returnTimePerMeasure,
   clearCurrentMeasure,
-  removeNoteFromEvents
+  removeNoteFromEvents,
+  setSelectedEvent,
 } from '../../../services/MidiServices';
 
 const PianoRoll = ({ value, setValue, bpm }) => (
@@ -158,7 +159,6 @@ const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
     octave,
   );
 
-
   return noteEvents.map(({ noteOn, noteOff }, index) => {
     const startTime = noteOn.time; // Start time of the note
     const endTime = noteOff.time; // End time of the note
@@ -167,9 +167,6 @@ const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
     const notePosition = (startTime / totalLineTime) * 100; // Position of the note from the start of the grid
     const noteWidth = (duration / totalLineTime) * 100; // Width of the note representing its duration
 
-
-
-    
     return (
       <MidiNote
         key={index}
@@ -179,6 +176,7 @@ const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
         setEvents={setEvents}
         notePosition={notePosition}
         noteWidth={noteWidth}
+        selected={noteOn.selected}
       />
     );
   });
@@ -186,7 +184,15 @@ const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
 
 export default PianoRoll;
 
-const MidiNote = ({ events, noteOn, noteOff, setEvents, notePosition, noteWidth }) => {
+const MidiNote = ({
+  events,
+  noteOn,
+  noteOff,
+  setEvents,
+  notePosition,
+  noteWidth,
+  selected,
+}) => {
   return (
     <div
       style={{
@@ -195,8 +201,11 @@ const MidiNote = ({ events, noteOn, noteOff, setEvents, notePosition, noteWidth 
         position: 'absolute',
         backgroundColor: 'rgba(255, 3, 255, 0.5)', // Visual style for the note
         height: '100%',
+        border: selected ? '2px solid #fff' : 'none',
+        zIndex: 10,
       }}
-      onClick={() => setEvents(removeNoteFromEvents(events, noteOn, noteOff))}
+      // onClick={() => setEvents(removeNoteFromEvents(events, noteOn, noteOff))}
+      onClick={() => setEvents(setSelectedEvent(events, noteOn, noteOff))}
     />
   );
-}
+};
