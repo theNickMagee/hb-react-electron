@@ -200,6 +200,44 @@ const clearCurrentMeasure = (value, setValue) => {
   setValue(value.filter((event) => event.time >= 4));
 };
 
+const applyMidiEvents = (boardObjectOptions, wavData) => {
+  let value;
+  for (const option of boardObjectOptions) {
+    if (option.component === 'PianoRoll') {
+      value = option.value;
+    }
+  }
+
+  console.log('value: ', value);
+
+  const events = value.events;
+
+  // example events
+  // {type: 'noteon', note: 'E4', velocity: 127, time: 1.5, selected: false}
+  // {type: 'noteoff', note: 'E4', velocity: 127, time: 2, selected: false}
+  // {type: 'noteon', note: 'G4', velocity: 127, time: 0, selected: false}
+  // {type: 'noteoff', note: 'G4', velocity: 127, time: 0.5, selected: false}
+  // {type: 'noteon', note: 'F#4', velocity: 127, time: 0.5, selected: false}
+  // {type: 'noteoff', note: 'F#4', velocity: 127, time: 1, selected: false}
+  // {type: 'noteon', note: 'F4', velocity: 127, time: 1, selected: false}
+  // {type: 'noteoff', note: 'F4', velocity: 127, time: 1.5, selected: false}
+
+  const { sampleRate, numChannels, bitsPerSample, audioData } = wavData;
+
+  let newAudioData = audioData;
+
+  // apply events to wavData
+  newAudioData = applyEventsToWavData(events, newAudioData);
+
+  // Apply midi events to wavData
+  return {
+    sampleRate,
+    numChannels,
+    bitsPerSample,
+    audioData: newAudioData,
+  };
+};
+
 export {
   createMiddleCNoteEvent,
   createMiddleCNoteOffEvent,
@@ -212,4 +250,101 @@ export {
   removeNoteFromEvents,
   setSelectedEvent,
   removeSelectedEvents,
+  applyMidiEvents,
+};
+
+// example events
+// [{type: 'noteon', note: 'E4', velocity: 127, time: 1.5, selected: false}
+// {type: 'noteoff', note: 'E4', velocity: 127, time: 2, selected: false}
+// {type: 'noteon', note: 'G4', velocity: 127, time: 0, selected: false}
+// {type: 'noteoff', note: 'G4', velocity: 127, time: 0.5, selected: false}
+// {type: 'noteon', note: 'F#4', velocity: 127, time: 0.5, selected: false}
+// {type: 'noteoff', note: 'F#4', velocity: 127, time: 1, selected: false}
+// {type: 'noteon', note: 'F4', velocity: 127, time: 1, selected: false}
+// {type: 'noteoff', note: 'F4', velocity: 127, time: 1.5, selected: false}]
+
+//         const audioData = new Int16Array(
+//   fileData.buffer,
+//   fileData.byteOffset,
+//   properLength / 2,
+// );
+const applyEventsToWavData = (events, audioData) => {
+  const semitoneRatio = Math.pow(2, 1 / 12); // semitone ratio
+  const middleCFrequency = 261.63; // Frequency of Middle C (C4)
+  const sampleRate = 44100; // Assuming 44.1kHz sample rate
+  const maxAmplitude = 32767; // Max amplitude for 16-bit audio
+  const minAmplitude = -32768; // Min amplitude for 16-bit audio
+
+  // Function to find the frequency of a given note
+  const getNoteFrequency = (note) => {
+    const noteNames = [
+      'C',
+      'C#',
+      'D',
+      'D#',
+      'E',
+      'F',
+      'F#',
+      'G',
+      'G#',
+      'A',
+      'A#',
+      'B',
+    ];
+    const octave = parseInt(note.slice(-1), 10);
+    const keyNumber = noteNames.indexOf(note.slice(0, -1));
+    const n = (octave - 4) * 12 + keyNumber; // Semitone offset from C4
+    return middleCFrequency * Math.pow(semitoneRatio, n);
+  };
+
+  // Function to pitch-shift the audio data
+  const pitchShift = (audioData, ratio) => {
+    const newLength = Math.floor(audioData.length / ratio);
+    const newAudioData = new Int16Array(newLength);
+
+    for (let i = 0; i < newLength; i++) {
+      const index = i * ratio;
+      const lowIndex = Math.floor(index);
+      const highIndex = Math.ceil(index);
+      const interpolation = index - lowIndex;
+
+      // Linear interpolation
+      newAudioData[i] =
+        (1 - interpolation) * audioData[lowIndex] +
+        interpolation * audioData[highIndex];
+    }
+
+    return newAudioData;
+  };
+
+  // Calculate the total length of the output buffer
+  const maxTime = Math.max(
+    ...events.map((event) => event.time + (event.type === 'noteoff' ? 0 : 1)),
+  );
+  const outputLength = Math.ceil(maxTime * sampleRate);
+  const outputData = new Int16Array(outputLength);
+
+  events.forEach((event, i) => {
+    if (event.type === 'noteon') {
+      const frequency = getNoteFrequency(event.note);
+      const ratio = frequency / middleCFrequency;
+      const scaledAudioData = pitchShift(audioData, ratio);
+      const startSample = Math.floor(event.time * sampleRate);
+
+      for (let j = 0; j < scaledAudioData.length; j++) {
+        const sampleIndex = startSample + j;
+        if (sampleIndex < outputData.length) {
+          const mixedSample =
+            outputData[sampleIndex] +
+            scaledAudioData[j] * (event.velocity / 127);
+          outputData[sampleIndex] = Math.max(
+            minAmplitude,
+            Math.min(maxAmplitude, mixedSample),
+          );
+        }
+      }
+    }
+  });
+
+  return outputData;
 };

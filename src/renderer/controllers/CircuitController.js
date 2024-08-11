@@ -5,6 +5,7 @@ import {
   playWavData,
 } from '../services/WavFileServices';
 import { applyAmp } from '../services/AmpServices';
+import { applyMidiEvents } from '../services/MidiServices';
 
 // handleMidiMessage
 const handleMidiMessage = (midiMessage) => {
@@ -43,6 +44,7 @@ const applyEffectOnWavData = (boardObject, wavData) => {
     return applyAmp(boardObject.options, wavData);
     // apply the amp effect to wavData
   } else if (boardObject.type === 'Midi') {
+    return applyMidiEvents(boardObject.options, wavData);
     // apply the midi effect to wavData
   } else if (boardObject.type === 'Oscillator') {
     // apply the oscillator effect to wavData
