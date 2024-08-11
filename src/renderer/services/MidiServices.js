@@ -52,6 +52,7 @@ const addNotesToEvents = (events, notes) => {
 };
 
 const removeNoteFromEvents = (events, noteOn, noteOff) => {
+  console.log('remove note from events: ', noteOn, noteOff);
   return events.filter(
     (event) =>
       !(
@@ -59,6 +60,10 @@ const removeNoteFromEvents = (events, noteOn, noteOff) => {
         (event.note === noteOff.note && event.time === noteOff.time)
       ),
   );
+};
+
+const removeSelectedEvents = (events) => {
+  return events.filter((event) => !event.selected);
 };
 
 const setSelectedEvent = (events, noteOn, noteOff) => {
@@ -95,7 +100,7 @@ const createEventsFromClick = (
   console.log('events: ', events);
   if (checkIfEventInNote(events, octave, letter, beat, bpm, timeSignatureTop)) {
     console.log('removing events: ', noteOn, noteOff);
-    setEvents(removeNoteFromEvents(events, noteOn, noteOff));
+    // setEvents(removeNoteFromEvents(events, noteOn, noteOff));
   } else {
     console.log('adding events: ', notes);
     setEvents(addNotesToEvents(events, notes));
@@ -192,4 +197,5 @@ export {
   clearCurrentMeasure,
   removeNoteFromEvents,
   setSelectedEvent,
+  removeSelectedEvents,
 };

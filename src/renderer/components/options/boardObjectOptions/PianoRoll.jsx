@@ -9,6 +9,7 @@ import {
   clearCurrentMeasure,
   removeNoteFromEvents,
   setSelectedEvent,
+  removeSelectedEvents,
 } from '../../../services/MidiServices';
 
 const PianoRoll = ({ value, setValue, bpm }) => (
@@ -76,6 +77,20 @@ const PianoRoll = ({ value, setValue, bpm }) => (
       </div>
     </div>
     <div className="bottom-midi-options">
+      {/* id a beat is selected, show delete button */}
+      {value.events.filter((event) => event.selected).length > 0 && (
+        <div
+          className="default-button"
+          onClick={() =>
+            setValue({
+              ...value,
+              events: removeSelectedEvents(value.events),
+            })
+          }
+        >
+          Delete Selected
+        </div>
+      )}
       <div className="small-font">Time per beat: {returnTimePerBeat(bpm)}s</div>
       <div className="small-font">
         Time per measure: {returnTimePerMeasure(bpm, value.timeSignatureTop)}s
@@ -160,6 +175,9 @@ const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
   );
 
   return noteEvents.map(({ noteOn, noteOff }, index) => {
+    if (!noteOn || !noteOff) {
+      return null;
+    }
     const startTime = noteOn.time; // Start time of the note
     const endTime = noteOff.time; // End time of the note
     const duration = endTime - startTime; // Duration of the note
@@ -193,6 +211,10 @@ const MidiNote = ({
   noteWidth,
   selected,
 }) => {
+  const handleNotePress = () => {
+    setEvents(setSelectedEvent(events, noteOn, noteOff));
+  };
+
   return (
     <div
       style={{
@@ -205,7 +227,7 @@ const MidiNote = ({
         zIndex: 10,
       }}
       // onClick={() => setEvents(removeNoteFromEvents(events, noteOn, noteOff))}
-      onClick={() => setEvents(setSelectedEvent(events, noteOn, noteOff))}
+      onClick={handleNotePress}
     />
   );
 };
