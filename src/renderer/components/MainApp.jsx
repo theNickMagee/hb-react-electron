@@ -4,6 +4,7 @@ import Menu from './Menu';
 import MainComponent from './MainComponent';
 import MidiListener from './MidiListener';
 import KeypressedListener from './KeyListener';
+import { handleKeyPressed } from '../controllers/KeyPressController';
 
 function MainApp() {
   const [data, setData] = useState({
@@ -46,7 +47,13 @@ function MainApp() {
         setSessionData={setSessionData}
       />
       <MidiListener />
-      <KeypressedListener onKeypress={() => console.log('key pressed')} />
+      <KeypressedListener
+        onKeypress={handleKeyPressed}
+        setData={setData}
+        sessionData={sessionData}
+        setSessionData={setSessionData}
+        data={data}
+      />
     </div>
   );
 }

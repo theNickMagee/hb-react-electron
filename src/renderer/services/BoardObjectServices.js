@@ -38,7 +38,7 @@ const handleGridPress = (
         },
       });
     } else {
-      console.log('Opening edit options for:', boardObject);
+      console.log('Opening edit options for p:', boardObject);
       setSessionData({
         ...sessionData,
         options: {

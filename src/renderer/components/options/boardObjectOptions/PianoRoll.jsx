@@ -7,7 +7,7 @@ import {
   returnTimePerBeat,
   returnTimePerMeasure,
   clearCurrentMeasure,
-  removeNoteFromEvents
+  removeNoteFromEvents,
 } from '../../../services/MidiServices';
 import { useState } from 'react';
 
@@ -159,7 +159,6 @@ const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
     octave,
   );
 
-
   return noteEvents.map(({ noteOn, noteOff }, index) => {
     const startTime = noteOn.time; // Start time of the note
     const endTime = noteOff.time; // End time of the note
@@ -168,9 +167,6 @@ const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
     const notePosition = (startTime / totalLineTime) * 100; // Position of the note from the start of the grid
     const noteWidth = (duration / totalLineTime) * 100; // Width of the note representing its duration
 
-
-
-    
     return (
       <MidiNote
         key={index}
@@ -180,6 +176,7 @@ const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
         setEvents={setEvents}
         notePosition={notePosition}
         noteWidth={noteWidth}
+        index={index}
       />
     );
   });
@@ -187,22 +184,26 @@ const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
 
 export default PianoRoll;
 
-const MidiNote = ({ events, noteOn, noteOff, setEvents, notePosition, noteWidth,}) => {
+const MidiNote = ({
+  events,
+  noteOn,
+  noteOff,
+  setEvents,
+  notePosition,
+  noteWidth,
+  index,
+}) => {
+  const setEventHovered = (events, index) => {
+    const newEvents = [...events];
+    // set hoevered fote NoteOn and NoteOff
+    const noteOnIndex = newEvents.indexOf(noteOn);
+    const noteOffIndex = newEvents.indexOf(noteOff);
 
+    newEvents[noteOnIndex].hovered = !newEvents[noteOnIndex].hovered;
+    newEvents[noteOffIndex].hovered = !newEvents[noteOffIndex].hovered;
+    setEvents(newEvents);
+  };
 
-  const setEventHovered(noteOn, noteOff, events) => {
-    setEvents(
-      events.map((event) => {
-        if (event.noteOn === noteOn && event.noteOff === noteOff) {
-          return { ...event, hovered: true };
-        }
-        return { ...event, hovered: false };
-      }),
-    );
-
-  }
-  
-  
   return (
     <div
       style={{
@@ -212,9 +213,9 @@ const MidiNote = ({ events, noteOn, noteOff, setEvents, notePosition, noteWidth,
         backgroundColor: 'rgba(255, 3, 255, 0.5)', // Visual style for the note
         height: '100%',
       }}
-      onMouseEnter={() => setBoardObjectEventsHovered(
-      onMouseLeave={() => setHovered(false)}
-      onClick={() => setEvents(removeNoteFromEvents(events, noteOn, noteOff))}
+      onMouseEnter={() => setEventHovered(events, index)}
+      onMouseLeave={() => setEventHovered(events, index)}
+      // onClick={() => setEvents(removeNoteFromEvents(events, noteOn, noteOff))}
     />
   );
-}
+};
