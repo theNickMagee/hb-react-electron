@@ -63,18 +63,29 @@ const removeNoteFromEvents = (events, noteOn, noteOff) => {
 };
 
 const removeSelectedEvents = (events) => {
-  return events.filter((event) => !event.selected);
+  const filtered = events.filter((event) => !event.selected);
+  // find selected and ones connected to selected, aka noteon or noteoff
+  return filtered;
+  // const selectedEvents = events.filter((event) => event.selected);
+  // const noteOffEvents = selectedEvents.filter(
+  //   (event) => event.type === 'noteoff',
+  // );
 };
 
 const setSelectedEvent = (events, noteOn, noteOff) => {
   // set selected to true for note, set false for all other notes
 
+  // if event is noteOn or noteOff, set selected to true
   return events.map((event) => {
-    if (event.note === noteOn.note && event.time === noteOn.time) {
-      return { ...event, selected: !event.selected };
-    } else {
-      return { ...event, selected: false };
+    if (
+      (event.note === noteOn.note && event.time === noteOn.time) ||
+      (event.note === noteOff.note &&
+        event.time === noteOff.time &&
+        event.type === 'noteoff')
+    ) {
+      return { ...event, selected: true };
     }
+    return { ...event, selected: false };
   });
 };
 

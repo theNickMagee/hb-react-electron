@@ -88,6 +88,8 @@ const PianoRoll = ({ value, setValue, bpm }) => (
             })
           }
         >
+          {/* show selected events */}
+          {/* {value.events.filter((event) => event.selected).length} */}
           Delete Selected
         </div>
       )}
