@@ -129,4 +129,28 @@ const dropWire = (row, col, sessionData, setSessionData, data, setData) => {
   setSessionData(newSessionData);
 };
 
+const startDroppingBoardObject = (item, sessionData, setSessionData) => {
+  // if already on, turn off
+  if (
+    sessionData?.droppingItem.isDroppingItem &&
+    sessionData?.droppingItem.item.type === item.type
+  ) {
+    setSessionData({
+      ...sessionData,
+      droppingItem: {
+        isDroppingItem: false,
+        item: null,
+      },
+    });
+    return;
+  }
+  setSessionData({
+    ...sessionData,
+    droppingItem: {
+      isDroppingItem: true,
+      item: { ...item, id: generateRandomId() },
+    },
+  });
+};
+
 export { handleGridPress, startCreatingWire };
