@@ -245,8 +245,6 @@ const getSelectedNoteDuration = (events) => {
     return 0;
   }
 
-  console.log('selected events: ', selectedEvents);
-  console.log('second event: ', selectedEvents[1]);
   // ensure [0] is noteon and [1] is noteoff
   if (selectedEvents[0].type === 'noteoff') {
     console.log('reversing selected events');
@@ -264,8 +262,6 @@ const setSelectedNoteDuration = (e, events, setEvents) => {
     return;
   }
 
-  console.log('selected events: ', selectedEvents);
-  console.log('second event: ', selectedEvents[1]);
   // ensure [0] is noteon and [1] is noteoff
   if (selectedEvents[0].type === 'noteoff') {
     console.log('reversing selected events');
@@ -277,7 +273,6 @@ const setSelectedNoteDuration = (e, events, setEvents) => {
   const newDuration = parseFloat(e.target.value);
 
   //  current duration log, new duration log
-  console.log('current duration: ', duration, 'new duration: ', newDuration);
   // set noteoff time to noteon time + duration
   const newNoteOff = {
     ...selectedEvents[1],
@@ -292,6 +287,40 @@ const setSelectedNoteDuration = (e, events, setEvents) => {
         event.type === selectedEvents[1].type
       ) {
         return newNoteOff;
+      }
+      return event;
+    }),
+  );
+};
+
+const getSelectedNoteTime = (events) => {
+  const selectedEvents = events.filter((event) => event.selected);
+  if (selectedEvents.length === 0) {
+    console.log('no selected events');
+    return 0;
+  }
+
+  // get first selected event
+  const selectedEvent = selectedEvents[0];
+  return selectedEvent.time;
+};
+
+const setSelectedNoteTime = (e, events, setEvents) => {
+  const selectedEvents = events.filter((event) => event.selected);
+  if (selectedEvents.length === 0) {
+    console.log('no selected events');
+    return;
+  }
+
+  console.log('selected events: ', selectedEvents);
+  // move both noteon and noteoff events
+  const newTime = parseFloat(e.target.value);
+  const timeDifference = newTime - selectedEvents[0].time;
+  console.log('time difference: ', timeDifference);
+  setEvents(
+    events.map((event) => {
+      if (event.selected) {
+        return { ...event, time: event.time + timeDifference };
       }
       return event;
     }),
@@ -313,6 +342,8 @@ export {
   applyMidiEvents,
   getSelectedNoteDuration,
   setSelectedNoteDuration,
+  setSelectedNoteTime,
+  getSelectedNoteTime,
 };
 
 // example events

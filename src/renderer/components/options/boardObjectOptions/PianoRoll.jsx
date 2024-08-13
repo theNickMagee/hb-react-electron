@@ -12,6 +12,8 @@ import {
   removeSelectedEvents,
   getSelectedNoteDuration,
   setSelectedNoteDuration,
+  getSelectedNoteTime,
+  setSelectedNoteTime,
 } from '../../../services/MidiServices';
 
 const PianoRoll = ({ value, setValue }) => {
@@ -98,6 +100,15 @@ const PianoRoll = ({ value, setValue }) => {
         {value.events.filter((event) => event.selected).length > 0 && (
           // slider for duration - move the end note
           <div className="selected-note-options">
+            {/* input for time */}
+            <input
+              type="range"
+              value={getSelectedNoteTime(value.events)}
+              onChange={(e) => setSelectedNoteTime(e, value.events, setEvents)}
+              min="0"
+              max="3"
+              step="0.01"
+            />
             <input
               type="range"
               value={getSelectedNoteDuration(value.events)}
