@@ -100,6 +100,8 @@ const createEventsFromClick = (
   beat,
   bpm,
   timeSignatureTop,
+  measureIndex,
+  lastMesureIndex,
 ) => {
   const timePerMeasure = returnTimePerMeasure(bpm, timeSignatureTop);
   const notes = createDefaultNotesForClick(
@@ -128,6 +130,8 @@ const checkIfEventInNote = (
   beatIndex,
   bpm,
   timeSignatureTop,
+  startingMeasureIndex,
+  lastMesureIndex,
 ) => {
   // Calculate the duration of one beat
   const beatDuration = 60 / bpm; // seconds per beat
@@ -312,11 +316,9 @@ const setSelectedNoteTime = (e, events, setEvents) => {
     return;
   }
 
-  console.log('selected events: ', selectedEvents);
   // move both noteon and noteoff events
   const newTime = parseFloat(e.target.value);
   const timeDifference = newTime - selectedEvents[0].time;
-  console.log('time difference: ', timeDifference);
   setEvents(
     events.map((event) => {
       if (event.selected) {
@@ -327,6 +329,15 @@ const setSelectedNoteTime = (e, events, setEvents) => {
   );
 };
 
+const checkIfStartingNoteInMeasure = (
+  noteOn,
+  startingMeasureIndex,
+  lastMesureIndex,
+  timePerMeasure,
+) => {
+  const measure = Math.floor(noteOn.time / timePerMeasure);
+  return measure >= startingMeasureIndex && measure <= lastMesureIndex;
+};
 export {
   createMiddleCNoteEvent,
   createMiddleCNoteOffEvent,
@@ -344,6 +355,7 @@ export {
   setSelectedNoteDuration,
   setSelectedNoteTime,
   getSelectedNoteTime,
+  checkIfStartingNoteInMeasure,
 };
 
 // example events

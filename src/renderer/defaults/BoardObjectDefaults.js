@@ -46,6 +46,8 @@ const defaultMidi = {
       value: {
         timeSignatureTop: 4,
         timeSignatureBottom: 4,
+        firstMesureIndex: 0,
+        lastMesureIndex: 1,
         octave: 4,
         bpm: 120,
         events: [

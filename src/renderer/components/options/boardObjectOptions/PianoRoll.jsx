@@ -14,6 +14,7 @@ import {
   setSelectedNoteDuration,
   getSelectedNoteTime,
   setSelectedNoteTime,
+  checkIfStartingNoteInMeasure,
 } from '../../../services/MidiServices';
 
 const PianoRoll = ({ value, setValue }) => {
@@ -48,6 +49,42 @@ const PianoRoll = ({ value, setValue }) => {
             {[...Array(7).keys()].map((n) => (
               <option key={n} value={n + 1}>
                 {n + 1}
+              </option>
+            ))}
+          </select>
+        </div>
+        {/* starting and stopping measures */}
+        <div className="default-dd">
+          Measures
+          <select
+            value={value.firstMesureIndex}
+            onChange={(e) =>
+              setValue({
+                ...value,
+                firstMesureIndex: parseInt(e.target.value, 10),
+              })
+            }
+          >
+            {/* displat only up to last num -1 */}
+            {[...Array(value.lastMesureIndex).keys()].map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
+          </select>
+          <select
+            value={value.lastMesureIndex}
+            onChange={(e) =>
+              setValue({
+                ...value,
+                lastMesureIndex: parseInt(e.target.value, 10),
+              })
+            }
+          >
+            {/* start at starting num + 1 */}
+            {[...Array(7 - value.firstMesureIndex).keys()].map((n) => (
+              <option key={n} value={n + value.firstMesureIndex + 1}>
+                {n + value.firstMesureIndex + 1}
               </option>
             ))}
           </select>
@@ -92,6 +129,8 @@ const PianoRoll = ({ value, setValue }) => {
             octave={value.octave}
             numBeats={value.timeSignatureTop}
             bpm={value.bpm}
+            firstMesureIndex={value.firstMesureIndex}
+            lastMesureIndex={value.lastMesureIndex}
           />
         </div>
       </div>
@@ -153,7 +192,15 @@ const PianoRoll = ({ value, setValue }) => {
   );
 };
 
-const PianoGrid = ({ events, setEvents, octave, numBeats, bpm }) => {
+const PianoGrid = ({
+  events,
+  setEvents,
+  octave,
+  numBeats,
+  bpm,
+  firstMesureIndex,
+  lastMesureIndex,
+}) => {
   let octaveNotes = [
     'C',
     'C#',
@@ -184,36 +231,56 @@ const PianoGrid = ({ events, setEvents, octave, numBeats, bpm }) => {
             note={note}
             bpm={bpm}
             setEvents={setEvents}
+            firstMesureIndex={firstMesureIndex}
+            lastMesureIndex={lastMesureIndex}
           />
-          <div
-            className="piano-key"
-            style={{ backgroundColor: note.includes('#') ? '#111' : '#221' }}
-          >
-            {Array.from({ length: numBeats }).map((_, beat) => (
+
+          {Array.from({ length: lastMesureIndex - firstMesureIndex }).map(
+            (_, measure) => (
               <div
-                key={beat}
-                className={`beat ${checkIfEventInNote(events, octave, note, beat, bpm, numBeats) ? 'active' : ''}`}
-                onClick={() =>
-                  createEventsFromClick(
-                    events,
-                    setEvents,
-                    note,
-                    octave,
-                    beat,
-                    bpm,
-                    numBeats,
-                  )
-                }
-              />
-            ))}
-          </div>
+                className="piano-key"
+                style={{
+                  backgroundColor: note.includes('#') ? '#111' : '#221',
+                }}
+              >
+                {Array.from({ length: numBeats }).map((_, beat) => (
+                  <div
+                    key={beat}
+                    className={`beat ${checkIfEventInNote(events, octave, note, beat, bpm, numBeats, firstMesureIndex, lastMesureIndex) ? 'active' : ''}`}
+                    onClick={() =>
+                      createEventsFromClick(
+                        events,
+                        setEvents,
+                        note,
+                        octave,
+                        beat,
+                        bpm,
+                        numBeats,
+                        firstMesureIndex,
+                        lastMesureIndex,
+                      )
+                    }
+                  />
+                ))}
+              </div>
+            ),
+          )}
         </div>
       ))}
     </div>
   );
 };
 
-const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
+const EventNotes = ({
+  events,
+  octave,
+  numBeats,
+  note,
+  bpm,
+  setEvents,
+  firstMesureIndex,
+  lastMesureIndex,
+}) => {
   const totalLineTime = returnTimePerMeasure(bpm, numBeats); // Calculate time per measure based on bpm and beats per measure
 
   const noteEvents = findPairsInNoteAndOctave(
@@ -226,6 +293,16 @@ const EventNotes = ({ events, octave, numBeats, note, bpm, setEvents }) => {
 
   return noteEvents.map(({ noteOn, noteOff }, index) => {
     if (!noteOn || !noteOff) {
+      return null;
+    }
+    if (
+      !checkIfStartingNoteInMeasure(
+        noteOn,
+        firstMesureIndex,
+        lastMesureIndex,
+        totalLineTime,
+      )
+    ) {
       return null;
     }
     const startTime = noteOn.time; // Start time of the note
