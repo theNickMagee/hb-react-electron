@@ -174,37 +174,104 @@ const loadWavData = async (boardObjectOptions) => {
   // Return the wavData object
   return wavData;
 };
-
-
-// Helper function to create initial WAV data object
 const convertFileDataToAudioData = async (fileDataPromise) => {
   try {
-    const fileData = await fileDataPromise; // Wait for the promise to resolve
+    const fileData = await fileDataPromise;
 
-    if (fileData instanceof Uint8Array) {
-      const properLength = fileData.byteLength - (fileData.byteLength % 2);
-
-      if (properLength > 0 && fileData.byteOffset % 2 === 0) {
-        const audioData = new Int16Array(
-          fileData.buffer,
-          fileData.byteOffset,
-          properLength / 2,
-        );
-        return audioData;
-      } else {
-        console.error(
-          'Invalid byteOffset or length for conversion to Int16Array.',
-        );
-      }
-    } else {
+    if (!(fileData instanceof Uint8Array)) {
       console.error('Invalid file data type. Expected Uint8Array.');
+      return new Int16Array();
     }
+
+    let offset = 12; // Start right after the RIFF header
+    let fmtChunkFound = false;
+    let dataChunkFound = false;
+    let audioFormat, numChannels, sampleRate, bitsPerSample, dataSize;
+    let audioData;
+
+    while (offset < fileData.byteLength) {
+      const chunkId = getString(new DataView(fileData.buffer, offset, 4), 0, 4);
+      const chunkSize = new DataView(fileData.buffer, offset + 4, 4).getUint32(0, true);
+
+      if (chunkId === 'fmt ') {
+        fmtChunkFound = true;
+        const fmtChunk = new DataView(fileData.buffer, offset + 8, chunkSize);
+        audioFormat = fmtChunk.getUint16(0, true);
+        numChannels = fmtChunk.getUint16(2, true);
+        sampleRate = fmtChunk.getUint32(4, true);
+        bitsPerSample = fmtChunk.getUint16(14, true);
+
+        console.log(`Found fmt chunk: Format ${audioFormat}, Channels ${numChannels}, Sample Rate ${sampleRate}, Bits Per Sample ${bitsPerSample}`);
+      } else if (chunkId === 'data') {
+        dataChunkFound = true;
+        dataSize = chunkSize;
+
+        if (bitsPerSample === 24) {
+          // Convert 24-bit PCM to 16-bit PCM by scaling down
+          audioData = convert24BitTo16Bit(new DataView(fileData.buffer, offset + 8, dataSize), numChannels);
+        } else if (bitsPerSample === 16) {
+          // Standard 16-bit PCM
+          audioData = new Int16Array(fileData.buffer, offset + 8, dataSize / 2);
+        } else {
+          console.error('Unsupported bit depth.');
+          return new Int16Array();
+        }
+
+        console.log(`Found data chunk with size ${dataSize}`);
+        break; // No need to continue once we've found the data chunk
+      }
+
+      offset += 8 + chunkSize; // Move to the next chunk
+    }
+
+    if (!fmtChunkFound || !dataChunkFound) {
+      console.error('Unable to find required fmt or data chunks in the WAV file.');
+      return new Int16Array();
+    }
+
+    // Ensure the format is PCM
+    if (audioFormat !== 1) {
+      console.error('Unsupported WAV file format. Must be PCM.');
+      return new Int16Array();
+    }
+
+    console.log(`Loaded WAV file with ${numChannels} channels, ${sampleRate} Hz, ${bitsPerSample} bits per sample.`);
+    return audioData;
+
   } catch (error) {
     console.error('Error processing file data:', error);
+    return new Int16Array();
+  }
+};
+
+// Helper function to convert 24-bit PCM to 16-bit PCM
+const convert24BitTo16Bit = (dataView, numChannels) => {
+  const length = dataView.byteLength / 3;
+  const output = new Int16Array(length);
+
+  for (let i = 0; i < length; i++) {
+    const byteOffset = i * 3;
+    const sample24 = (dataView.getUint8(byteOffset + 2) << 16) | 
+                     (dataView.getUint8(byteOffset + 1) << 8) | 
+                     (dataView.getUint8(byteOffset));
+
+    const sample16 = (sample24 >> 8) & 0xFFFF; // Scale down to 16 bits
+    output[i] = sample16 - (sample16 & 0x8000 ? 0x10000 : 0); // Convert to signed 16-bit
   }
 
-  return new Int16Array(); // Return an empty Int16Array if there is an issue
+  return output;
 };
+
+// Helper function to extract strings from DataView
+const getString = (dataView, offset, length) => {
+  let str = '';
+  for (let i = 0; i < length; i++) {
+    str += String.fromCharCode(dataView.getUint8(offset + i));
+  }
+  return str;
+};
+
+
 
 export {
   playWavFile,
