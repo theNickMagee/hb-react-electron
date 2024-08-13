@@ -47,7 +47,7 @@ const PianoRoll = ({ value, setValue }) => {
               })
             }
           >
-            {[...Array(7).keys()].map((n) => (
+            {[...Array(8).keys()].map((n) => (
               <option key={n} value={n + 1}>
                 {n + 1}
               </option>
