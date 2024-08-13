@@ -8,7 +8,7 @@ import {
   createMiddleCNoteOffEvent,
 } from '../services/MidiServices';
 const defaultWavFile = {
-  name: 'default.wav',
+  name: 'Wav',
   icon: wavImage,
   type: 'WavFile',
   options: [
@@ -20,7 +20,7 @@ const defaultWavFile = {
 };
 
 const defaultAmp = {
-  name: 'defaultAmp',
+  name: 'Amp',
   icon: ampImage,
   type: 'Amp',
   options: [
@@ -37,7 +37,7 @@ const defaultAmp = {
 };
 
 const defaultMidi = {
-  name: 'defaultMidi',
+  name: 'MIDI',
   icon: midiImage,
   type: 'Midi',
   options: [
@@ -58,7 +58,7 @@ const defaultMidi = {
 };
 
 const defaultOscillator = {
-  name: 'defaultOscillator',
+  name: 'Oscillator',
   icon: oscillatorImage,
   type: 'Oscillator',
   options: [
@@ -69,7 +69,7 @@ const defaultOscillator = {
 };
 
 const defaultSwitch = {
-  name: 'defaultSwitch',
+  name: 'Switch',
   icon: switchImage,
   type: 'Switch',
   options: [

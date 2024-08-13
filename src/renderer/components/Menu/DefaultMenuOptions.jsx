@@ -5,36 +5,34 @@ import {
   defaultOscillator,
   defaultSwitch,
 } from '../../defaults/BoardObjectDefaults';
-import { generateRandomId } from '../../services/util';
+import AllObjectOptions from '../options/AllObjectOptions';
 
 const DefaultMenuOptions = ({ sessionData, setSessionData }) => {
-  const startDroppingBoardObject = (item) => {
-    // if already on, turn off
-    if (
-      sessionData?.droppingItem.isDroppingItem &&
-      sessionData?.droppingItem.item.type === item.type
-    ) {
+  const toggleAllObjects = () => {
+    // if path is allObjects, turn off
+    if (sessionData?.options.path === 'allObjects') {
       setSessionData({
         ...sessionData,
-        droppingItem: {
-          isDroppingItem: false,
-          item: null,
+        options: {
+          ...sessionData.options,
+          path: '',
         },
       });
       return;
     }
     setSessionData({
       ...sessionData,
-      droppingItem: {
-        isDroppingItem: true,
-        item: { ...item, id: generateRandomId() },
+      options: {
+        ...sessionData.options,
+        path: 'allObjects',
       },
     });
   };
+
   return (
     // buttons for wavFile, Amp, Midi, Oscillator, Switch
     <div className="default-menu-options">
-      <BoardItemOption
+      {/* <BoardItemOption
         title="WavFile"
         on={
           sessionData?.droppingItem.isDroppingItem &&
@@ -73,7 +71,21 @@ const DefaultMenuOptions = ({ sessionData, setSessionData }) => {
           sessionData?.droppingItem.item.type === 'Switch'
         }
         onClick={() => startDroppingBoardObject(defaultSwitch)}
-      />
+      /> */}
+      {/* display 7 most recent boRDoBJECTS USED */}
+      <div className="default-button" onClick={toggleAllObjects}>
+        All Objects
+      </div>
+      {/* if path === allObjects */}
+      {sessionData?.options.path === 'allObjects' && (
+        <AllObjectOptions
+          data={sessionData}
+          setData={setSessionData}
+          sessionData={sessionData}
+          setSessionData={setSessionData}
+        />
+      )}
+      {/* button to display all board objects */}
     </div>
   );
 };

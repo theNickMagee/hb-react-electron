@@ -5,7 +5,8 @@ import {
   defaultMidi,
   defaultSwitch,
 } from '../../defaults/BoardObjectDefaults';
-
+import { generateRandomId } from '../../services/util';
+import './styles/allObjectStyles.css';
 const AllObjectOptions = ({ data, setData, sessionData, setSessionData }) => {
   const defaultBoardObjects = [
     { ...defaultWavFile },
@@ -15,17 +16,43 @@ const AllObjectOptions = ({ data, setData, sessionData, setSessionData }) => {
     { ...defaultSwitch },
   ];
 
+  const startDroppingBoardObject = (item) => {
+    // if already on, turn off
+    if (
+      sessionData?.droppingItem.isDroppingItem &&
+      sessionData?.droppingItem.item.type === item.type
+    ) {
+      setSessionData({
+        ...sessionData,
+        droppingItem: {
+          isDroppingItem: false,
+          item: null,
+        },
+      });
+      return;
+    }
+    setSessionData({
+      ...sessionData,
+      droppingItem: {
+        isDroppingItem: true,
+        item: { ...item, id: generateRandomId() },
+      },
+    });
+  };
+
   return (
     <div className="all-object-options">
       {defaultBoardObjects.map((boardObject) => (
         <div
           key={boardObject.name}
-          className="default-button"
+          className="icon-button"
           onClick={() => startDroppingBoardObject(boardObject)}
         >
-          {boardObject.name}
+          <img src={boardObject.icon} alt={boardObject.name} />
         </div>
       ))}
     </div>
   );
 };
+
+export default AllObjectOptions;
