@@ -1,3 +1,5 @@
+import { generateRandomId } from './util';
+
 const createMiddleCNoteEvent = () => {
   return {
     type: 'noteon',
@@ -22,6 +24,7 @@ const createDefaultNotesForClick = (
   beat,
   timePerMeasure,
   timeSignatureTop,
+  currentMeasureIndex,
 ) => {
   console.log(
     'creating notes for click: ',
@@ -30,19 +33,29 @@ const createDefaultNotesForClick = (
     beat,
     timePerMeasure,
     timeSignatureTop,
+    currentMeasureIndex,
   );
+
+  const randId = generateRandomId();
   return [
     {
       type: 'noteon',
       note: `${letter}${octave}`,
+      id: randId,
       velocity: 127,
-      time: beat * (timePerMeasure / timeSignatureTop),
+      time:
+        beat * (timePerMeasure / timeSignatureTop) +
+        currentMeasureIndex * timePerMeasure,
     },
     {
       type: 'noteoff',
       note: `${letter}${octave}`,
       velocity: 127,
-      time: (beat + 1) * (timePerMeasure / timeSignatureTop),
+      id: randId,
+      time:
+        beat * (timePerMeasure / timeSignatureTop) +
+        currentMeasureIndex * timePerMeasure +
+        0.5,
     },
   ];
 };
@@ -101,24 +114,31 @@ const createEventsFromClick = (
   bpm,
   timeSignatureTop,
   measureIndex,
-  lastMesureIndex,
 ) => {
   const timePerMeasure = returnTimePerMeasure(bpm, timeSignatureTop);
+
+  // Create the noteOn and noteOff events based on the click
   const notes = createDefaultNotesForClick(
     letter,
     octave,
     beat,
     timePerMeasure,
     timeSignatureTop,
+    measureIndex,
   );
   const noteOn = notes[0];
   const noteOff = notes[1];
-  console.log('events: ', events);
+
+  console.log('Events before click:', events);
+
+  // Check if an event already exists at this note and position
   if (checkIfEventInNote(events, octave, letter, beat, bpm, timeSignatureTop)) {
-    console.log('removing events: ', noteOn, noteOff);
-    // setEvents(removeNoteFromEvents(events, noteOn, noteOff));
+    console.log('Removing events:', noteOn, noteOff);
+    // If the note exists, remove it
+    setEvents(removeNoteFromEvents(events, noteOn, noteOff));
   } else {
-    console.log('adding events: ', notes);
+    console.log('Adding events:', notes);
+    // If the note doesn't exist, add it
     setEvents(addNotesToEvents(events, notes));
   }
 };
@@ -184,18 +204,31 @@ const returnTimePerBeat = (bpm) => {
 
 const findPairsInNoteAndOctave = (bpm, numBeats, events, note, octave) => {
   const timePerMeasure = returnTimePerMeasure(bpm, numBeats);
+
+  // Filter events to get only those that match the specific note and octave
   const noteEvents = events.filter(
     (event) => event.note === `${note}${octave}`,
   );
+
   const notePairs = [];
+  const noteOnEvents = {}; // Object to store noteon events by their id
 
-  for (let i = 0; i < noteEvents.length; i += 2) {
-    const noteOn = noteEvents[i];
-    const noteOff = noteEvents[i + 1];
+  noteEvents.forEach((event) => {
+    if (event.type === 'noteon') {
+      // Store the noteon event in the object using its id as the key
+      noteOnEvents[event.id] = event;
+    } else if (event.type === 'noteoff') {
+      // Find the corresponding noteon event using the id
+      const noteOn = noteOnEvents[event.id];
+      if (noteOn) {
+        // Push the pair of noteon and noteoff events to the notePairs array
+        notePairs.push({ noteOn, noteOff: event });
 
-    const measure = Math.floor(noteOn.time / timePerMeasure);
-    notePairs.push({ noteOn, noteOff, measure });
-  }
+        // Remove the noteon event from the object since it has been paired
+        delete noteOnEvents[event.id];
+      }
+    }
+  });
 
   return notePairs;
 };
@@ -328,16 +361,35 @@ const setSelectedNoteTime = (e, events, setEvents) => {
     }),
   );
 };
-
 const checkIfStartingNoteInMeasure = (
   noteOn,
-  startingMeasureIndex,
+  firstMesureIndex,
   lastMesureIndex,
-  timePerMeasure,
+  totalLineTime,
 ) => {
-  const measure = Math.floor(noteOn.time / timePerMeasure);
-  return measure >= startingMeasureIndex && measure <= lastMesureIndex;
+  const startTime = noteOn.time;
+
+  // Calculate the start and end times for the range of displayed measures
+  const firstMeasureStartTime = firstMesureIndex * totalLineTime;
+  const lastMeasureEndTime = lastMesureIndex * totalLineTime;
+
+  // Check if the noteOn event starts within the range of the displayed measures
+  return startTime >= firstMeasureStartTime && startTime < lastMeasureEndTime;
 };
+
+const calculateNotePosition = (
+  startTime,
+  totalLineTime,
+  firstMesureIndex,
+  lastMesureIndex,
+) => {
+  const totalMeasures = lastMesureIndex - firstMesureIndex; // Number of measures displayed
+  const timeWithinMeasure = startTime - firstMesureIndex * totalLineTime;
+
+  // Adjust the 100% scale to be within the bounds of the measure grid
+  return (timeWithinMeasure / totalLineTime) * (100 / totalMeasures);
+};
+
 export {
   createMiddleCNoteEvent,
   createMiddleCNoteOffEvent,
@@ -356,6 +408,7 @@ export {
   setSelectedNoteTime,
   getSelectedNoteTime,
   checkIfStartingNoteInMeasure,
+  calculateNotePosition,
 };
 
 // example events

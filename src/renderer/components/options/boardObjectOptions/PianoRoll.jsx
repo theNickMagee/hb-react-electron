@@ -15,6 +15,7 @@ import {
   getSelectedNoteTime,
   setSelectedNoteTime,
   checkIfStartingNoteInMeasure,
+  calculateNotePosition,
 } from '../../../services/MidiServices';
 
 const PianoRoll = ({ value, setValue }) => {
@@ -216,7 +217,7 @@ const PianoGrid = ({
     'B',
   ];
 
-  // reverse octave notes
+  // Reverse octave notes for display
   octaveNotes = octaveNotes.reverse();
 
   return (
@@ -237,31 +238,32 @@ const PianoGrid = ({
 
           {Array.from({ length: lastMesureIndex - firstMesureIndex }).map(
             (_, measure) => (
-              <div
-                className="piano-key"
-                style={{
-                  backgroundColor: note.includes('#') ? '#111' : '#221',
-                }}
-              >
-                {Array.from({ length: numBeats }).map((_, beat) => (
-                  <div
-                    key={beat}
-                    className={`beat ${checkIfEventInNote(events, octave, note, beat, bpm, numBeats, firstMesureIndex, lastMesureIndex) ? 'active' : ''}`}
-                    onClick={() =>
-                      createEventsFromClick(
-                        events,
-                        setEvents,
-                        note,
-                        octave,
-                        beat,
-                        bpm,
-                        numBeats,
-                        firstMesureIndex,
-                        lastMesureIndex,
-                      )
-                    }
-                  />
-                ))}
+              <div className="measure" key={measure}>
+                <div
+                  className="piano-key"
+                  style={{
+                    backgroundColor: note.includes('#') ? '#111' : '#221',
+                  }}
+                >
+                  {Array.from({ length: numBeats }).map((_, beat) => (
+                    <div
+                      key={beat}
+                      className={`beat `}
+                      onClick={() =>
+                        createEventsFromClick(
+                          events,
+                          setEvents,
+                          note,
+                          octave,
+                          beat,
+                          bpm,
+                          numBeats,
+                          firstMesureIndex + measure, // Pass the correct measure index
+                        )
+                      }
+                    />
+                  ))}
+                </div>
               </div>
             ),
           )}
@@ -309,9 +311,19 @@ const EventNotes = ({
     const endTime = noteOff.time; // End time of the note
     const duration = endTime - startTime; // Duration of the note
 
-    const notePosition = (startTime / totalLineTime) * 100; // Position of the note from the start of the grid
-    const noteWidth = (duration / totalLineTime) * 100; // Width of the note representing its duration
+    const notePosition = calculateNotePosition(
+      startTime,
+      totalLineTime,
+      firstMesureIndex,
+      lastMesureIndex,
+    ); // Position of the note from the start of the grid
 
+    const noteWidth =
+      (duration / totalLineTime / (lastMesureIndex - firstMesureIndex)) * 100; // Width of the note representing its duration
+
+    // const notePosition = ((startTime % totalLineTime) / totalLineTime) * 100; // Position of the note from the start of the grid
+    // const noteWidthWithMeasure =
+    //   ((endTime % totalLineTime) / totalLineTime) * 100; // Width of the note representing its duration
     return (
       <MidiNote
         key={index}

@@ -44,3 +44,10 @@
   z-index: 1;
   background-color: aqua;
 }
+
+.measure {
+  /* height: 20rem; */
+  width: 100%;
+  border: #ffffff9d 1px solid;
+  display: flex;
+}
