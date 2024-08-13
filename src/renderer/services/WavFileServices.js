@@ -10,6 +10,68 @@ function handleNoOutputWires() {
   this.playWavFile();
 }
 
+
+const saveWavFile = (wavData, filePath) => {
+  const { sampleRate, numChannels, bitsPerSample, audioData } = wavData;
+
+  if (!audioData || !audioData.length) {
+    console.error('Audio data is undefined or empty');
+    return;
+  }
+
+  const byteRate = (sampleRate * numChannels * bitsPerSample) / 8;
+  const blockAlign = (numChannels * bitsPerSample) / 8;
+  const dataSize = audioData.length * (bitsPerSample / 8);
+
+  const wavBuffer = new ArrayBuffer(44 + dataSize);
+  const view = new DataView(wavBuffer);
+
+  // RIFF chunk descriptor
+  writeString(view, 0, 'RIFF'); // ChunkID
+  view.setUint32(4, 36 + dataSize, true); // ChunkSize
+  writeString(view, 8, 'WAVE'); // Format
+
+  // fmt sub-chunk
+  writeString(view, 12, 'fmt '); // Subchunk1ID
+  view.setUint32(16, 16, true); // Subchunk1Size (16 for PCM)
+  view.setUint16(20, 1, true); // AudioFormat (1 for PCM)
+  view.setUint16(22, numChannels, true); // NumChannels
+  view.setUint32(24, sampleRate, true); // SampleRate
+  view.setUint32(28, byteRate, true); // ByteRate
+  view.setUint16(32, blockAlign, true); // BlockAlign
+  view.setUint16(34, bitsPerSample, true); // BitsPerSample
+
+  // data sub-chunk
+  writeString(view, 36, 'data'); // Subchunk2ID
+  view.setUint32(40, dataSize, true); // Subchunk2Size
+
+  // Write the PCM data
+  for (let i = 0; i < audioData.length; i++) {
+    view.setInt16(44 + i * 2, audioData[i], true);
+  }
+
+  // Convert the ArrayBuffer to a Blob
+  const blob = new Blob([view], { type: 'audio/wav' });
+
+  // Save the Blob as a file
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filePath;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  console.log(`WAV file saved as ${filePath}`);
+};
+
+// Helper function to write ASCII strings to DataView
+const writeString = (view, offset, string) => {
+  for (let i = 0; i < string.length; i++) {
+    view.setUint8(offset + i, string.charCodeAt(i));
+  }
+};
+
+
 const createInitialWavData = () => {
   // sampleRate: 44100, // Sample rate in Hz
   // numChannels: 2, // Number of audio channels
@@ -94,14 +156,25 @@ const loadWavData = async (boardObjectOptions) => {
 
   console.log('fileData: ', fileData);
 
-  // Convert fileData (Uint8Array) to the desired object
-  return {
+  const audioData = await convertFileDataToAudioData(fileData);
+
+  console.log('audioData: ', audioData);
+
+  // Create the wavData object with all necessary properties
+  const wavData = {
     sampleRate: 44100,
     numChannels: 2,
     bitsPerSample: 16,
-    audioData: await convertFileDataToAudioData(fileData),
+    audioData: audioData,
   };
+
+  // Save as wav file
+  saveWavFile(wavData, 'test.wav');
+
+  // Return the wavData object
+  return wavData;
 };
+
 
 // Helper function to create initial WAV data object
 const convertFileDataToAudioData = async (fileDataPromise) => {

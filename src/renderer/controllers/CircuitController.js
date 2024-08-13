@@ -14,28 +14,6 @@ const handleMidiMessage = (midiMessage) => {
   // if single key, play the note
 };
 
-const playCircuit = async (data) => {
-  // console.log('data: ', JSON.stringify(data, null, 2));
-  // play the circuit
-  const orderedPaths = getOrderedPaths(data.wires, data.boardObjects);
-
-  // for each ordered path, have a wavData object that stores wavData
-  for (let i = 0; i < orderedPaths.length; i++) {
-    const path = orderedPaths[i];
-    let wavData = createInitialWavData();
-    for (let j = 0; j < path.length; j++) {
-      const boardObject = path[j];
-      let newWavData = await applyEffectOnWavData(boardObject, wavData);
-
-      // if we are at the end fo the path, play the wavData
-      if (j === path.length - 1) {
-        playWavData(newWavData);
-      }
-      wavData = newWavData;
-    }
-  }
-};
-
 const applyEffectOnWavData = (boardObject, wavData) => {
   if (boardObject.type === 'WavFile') {
     return loadWavData(boardObject.options);
@@ -52,5 +30,29 @@ const applyEffectOnWavData = (boardObject, wavData) => {
     // apply the switch effect to wavData
   }
 };
+
+const playCircuit = async (data) => {
+  // console.log('data: ', JSON.stringify(data, null, 2));
+  // play the circuit
+  const orderedPaths = getOrderedPaths(data.wires, data.boardObjects);
+
+  // for each ordered path, have a wavData object that stores wavData
+  for (let i = 0; i < orderedPaths.length; i++) {
+    const path = orderedPaths[i];
+    let wavData = createInitialWavData();
+    for (let j = 0; j < path.length; j++) {
+      const boardObject = path[j];
+      const newWavData = await applyEffectOnWavData(boardObject, wavData);
+
+      // if we are at the end fo the path, play the wavData
+      if (j === path.length - 1) {
+        playWavData(newWavData);
+      }
+      wavData = newWavData;
+    }
+  }
+};
+
+
 
 export { playCircuit };
