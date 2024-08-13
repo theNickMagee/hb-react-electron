@@ -7,3 +7,8 @@
   /* wrap at three items */
   flex-wrap: wrap;
 }
+
+.border-soft-white {
+  border: 1px solid #f0f0f08c;
+  border-radius: 5px;
+}

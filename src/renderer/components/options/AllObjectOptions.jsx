@@ -45,7 +45,13 @@ const AllObjectOptions = ({ data, setData, sessionData, setSessionData }) => {
       {defaultBoardObjects.map((boardObject) => (
         <div
           key={boardObject.name}
-          className="icon-button"
+          className={
+            `icon-button ` +
+            (sessionData?.droppingItem.isDroppingItem &&
+            sessionData?.droppingItem.item.type === boardObject.type
+              ? 'border-soft-white'
+              : '')
+          }
           onClick={() => startDroppingBoardObject(boardObject)}
         >
           <img src={boardObject.icon} alt={boardObject.name} />
