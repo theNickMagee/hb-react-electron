@@ -238,6 +238,66 @@ const applyMidiEvents = (boardObjectOptions, wavData) => {
   };
 };
 
+const getSelectedNoteDuration = (events) => {
+  const selectedEvents = events.filter((event) => event.selected);
+  if (selectedEvents.length === 0) {
+    console.log('no selected events');
+    return 0;
+  }
+
+  console.log('selected events: ', selectedEvents);
+  console.log('second event: ', selectedEvents[1]);
+  // ensure [0] is noteon and [1] is noteoff
+  if (selectedEvents[0].type === 'noteoff') {
+    console.log('reversing selected events');
+    selectedEvents.reverse();
+  }
+  // subtract noteoff time from noteon time
+  const duration = selectedEvents[1].time - selectedEvents[0].time;
+  return duration;
+};
+
+const setSelectedNoteDuration = (e, events, setEvents) => {
+  const selectedEvents = events.filter((event) => event.selected);
+  if (selectedEvents.length === 0) {
+    console.log('no selected events');
+    return;
+  }
+
+  console.log('selected events: ', selectedEvents);
+  console.log('second event: ', selectedEvents[1]);
+  // ensure [0] is noteon and [1] is noteoff
+  if (selectedEvents[0].type === 'noteoff') {
+    console.log('reversing selected events');
+    selectedEvents.reverse();
+  }
+  // subtract noteoff time from noteon time
+  const duration = selectedEvents[1].time - selectedEvents[0].time;
+
+  const newDuration = parseFloat(e.target.value);
+
+  //  current duration log, new duration log
+  console.log('current duration: ', duration, 'new duration: ', newDuration);
+  // set noteoff time to noteon time + duration
+  const newNoteOff = {
+    ...selectedEvents[1],
+    time: selectedEvents[0].time + newDuration,
+  };
+  // setEvents with new noteoff time
+  setEvents(
+    events.map((event) => {
+      if (
+        event.note === selectedEvents[1].note &&
+        event.time === selectedEvents[1].time &&
+        event.type === selectedEvents[1].type
+      ) {
+        return newNoteOff;
+      }
+      return event;
+    }),
+  );
+};
+
 export {
   createMiddleCNoteEvent,
   createMiddleCNoteOffEvent,
@@ -251,6 +311,8 @@ export {
   setSelectedEvent,
   removeSelectedEvents,
   applyMidiEvents,
+  getSelectedNoteDuration,
+  setSelectedNoteDuration,
 };
 
 // example events

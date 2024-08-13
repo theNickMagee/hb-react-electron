@@ -10,117 +10,137 @@ import {
   removeNoteFromEvents,
   setSelectedEvent,
   removeSelectedEvents,
+  getSelectedNoteDuration,
+  setSelectedNoteDuration,
 } from '../../../services/MidiServices';
 
-const PianoRoll = ({ value, setValue }) => (
-  <div className="midi-options">
-    <div className="top-midi-options">
-      <input
-        type="range"
-        min="60"
-        max="240"
-        step="1"
-        value={value.bpm}
-        onChange={(e) =>
-          setValue({ ...value, bpm: parseInt(e.target.value, 10) })
-        }
-      />
-      <div className="small-font">BPM: {value.bpm}</div>
-      <div className="default-dd">
-        Beats per measure
-        <select
-          value={value.timeSignatureTop}
+const PianoRoll = ({ value, setValue }) => {
+  const setEvents = (newValue) => {
+    setValue({ ...value, events: newValue });
+  };
+  return (
+    <div className="midi-options">
+      <div className="top-midi-options">
+        <input
+          type="range"
+          min="60"
+          max="240"
+          step="1"
+          value={value.bpm}
           onChange={(e) =>
-            setValue({
-              ...value,
-              timeSignatureTop: parseInt(e.target.value, 10),
-            })
+            setValue({ ...value, bpm: parseInt(e.target.value, 10) })
           }
-        >
-          {[...Array(7).keys()].map((n) => (
-            <option key={n} value={n + 1}>
-              {n + 1}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div className="default-dd">
-        Octave
-        <select
-          value={value.octave}
-          onChange={(e) =>
-            setValue({ ...value, octave: parseInt(e.target.value, 10) })
-          }
-        >
-          {[...Array(7).keys()].map((n) => (
-            <option key={n} value={n + 1}>
-              {n + 1}
-            </option>
-          ))}
-        </select>
-        <button
-          className="default-button"
-          onClick={() =>
-            setValue({ ...value, octave: Math.min(value.octave + 1, 7) })
-          }
-        >
-          +
-        </button>
-        <button
-          className="default-button"
-          onClick={() =>
-            setValue({ ...value, octave: Math.max(value.octave - 1, 1) })
-          }
-        >
-          -
-        </button>
-      </div>
-    </div>
-    <div className="middle-midi-section">
-      <div className="piano-roll">
-        <PianoGrid
-          events={value.events}
-          setEvents={(newValue) => setValue({ ...value, events: newValue })}
-          octave={value.octave}
-          numBeats={value.timeSignatureTop}
-          bpm={value.bpm}
         />
-      </div>
-    </div>
-    <div className="bottom-midi-options">
-      {/* id a beat is selected, show delete button */}
-      {value.events.filter((event) => event.selected).length > 0 && (
-        <div
-          className="default-button"
-          onClick={() =>
-            setValue({
-              ...value,
-              events: removeSelectedEvents(value.events),
-            })
-          }
-        >
-          {/* show selected events */}
-          {/* {value.events.filter((event) => event.selected).length} */}
-          Delete Selected
+        <div className="small-font">BPM: {value.bpm}</div>
+        <div className="default-dd">
+          Beats per measure
+          <select
+            value={value.timeSignatureTop}
+            onChange={(e) =>
+              setValue({
+                ...value,
+                timeSignatureTop: parseInt(e.target.value, 10),
+              })
+            }
+          >
+            {[...Array(7).keys()].map((n) => (
+              <option key={n} value={n + 1}>
+                {n + 1}
+              </option>
+            ))}
+          </select>
         </div>
-      )}
-      <div className="small-font">
-        Time per beat: {returnTimePerBeat(value.bpm)}s
+        <div className="default-dd">
+          Octave
+          <select
+            value={value.octave}
+            onChange={(e) =>
+              setValue({ ...value, octave: parseInt(e.target.value, 10) })
+            }
+          >
+            {[...Array(7).keys()].map((n) => (
+              <option key={n} value={n + 1}>
+                {n + 1}
+              </option>
+            ))}
+          </select>
+          <button
+            className="default-button"
+            onClick={() =>
+              setValue({ ...value, octave: Math.min(value.octave + 1, 7) })
+            }
+          >
+            +
+          </button>
+          <button
+            className="default-button"
+            onClick={() =>
+              setValue({ ...value, octave: Math.max(value.octave - 1, 1) })
+            }
+          >
+            -
+          </button>
+        </div>
       </div>
-      <div className="small-font">
-        Time per measure:{' '}
-        {returnTimePerMeasure(value.bpm, value.timeSignatureTop)}s
+      <div className="middle-midi-section">
+        <div className="piano-roll">
+          <PianoGrid
+            events={value.events}
+            setEvents={(newValue) => setValue({ ...value, events: newValue })}
+            octave={value.octave}
+            numBeats={value.timeSignatureTop}
+            bpm={value.bpm}
+          />
+        </div>
       </div>
-      {/* clear measure */}
-      {/* <div
+      <div className="bottom-midi-options">
+        {/* id a beat is selected, show delete button */}
+        {value.events.filter((event) => event.selected).length > 0 && (
+          // slider for duration - move the end note
+          <div className="selected-note-options">
+            <input
+              type="range"
+              value={getSelectedNoteDuration(value.events)}
+              onChange={(e) =>
+                setSelectedNoteDuration(e, value.events, setEvents)
+              }
+              min="0"
+              max="3"
+              step="0.01"
+            />
+            <div
+              className="default-button"
+              onClick={() =>
+                setValue({
+                  ...value,
+                  events: removeSelectedEvents(value.events),
+                })
+              }
+            >
+              {/* show selected events */}
+              {/* {value.events.filter((event) => event.selected).length} */}
+              Delete Selected
+            </div>
+          </div>
+        )}
+        <div className="small-font">
+          Time per beat: {returnTimePerBeat(value.bpm)}s
+        </div>
+        <div className="small-font">
+          Time per measure:{' '}
+          {returnTimePerMeasure(value.bpm, value.timeSignatureTop)}s
+        </div>
+        {/* clear measure */}
+        {/* <div
         className="default-button"
         onClick={() => clearCurrentMeasure(value, setValue)}
       >
         Clear Measure
       </div> */}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const PianoGrid = ({ events, setEvents, octave, numBeats, bpm }) => {
   let octaveNotes = [
