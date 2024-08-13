@@ -206,14 +206,20 @@ const convertFileDataToAudioData = async (fileDataPromise) => {
         dataChunkFound = true;
         dataSize = chunkSize;
 
-        if (bitsPerSample === 24) {
-          // Convert 24-bit PCM to 16-bit PCM by scaling down
-          audioData = convert24BitTo16Bit(new DataView(fileData.buffer, offset + 8, dataSize), numChannels);
-        } else if (bitsPerSample === 16) {
-          // Standard 16-bit PCM
-          audioData = new Int16Array(fileData.buffer, offset + 8, dataSize / 2);
+        // Handle based on format and bit depth
+        if (audioFormat === 1) {  // PCM
+          if (bitsPerSample === 16) {
+            audioData = new Int16Array(fileData.buffer, offset + 8, dataSize / 2);
+          } else if (bitsPerSample === 24) {
+            audioData = convert24BitTo16Bit(new DataView(fileData.buffer, offset + 8, dataSize), numChannels);
+          } else {
+            console.error('Unsupported bit depth for PCM.');
+            return new Int16Array();
+          }
+        } else if (audioFormat === 3 && bitsPerSample === 32) {  // 32-bit float PCM
+          audioData = convert32BitFloatTo16Bit(new DataView(fileData.buffer, offset + 8, dataSize), numChannels);
         } else {
-          console.error('Unsupported bit depth.');
+          console.error('Unsupported WAV format or bit depth.');
           return new Int16Array();
         }
 
@@ -229,12 +235,6 @@ const convertFileDataToAudioData = async (fileDataPromise) => {
       return new Int16Array();
     }
 
-    // Ensure the format is PCM
-    if (audioFormat !== 1) {
-      console.error('Unsupported WAV file format. Must be PCM.');
-      return new Int16Array();
-    }
-
     console.log(`Loaded WAV file with ${numChannels} channels, ${sampleRate} Hz, ${bitsPerSample} bits per sample.`);
     return audioData;
 
@@ -244,7 +244,7 @@ const convertFileDataToAudioData = async (fileDataPromise) => {
   }
 };
 
-// Helper function to convert 24-bit PCM to 16-bit PCM
+// Conversion for 24-bit PCM to 16-bit PCM
 const convert24BitTo16Bit = (dataView, numChannels) => {
   const length = dataView.byteLength / 3;
   const output = new Int16Array(length);
@@ -262,6 +262,21 @@ const convert24BitTo16Bit = (dataView, numChannels) => {
   return output;
 };
 
+// Conversion for 32-bit float PCM to 16-bit PCM
+const convert32BitFloatTo16Bit = (dataView, numChannels) => {
+  const length = dataView.byteLength / 4;
+  const output = new Int16Array(length);
+
+  for (let i = 0; i < length; i++) {
+    const sample32 = dataView.getFloat32(i * 4, true);
+    // Convert 32-bit float to 16-bit PCM by clamping the values between -1.0 and 1.0 and scaling
+    const sample16 = Math.max(-1, Math.min(1, sample32)) * 32767;
+    output[i] = sample16 | 0; // Bitwise OR with 0 to convert to integer
+  }
+
+  return output;
+};
+
 // Helper function to extract strings from DataView
 const getString = (dataView, offset, length) => {
   let str = '';
@@ -270,6 +285,7 @@ const getString = (dataView, offset, length) => {
   }
   return str;
 };
+
 
 
 
