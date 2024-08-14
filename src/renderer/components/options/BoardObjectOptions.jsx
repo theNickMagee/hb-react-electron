@@ -6,6 +6,7 @@ import {
 import PianoRoll from './boardObjectOptions/PianoRoll';
 import './styles/boardObjectOptions.css';
 import React, { useEffect } from 'react';
+import SwitchOptions from './boardObjectOptions/SwitchOptions';
 
 const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
   if (!sessionData.options.currentEditItem) return null;
@@ -202,6 +203,14 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
                   key={option.value} // Add key prop to trigger re-render on value change
                 />
               </div>
+            )}
+            {option.component === 'SwitchOptions' && (
+              <SwitchOptions
+                sessionData={sessionData}
+                setSessionData={setSessionData}
+                data={data}
+                setData={setData}
+              />
             )}
           </div>
         ))}

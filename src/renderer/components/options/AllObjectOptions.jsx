@@ -5,6 +5,7 @@ import {
   defaultOscillator,
   defaultMidi,
   defaultSwitch,
+  defaultHero,
 } from '../../defaults/BoardObjectDefaults';
 import { generateRandomId } from '../../services/util';
 import './styles/allObjectStyles.css';
@@ -15,6 +16,7 @@ const AllObjectOptions = ({ data, setData, sessionData, setSessionData }) => {
     { ...defaultOscillator },
     { ...defaultMidi },
     { ...defaultSwitch },
+    { ...defaultHero },
   ];
 
   const startDroppingBoardObject = (item) => {

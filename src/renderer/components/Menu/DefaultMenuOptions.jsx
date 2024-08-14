@@ -4,6 +4,7 @@ import {
   defaultMidi,
   defaultOscillator,
   defaultSwitch,
+  defaultHero,
 } from '../../defaults/BoardObjectDefaults';
 import AllObjectOptions from '../options/AllObjectOptions';
 

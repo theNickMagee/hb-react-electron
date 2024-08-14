@@ -3,6 +3,7 @@ import wavImage from '../../../assets/icons/cd64.png';
 import ampImage from '../../../assets/icons/horn.png';
 import oscillatorImage from '../../../assets/icons/torch.png';
 import switchImage from '../../../assets/icons/cyberpunk/laser.png';
+import heroImage from '../../../assets/icons/cyberpunk/needle.png';
 import {
   createMiddleCNoteEvent,
   createMiddleCNoteOffEvent,
@@ -88,7 +89,22 @@ const defaultSwitch = {
   type: 'Switch',
   options: [
     {
-      component: 'switchOptions',
+      component: 'SwitchOptions',
+      value: {
+        activeInputWireId: null,
+        activeOutputWireId: null,
+      },
+    },
+  ],
+};
+
+const defaultHero = {
+  name: 'Hero',
+  icon: heroImage,
+  type: 'Hero',
+  options: [
+    {
+      component: 'HeroOptions',
     },
   ],
 };
@@ -99,4 +115,5 @@ export {
   defaultMidi,
   defaultOscillator,
   defaultSwitch,
+  defaultHero,
 };
