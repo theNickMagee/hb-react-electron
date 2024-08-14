@@ -54,7 +54,11 @@ const AllObjectOptions = ({ data, setData, sessionData, setSessionData }) => {
           }
           onClick={() => startDroppingBoardObject(boardObject)}
         >
-          <img src={boardObject.icon} alt={boardObject.name} />
+          <img
+            src={boardObject.icon}
+            alt={boardObject.name}
+            className="icon-image"
+          />
         </div>
       ))}
     </div>

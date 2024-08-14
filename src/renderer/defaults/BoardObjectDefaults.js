@@ -1,7 +1,7 @@
 import midiImage from '../../../assets/icons/device.png';
-import wavImage from '../../../assets/gems/Icon9.png';
+import wavImage from '../../../assets/icons/cd64.png';
 import ampImage from '../../../assets/icons/horn.png';
-import oscillatorImage from '../../../assets/gems/Icon33.png';
+import oscillatorImage from '../../../assets/icons/torch.png';
 import switchImage from '../../../assets/gems/Icon22.png';
 import {
   createMiddleCNoteEvent,

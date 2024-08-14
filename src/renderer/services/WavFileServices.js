@@ -10,7 +10,6 @@ function handleNoOutputWires() {
   this.playWavFile();
 }
 
-
 const saveWavFile = (wavData, filePath) => {
   const { sampleRate, numChannels, bitsPerSample, audioData } = wavData;
 
@@ -70,7 +69,6 @@ const writeString = (view, offset, string) => {
     view.setUint8(offset + i, string.charCodeAt(i));
   }
 };
-
 
 const createInitialWavData = () => {
   // sampleRate: 44100, // Sample rate in Hz
@@ -169,7 +167,7 @@ const loadWavData = async (boardObjectOptions) => {
   };
 
   // Save as wav file
-  saveWavFile(wavData, 'test.wav');
+  // saveWavFile(wavData, 'test.wav');
 
   // Return the wavData object
   return wavData;
@@ -191,7 +189,10 @@ const convertFileDataToAudioData = async (fileDataPromise) => {
 
     while (offset < fileData.byteLength) {
       const chunkId = getString(new DataView(fileData.buffer, offset, 4), 0, 4);
-      const chunkSize = new DataView(fileData.buffer, offset + 4, 4).getUint32(0, true);
+      const chunkSize = new DataView(fileData.buffer, offset + 4, 4).getUint32(
+        0,
+        true,
+      );
 
       if (chunkId === 'fmt ') {
         fmtChunkFound = true;
@@ -201,23 +202,37 @@ const convertFileDataToAudioData = async (fileDataPromise) => {
         sampleRate = fmtChunk.getUint32(4, true);
         bitsPerSample = fmtChunk.getUint16(14, true);
 
-        console.log(`Found fmt chunk: Format ${audioFormat}, Channels ${numChannels}, Sample Rate ${sampleRate}, Bits Per Sample ${bitsPerSample}`);
+        console.log(
+          `Found fmt chunk: Format ${audioFormat}, Channels ${numChannels}, Sample Rate ${sampleRate}, Bits Per Sample ${bitsPerSample}`,
+        );
       } else if (chunkId === 'data') {
         dataChunkFound = true;
         dataSize = chunkSize;
 
         // Handle based on format and bit depth
-        if (audioFormat === 1) {  // PCM
+        if (audioFormat === 1) {
+          // PCM
           if (bitsPerSample === 16) {
-            audioData = new Int16Array(fileData.buffer, offset + 8, dataSize / 2);
+            audioData = new Int16Array(
+              fileData.buffer,
+              offset + 8,
+              dataSize / 2,
+            );
           } else if (bitsPerSample === 24) {
-            audioData = convert24BitTo16Bit(new DataView(fileData.buffer, offset + 8, dataSize), numChannels);
+            audioData = convert24BitTo16Bit(
+              new DataView(fileData.buffer, offset + 8, dataSize),
+              numChannels,
+            );
           } else {
             console.error('Unsupported bit depth for PCM.');
             return new Int16Array();
           }
-        } else if (audioFormat === 3 && bitsPerSample === 32) {  // 32-bit float PCM
-          audioData = convert32BitFloatTo16Bit(new DataView(fileData.buffer, offset + 8, dataSize), numChannels);
+        } else if (audioFormat === 3 && bitsPerSample === 32) {
+          // 32-bit float PCM
+          audioData = convert32BitFloatTo16Bit(
+            new DataView(fileData.buffer, offset + 8, dataSize),
+            numChannels,
+          );
         } else {
           console.error('Unsupported WAV format or bit depth.');
           return new Int16Array();
@@ -231,13 +246,16 @@ const convertFileDataToAudioData = async (fileDataPromise) => {
     }
 
     if (!fmtChunkFound || !dataChunkFound) {
-      console.error('Unable to find required fmt or data chunks in the WAV file.');
+      console.error(
+        'Unable to find required fmt or data chunks in the WAV file.',
+      );
       return new Int16Array();
     }
 
-    console.log(`Loaded WAV file with ${numChannels} channels, ${sampleRate} Hz, ${bitsPerSample} bits per sample.`);
+    console.log(
+      `Loaded WAV file with ${numChannels} channels, ${sampleRate} Hz, ${bitsPerSample} bits per sample.`,
+    );
     return audioData;
-
   } catch (error) {
     console.error('Error processing file data:', error);
     return new Int16Array();
@@ -251,11 +269,12 @@ const convert24BitTo16Bit = (dataView, numChannels) => {
 
   for (let i = 0; i < length; i++) {
     const byteOffset = i * 3;
-    const sample24 = (dataView.getUint8(byteOffset + 2) << 16) | 
-                     (dataView.getUint8(byteOffset + 1) << 8) | 
-                     (dataView.getUint8(byteOffset));
+    const sample24 =
+      (dataView.getUint8(byteOffset + 2) << 16) |
+      (dataView.getUint8(byteOffset + 1) << 8) |
+      dataView.getUint8(byteOffset);
 
-    const sample16 = (sample24 >> 8) & 0xFFFF; // Scale down to 16 bits
+    const sample16 = (sample24 >> 8) & 0xffff; // Scale down to 16 bits
     output[i] = sample16 - (sample16 & 0x8000 ? 0x10000 : 0); // Convert to signed 16-bit
   }
 
@@ -285,9 +304,6 @@ const getString = (dataView, offset, length) => {
   }
   return str;
 };
-
-
-
 
 export {
   playWavFile,
