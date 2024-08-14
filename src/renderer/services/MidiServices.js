@@ -263,8 +263,12 @@ const applyMidiEvents = (boardObjectOptions, wavData) => {
 
   let newAudioData = audioData;
 
-  // apply events to wavData
-  newAudioData = applyEventsToWavData(events, newAudioData);
+  if (wavData.type && wavData.type === 'SoundFont') {
+    newAudioData = new Float32Array(audioData);
+  } else {
+    // apply events to wavData
+    newAudioData = applyEventsToWavData(events, newAudioData);
+  }
 
   // Apply midi events to wavData
   return {

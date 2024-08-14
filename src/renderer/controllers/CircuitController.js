@@ -7,6 +7,7 @@ import {
 import { applyAmp } from '../services/AmpServices';
 import { applyMidiEvents } from '../services/MidiServices';
 import { processOscillator } from '../services/OscillatorServices';
+import { processSwitch } from '../services/SwitchServices';
 
 // handleMidiMessage
 const handleMidiMessage = (midiMessage) => {
@@ -30,6 +31,7 @@ const applyEffectOnWavData = (boardObject, wavData) => {
     // apply the oscillator effect to wavData
   } else if (boardObject.type === 'Switch') {
     // apply the switch effect to wavData
+    return processSwitch(boardObject.options, wavData);
   }
 };
 

@@ -2,6 +2,7 @@ import {
   getInputWiresOnBoardObject,
   getOutputWiresOnBoardObject,
 } from '../../../services/WireServices';
+import React, { useEffect } from 'react';
 
 const SwitchOptions = ({ sessionData, data }) => {
   const currentBoardObject = sessionData.options.currentEditItem;
@@ -11,6 +12,11 @@ const SwitchOptions = ({ sessionData, data }) => {
     data.wires,
     currentBoardObject,
   );
+
+  useEffect(() => {
+    console.log('inputWires: ', inputWires);
+    console.log('outputWires: ', outputWires);
+  }, [inputWires, outputWires]);
 
   return (
     <div className="switch-options">

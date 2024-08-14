@@ -90,6 +90,10 @@ const defaultSwitch = {
   options: [
     {
       component: 'SwitchOptions',
+      options: {
+        outputObjects: [],
+        inputObjects: [],
+      },
       value: {
         activeInputWireId: null,
         activeOutputWireId: null,
