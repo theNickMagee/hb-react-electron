@@ -2,7 +2,7 @@ import midiImage from '../../../assets/icons/device.png';
 import wavImage from '../../../assets/icons/cd64.png';
 import ampImage from '../../../assets/icons/horn.png';
 import oscillatorImage from '../../../assets/icons/torch.png';
-import switchImage from '../../../assets/gems/Icon22.png';
+import switchImage from '../../../assets/icons/cyberpunk/laser.png';
 import {
   createMiddleCNoteEvent,
   createMiddleCNoteOffEvent,
@@ -65,7 +65,19 @@ const defaultOscillator = {
   type: 'Oscillator',
   options: [
     {
-      component: 'oscillatorOptions',
+      component: 'dropdown',
+      choices: ['sine', 'square', 'sawtooth', 'triangle'],
+      value: 'sine',
+      label: 'Waveform',
+    },
+    {
+      component: 'slider',
+      min: 20,
+      max: 20000,
+      step: 1,
+      value: 440,
+      label: 'Frequency',
+      prop: 'frequency',
     },
   ],
 };

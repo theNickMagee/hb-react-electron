@@ -142,49 +142,70 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
           ))}
         </div>
       )}
-      {currentBoardObject.options.map((option, index) => (
-        <div key={index} className="board-object-option-container">
-          {option.component === 'slider' && (
-            <div>
-              <label>{option.label}</label>
-              <input
-                type="range"
-                min={option.min}
-                max={option.max}
-                step={option.step}
-                value={
-                  data.boardObjects[sessionData.options.currentEditItemIndex]
-                    .options[index].value
+      <div className="board-object-option-container">
+        {sessionData.options.currentEditItem.options.map((option, index) => (
+          <div>
+            {option.component === 'slider' && (
+              <div className="option-container">
+                <label>{option.label}</label>
+                <input
+                  type="range"
+                  min={option.min}
+                  max={option.max}
+                  step={option.step}
+                  value={
+                    data.boardObjects[sessionData.options.currentEditItemIndex]
+                      .options[index].value
+                  }
+                  onChange={(e) => handleSliderChange(index, e.target.value)}
+                />
+              </div>
+            )}
+            {/* dropdown */}
+            {option.component === 'dropdown' && (
+              <div className="option-container">
+                <label>{option.label}</label>
+                <select
+                  value={
+                    data.boardObjects[sessionData.options.currentEditItemIndex]
+                      .options[index].value
+                  }
+                  onChange={(e) => handleSliderChange(index, e.target.value)}
+                >
+                  {option.choices.map((choice, idx) => (
+                    <option key={idx} value={choice}>
+                      {choice}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            {option.component === 'FileExplorer' && (
+              <FileExplorer
+                initialFileName={
+                  option.file ? option.file.split('/').pop() : undefined
                 }
-                onChange={(e) => handleSliderChange(index, e.target.value)}
-              />
-            </div>
-          )}
-          {option.component === 'FileExplorer' && (
-            <FileExplorer
-              initialFileName={
-                option.file ? option.file.split('/').pop() : undefined
-              }
-              onFileSelect={handleOptionChange}
-              index={index}
-            />
-          )}
-          {option.component === 'PianoRoll' && (
-            <div className="h-100">
-              <PianoRoll
+                onFileSelect={handleOptionChange}
                 index={index}
-                bpm={data.bpm}
-                value={
-                  data.boardObjects[sessionData.options.currentEditItemIndex]
-                    .options[index].value
-                }
-                setValue={(newValue) => setValue(index, newValue)}
-                key={option.value} // Add key prop to trigger re-render on value change
               />
-            </div>
-          )}
-        </div>
-      ))}
+            )}
+            {option.component === 'PianoRoll' && (
+              <div className="h-100">
+                <PianoRoll
+                  index={index}
+                  bpm={data.bpm}
+                  value={
+                    data.boardObjects[sessionData.options.currentEditItemIndex]
+                      .options[index].value
+                  }
+                  setValue={(newValue) => setValue(index, newValue)}
+                  key={option.value} // Add key prop to trigger re-render on value change
+                />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
