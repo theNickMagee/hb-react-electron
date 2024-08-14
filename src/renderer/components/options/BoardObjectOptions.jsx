@@ -98,6 +98,34 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
 
   return (
     <div className="board-object-options">
+      <div className="default-title">
+        {' '}
+        {/* {sessionData.options.currentEditItem.name} */}
+        <input
+          type="text"
+          className="title-input"
+          value={sessionData.options.currentEditItem.name}
+          onChange={(e) => {
+            const newBoardObjects = data.boardObjects.map((obj, idx) => {
+              if (idx === sessionData.options.currentEditItemIndex) {
+                return { ...obj, name: e.target.value };
+              }
+              return obj;
+            });
+            setData({ ...data, boardObjects: newBoardObjects });
+            setSessionData({
+              ...sessionData,
+              options: {
+                ...sessionData.options,
+                currentEditItem: {
+                  ...sessionData.options.currentEditItem,
+                  name: e.target.value,
+                },
+              },
+            });
+          }}
+        />
+      </div>
       <div className="default-row">
         <div className="default-button" onClick={toggleDisplayWires}>
           Display Wires
