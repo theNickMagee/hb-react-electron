@@ -6,6 +6,7 @@ import {
 } from '../services/WavFileServices';
 import { applyAmp } from '../services/AmpServices';
 import { applyMidiEvents } from '../services/MidiServices';
+import { processOscillator } from '../services/OscillatorServices';
 
 // handleMidiMessage
 const handleMidiMessage = (midiMessage) => {
@@ -25,6 +26,7 @@ const applyEffectOnWavData = (boardObject, wavData) => {
     return applyMidiEvents(boardObject.options, wavData);
     // apply the midi effect to wavData
   } else if (boardObject.type === 'Oscillator') {
+    return processOscillator(boardObject.options, wavData);
     // apply the oscillator effect to wavData
   } else if (boardObject.type === 'Switch') {
     // apply the switch effect to wavData
@@ -52,7 +54,5 @@ const playCircuit = async (data) => {
     }
   }
 };
-
-
 
 export { playCircuit };
