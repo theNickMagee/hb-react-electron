@@ -437,6 +437,8 @@ const applyEventsToWavData = (events, audioData) => {
   const maxAmplitude = 32767; // Max amplitude for 16-bit audio
   const minAmplitude = -32768; // Min amplitude for 16-bit audio
 
+  const activeNotes = {};
+
   // Function to find the frequency of a given note
   const getNoteFrequency = (note) => {
     const noteNames = [
@@ -486,25 +488,43 @@ const applyEventsToWavData = (events, audioData) => {
   const outputLength = Math.ceil(maxTime * sampleRate);
   const outputData = new Int16Array(outputLength);
 
-  events.forEach((event, i) => {
+  events.forEach((event) => {
+    const startSample = Math.floor(event.time * sampleRate);
+
     if (event.type === 'noteon') {
       const frequency = getNoteFrequency(event.note);
       const ratio = frequency / middleCFrequency;
       const scaledAudioData = pitchShift(audioData, ratio);
-      const startSample = Math.floor(event.time * sampleRate);
 
-      for (let j = 0; j < scaledAudioData.length; j++) {
-        const sampleIndex = startSample + j;
+      activeNotes[event.note] = {
+        startSample,
+        scaledAudioData,
+        velocity: event.velocity / 127,
+      };
+    }
+
+    if (event.type === 'noteoff' && activeNotes[event.note]) {
+      const noteData = activeNotes[event.note];
+      const noteLength = startSample - noteData.startSample;
+
+      for (
+        let j = 0;
+        j < noteLength && j < noteData.scaledAudioData.length;
+        j++
+      ) {
+        const sampleIndex = noteData.startSample + j;
         if (sampleIndex < outputData.length) {
           const mixedSample =
             outputData[sampleIndex] +
-            scaledAudioData[j] * (event.velocity / 127);
+            noteData.scaledAudioData[j] * noteData.velocity;
           outputData[sampleIndex] = Math.max(
             minAmplitude,
             Math.min(maxAmplitude, mixedSample),
           );
         }
       }
+
+      delete activeNotes[event.note];
     }
   });
 
