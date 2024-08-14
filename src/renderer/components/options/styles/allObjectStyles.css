@@ -9,12 +9,13 @@
 }
 
 .border-soft-white {
-  border: 1px solid #f0f0f08c;
+  border: 2px solid #f0f0f0dc !important;
   border-radius: 5px;
+  z-index: 100;
 }
 
 .icon-button {
-  border: 2px solid #f0f0f08c;
+  border: 2px solid #f0f0f03f;
   border-radius: 1px;
   padding: 5px;
   height: 2.8rem;

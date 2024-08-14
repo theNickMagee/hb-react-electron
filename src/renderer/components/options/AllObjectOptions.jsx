@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import {
   defaultWavFile,
   defaultAmp,
@@ -40,6 +41,11 @@ const AllObjectOptions = ({ data, setData, sessionData, setSessionData }) => {
     });
   };
 
+  useEffect(() => {
+    console.log('sessionData', sessionData);
+    console;
+  }, [sessionData]);
+
   return (
     <div className="all-object-options">
       {defaultBoardObjects.map((boardObject) => (
@@ -47,8 +53,9 @@ const AllObjectOptions = ({ data, setData, sessionData, setSessionData }) => {
           key={boardObject.name}
           className={
             `icon-button ` +
-            (sessionData?.droppingItem.isDroppingItem &&
-            sessionData?.droppingItem.item.type === boardObject.type
+            (sessionData &&
+            sessionData.droppingItem.item &&
+            sessionData.droppingItem.item.type === boardObject.type
               ? 'border-soft-white'
               : '')
           }
