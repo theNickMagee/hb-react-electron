@@ -481,6 +481,26 @@ const applyEventsToWavData = (events, audioData) => {
     return newAudioData;
   };
 
+  // Function to stretch the audio data to the desired length
+  const stretchAudioData = (audioData, targetLength) => {
+    const stretchedData = new Int16Array(targetLength);
+    const stretchRatio = audioData.length / targetLength;
+
+    for (let i = 0; i < targetLength; i++) {
+      const index = i * stretchRatio;
+      const lowIndex = Math.floor(index);
+      const highIndex = Math.ceil(index);
+      const interpolation = index - lowIndex;
+
+      // Linear interpolation
+      stretchedData[i] =
+        (1 - interpolation) * audioData[lowIndex] +
+        interpolation * audioData[highIndex];
+    }
+
+    return stretchedData;
+  };
+
   // Calculate the total length of the output buffer
   const maxTime = Math.max(
     ...events.map((event) => event.time + (event.type === 'noteoff' ? 0 : 1)),
@@ -507,16 +527,25 @@ const applyEventsToWavData = (events, audioData) => {
       const noteData = activeNotes[event.note];
       const noteLength = startSample - noteData.startSample;
 
-      for (
-        let j = 0;
-        j < noteLength && j < noteData.scaledAudioData.length;
-        j++
-      ) {
+      // Stretch the audio data if necessary
+      let stretchedAudioData;
+      if (noteLength > noteData.scaledAudioData.length) {
+        stretchedAudioData = stretchAudioData(
+          noteData.scaledAudioData,
+          noteLength,
+        );
+      } else {
+        stretchedAudioData = noteData.scaledAudioData;
+      }
+
+      // Apply the stretched or original audio data to the output
+      for (let j = 0; j < noteLength; j++) {
         const sampleIndex = noteData.startSample + j;
         if (sampleIndex < outputData.length) {
           const mixedSample =
             outputData[sampleIndex] +
-            noteData.scaledAudioData[j] * noteData.velocity;
+            stretchedAudioData[j % stretchedAudioData.length] *
+              noteData.velocity;
           outputData[sampleIndex] = Math.max(
             minAmplitude,
             Math.min(maxAmplitude, mixedSample),
