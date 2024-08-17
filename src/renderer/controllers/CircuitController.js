@@ -5,7 +5,7 @@ import {
   playWavData,
 } from '../services/WavFileServices';
 import { applyAmp } from '../services/AmpServices';
-import { applyMidiEvents } from '../services/MidiServices';
+import { applyMidiEvents, handleNoteOn } from '../services/MidiServices';
 import { processOscillator } from '../services/OscillatorServices';
 import { processSwitch } from '../services/SwitchServices';
 
@@ -14,6 +14,18 @@ const handleMidiMessage = (midiMessage) => {
   // find the listening/live midi input - could be single key or keyboard
   // if keyboard, find the key that was pressed and play the corresponding note
   // if single key, play the note
+  console.log('midi message: ', midiMessage);
+  // if command is 128 it is noteoff
+  // if command is 144 it is noteon
+  const { command, note, velocity } = midiMessage;
+  if (command === 144) {
+    // find previous path and process it, getting inputWavData
+    // handle note on
+    // then process rest of the path
+    handleNoteOn(note, velocity);
+  } else if (command === 128) {
+    console.log('note off');
+  }
 };
 
 const applyEffectOnWavData = (boardObject, wavData) => {
@@ -57,4 +69,4 @@ const playCircuit = async (data) => {
   }
 };
 
-export { playCircuit };
+export { playCircuit, handleMidiMessage };

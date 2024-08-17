@@ -394,6 +394,16 @@ const calculateNotePosition = (
   return (timeWithinMeasure / totalLineTime) * (100 / totalMeasures);
 };
 
+const handleNoteOn = (noteOnEvent, midiOptions, path, inputAudioData) => {
+  console.log(
+    'handle note on input: ',
+    noteOnEvent,
+    midiOptions,
+    path,
+    inputAudioData,
+  );
+};
+
 export {
   createMiddleCNoteEvent,
   createMiddleCNoteOffEvent,
@@ -413,6 +423,7 @@ export {
   getSelectedNoteTime,
   checkIfStartingNoteInMeasure,
   calculateNotePosition,
+  handleNoteOn,
 };
 
 // example events
