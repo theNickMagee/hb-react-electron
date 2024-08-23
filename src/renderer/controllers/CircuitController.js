@@ -69,4 +69,8 @@ const playCircuit = async (data) => {
   }
 };
 
-export { playCircuit, handleMidiMessage };
+const handleCommand = (commandType, commandPayload, data, setData, sessionData, setSessionData) => {
+
+}
+
+export { playCircuit, handleMidiMessage, handleCommand };

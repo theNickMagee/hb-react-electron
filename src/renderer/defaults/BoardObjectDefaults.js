@@ -46,6 +46,7 @@ const defaultMidi = {
   options: [
     {
       component: 'PianoRoll',
+      // need to seperate these
       value: {
         timeSignatureTop: 4,
         timeSignatureBottom: 4,
@@ -92,6 +93,7 @@ const defaultSwitch = {
   options: [
     {
       component: 'SwitchOptions',
+      // need to seperate these as well, but there options are not ready here, so in the hero options we need to get these
       value: {
         activeInputWireId: null,
         activeOutputWireId: null,
