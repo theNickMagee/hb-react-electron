@@ -8,6 +8,7 @@ import {
   createMiddleCNoteEvent,
   createMiddleCNoteOffEvent,
 } from '../services/MidiServices';
+import { generateRandomId } from '../services/util';
 const defaultWavFile = {
   name: 'Wav',
   icon: wavImage,
@@ -16,6 +17,7 @@ const defaultWavFile = {
     {
       component: 'FileExplorer',
       file: null,
+      label: 'File',
     },
   ],
 };
@@ -90,10 +92,6 @@ const defaultSwitch = {
   options: [
     {
       component: 'SwitchOptions',
-      options: {
-        outputObjects: [],
-        inputObjects: [],
-      },
       value: {
         activeInputWireId: null,
         activeOutputWireId: null,
@@ -109,6 +107,16 @@ const defaultHero = {
   options: [
     {
       component: 'HeroOptions',
+      value: {
+        steps: [
+          {
+            targetBoardObjectId: null,
+            action: null,
+            id: generateRandomId(),
+          }
+        ]
+      }
+
     },
   ],
 };

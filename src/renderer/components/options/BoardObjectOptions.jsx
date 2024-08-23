@@ -7,6 +7,7 @@ import PianoRoll from './boardObjectOptions/PianoRoll';
 import './styles/boardObjectOptions.css';
 import React, { useEffect } from 'react';
 import SwitchOptions from './boardObjectOptions/SwitchOptions';
+import HeroOptions from './boardObjectOptions/heroOptions/HeroOptions';
 
 const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
   if (!sessionData.options.currentEditItem) return null;
@@ -255,6 +256,16 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
                 setData={setData}
               />
             )}
+            {
+              option.component === 'HeroOptions' && (
+                <HeroOptions
+                  data={data}
+                  setData={setData}
+                  sessionData={sessionData}
+                  setSessionData={setSessionData}
+                />
+              )
+            }
           </div>
         ))}
       </div>
