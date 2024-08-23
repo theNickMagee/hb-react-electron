@@ -41,10 +41,11 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
     });
   };
 
-  const handleDeleteWire = (wireIndex) => {
-    const newWires = [...data.wires];
-    newWires.splice(wireIndex, 1);
+  const handleDeleteWire = (wireIdx) => {
+    let newWires = [...data.wires];
+    newWires = newWires.filter((_, idx) => idx !== wireIdx);
     setData({ ...data, wires: newWires });
+    
   };
 
   const currentBoardObject = sessionData.options.currentEditItem;
@@ -158,8 +159,9 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
           {outputWires.map((wire, idx) => (
             <div key={idx} className="wire-listing">
               <span>
-                ({wire.start.row}, {wire.start.col}) ➔ ({wire.end.row},{' '}
-                {wire.end.col})
+                ({wire.start.col}, {wire.start.row}) ➔ ({wire.end.col},{' '}
+                {wire.end.row})
+
               </span>
               <button
                 className="delete-wire-button"

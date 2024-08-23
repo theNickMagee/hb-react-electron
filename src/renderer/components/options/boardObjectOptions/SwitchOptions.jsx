@@ -20,8 +20,8 @@ const SwitchOptions = ({ sessionData, data }) => {
 
   return (
     <div className="switch-options">
-      <div className="input-object-selector"></div>
-      <div className="output-object-selector"></div>
+      <div className="input-object-selector">input wires</div>
+      <div className="output-object-selector">output wires</div>
     </div>
   );
 };
