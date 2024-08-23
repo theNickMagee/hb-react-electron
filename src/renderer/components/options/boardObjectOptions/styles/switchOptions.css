@@ -1,0 +1,9 @@
+
+.wire-button{
+    cursor: pointer;
+    user-select: none;
+}
+
+.wb-active{
+    background-color: #459c2f;
+}

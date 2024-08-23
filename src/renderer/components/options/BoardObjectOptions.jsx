@@ -11,6 +11,9 @@ import SwitchOptions from './boardObjectOptions/SwitchOptions';
 const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
   if (!sessionData.options.currentEditItem) return null;
 
+  const [inputWires, setInputWires] = React.useState([]);
+  const [outputWires, setOutputWires] = React.useState([]);
+
   const handleOptionChange = (index, filePath, fileData) => {
     const newBoardObjects = data.boardObjects.map((obj, idx) => {
       if (idx === sessionData.options.currentEditItemIndex) {
@@ -48,14 +51,7 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
     
   };
 
-  const currentBoardObject = sessionData.options.currentEditItem;
-
-  const inputWires = getInputWiresOnBoardObject(data.wires, currentBoardObject);
-  const outputWires = getOutputWiresOnBoardObject(
-    data.wires,
-    currentBoardObject,
-  );
-
+ 
   const handleSliderChange = (index, value) => {
     const newBoardObjects = data.boardObjects.map((obj, idx) => {
       if (idx === sessionData.options.currentEditItemIndex) {
@@ -96,6 +92,23 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
       displayWires: !sessionData.displayWires,
     });
   };
+
+  useEffect(() => {
+    const currentBoardObject = sessionData.options.currentEditItem;
+
+    const iw = getInputWiresOnBoardObject(data.wires, currentBoardObject);
+    const ow = getOutputWiresOnBoardObject(
+      data.wires,
+      currentBoardObject,
+    );
+
+    setInputWires(iw);
+    setOutputWires(ow);
+
+    console.log('inputWires: ', iw);
+    console.log('wires: ', data.wires);
+    
+  }, [sessionData.options.currentEditItem, data.wires])
 
   return (
     <div className="board-object-options">
@@ -144,8 +157,8 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
           {inputWires.map((wire, idx) => (
             <div key={idx} className="wire-listing">
               <span>
-                ({wire.start.row}, {wire.start.col}) ➔ ({wire.end.row},{' '}
-                {wire.end.col})
+                ({wire.start.col + 1}, {wire.start.row + 1}) ➔ ({wire.end.col + 1},{' '}
+                {wire.end.row + 1})
               </span>
               <button
                 className="delete-wire-button"
@@ -157,15 +170,15 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
           ))}
           <div className="small-font">Output Wires:</div>
           {outputWires.map((wire, idx) => (
-            <div key={idx} className="wire-listing">
+            <div key={wire.id} className="wire-listing">
               <span>
-                ({wire.start.col}, {wire.start.row}) ➔ ({wire.end.col},{' '}
-                {wire.end.row})
+                ({wire.start.col + 1}, {wire.start.row + 1}) ➔ ({wire.end.col + 1},{' '}
+                {wire.end.row + 1})
 
               </span>
               <button
                 className="delete-wire-button"
-                onClick={() => handleDeleteWire(idx)}
+                onClick={() => handleDeleteWire(wire.id)}
               >
                 X
               </button>

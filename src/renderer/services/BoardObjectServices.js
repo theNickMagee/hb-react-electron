@@ -1,3 +1,5 @@
+import { generateRandomId } from "./util";
+
 const handleGridPress = (
   row,
   col,
@@ -98,6 +100,7 @@ const startCreatingWire = (sessionData, setSessionData) => {
   newSessionData.pendingWire = {
     start: null,
     end: null,
+    id: generateRandomId(),
   };
   setSessionData(newSessionData);
 };
