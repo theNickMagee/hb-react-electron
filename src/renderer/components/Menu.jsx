@@ -3,6 +3,7 @@ import DefaultMenuOptions from './Menu/DefaultMenuOptions';
 import BoardObjectOptions from './options/BoardObjectOptions';
 import { startCreatingWire } from '../services/BoardObjectServices';
 import { playCircuit } from '../controllers/CircuitController';
+import ProjectDrawer from './options/ProjectDrawer';
 
 const Menu = ({ data, setData, sessionData, setSessionData }) => {
   return (
@@ -42,6 +43,12 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
     playCircuit(data);
   };
 
+  const saveCurrentProject = () => {
+  }
+
+  const toggleProjectDrawer = () => {
+  }
+
   return (
     <div className="control-menu-options">
       <div className="default-button" onClick={handlePlay}>
@@ -55,6 +62,10 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
       >
         Create Wire
       </div>
+      <div className="default-button" onClick={saveCurrentProject}>
+        Save
+      </div>
+      <ProjectDrawer />
     </div>
   );
 };

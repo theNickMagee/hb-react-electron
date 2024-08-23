@@ -3,11 +3,18 @@ import { useState } from 'react';
 import Menu from './Menu';
 import MainComponent from './MainComponent';
 import MidiListener from './MidiListener';
+import { createDefaultProject } from '../services/ProjectServices';
 
 function MainApp() {
   const [data, setData] = useState({
     boardObjects: [],
     wires: [],
+  });
+
+  const [savedData, setSavedData] = useState({
+    projects: [
+      {...createDefaultProject()},
+    ]
   });
 
   const [sessionData, setSessionData] = useState({
@@ -26,6 +33,7 @@ function MainApp() {
     // you need a source before the midi
     events: {},
   });
+  
 
   // on window load
 
