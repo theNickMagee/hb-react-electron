@@ -17,6 +17,7 @@ import {
   checkIfStartingNoteInMeasure,
   calculateNotePosition,
 } from '../../../services/MidiServices';
+import OptionDropDown from '../../miniComponents/OptionDropDown';
 
 const PianoRoll = ({ value, setValue }) => {
   const setEvents = (newValue) => {
@@ -36,91 +37,86 @@ const PianoRoll = ({ value, setValue }) => {
           }
         />
         <div className="small-font">BPM: {value.bpm}</div>
-        <div className="default-dd">
-          Beats per measure
-          <select
-            value={value.timeSignatureTop}
-            onChange={(e) =>
-              setValue({
-                ...value,
-                timeSignatureTop: parseInt(e.target.value, 10),
-              })
-            }
-          >
-            {[...Array(8).keys()].map((n) => (
-              <option key={n} value={n + 1}>
-                {n + 1}
-              </option>
-            ))}
-          </select>
-        </div>
+        <OptionDropDown
+          label="Beats per measure"
+          value={value.timeSignatureTop}
+          onChange={(e) =>
+            setValue({
+              ...value,
+              timeSignatureTop: parseInt(e.target.value, 10),
+            })
+          }
+        >
+          {[...Array(8).keys()].map((n) => (
+            <option key={n} value={n + 1}>
+              {n + 1}
+            </option>
+          ))}
+        </OptionDropDown>
+
         {/* starting and stopping measures */}
-        <div className="default-dd">
-          Measures
-          <select
-            value={value.firstMesureIndex}
-            onChange={(e) =>
-              setValue({
-                ...value,
-                firstMesureIndex: parseInt(e.target.value, 10),
-              })
-            }
-          >
-            {/* displat only up to last num -1 */}
-            {[...Array(value.lastMesureIndex).keys()].map((n) => (
-              <option key={n} value={n}>
-                {n}
-              </option>
-            ))}
-          </select>
-          <select
-            value={value.lastMesureIndex}
-            onChange={(e) =>
-              setValue({
-                ...value,
-                lastMesureIndex: parseInt(e.target.value, 10),
-              })
-            }
-          >
-            {/* start at starting num + 1 */}
-            {[...Array(7 - value.firstMesureIndex).keys()].map((n) => (
-              <option key={n} value={n + value.firstMesureIndex + 1}>
-                {n + value.firstMesureIndex + 1}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="default-dd">
-          Octave
-          <select
-            value={value.octave}
-            onChange={(e) =>
-              setValue({ ...value, octave: parseInt(e.target.value, 10) })
-            }
-          >
-            {[...Array(7).keys()].map((n) => (
-              <option key={n} value={n + 1}>
-                {n + 1}
-              </option>
-            ))}
-          </select>
-          <button
-            className="default-button"
-            onClick={() =>
-              setValue({ ...value, octave: Math.min(value.octave + 1, 7) })
-            }
-          >
-            +
-          </button>
-          <button
-            className="default-button"
-            onClick={() =>
-              setValue({ ...value, octave: Math.max(value.octave - 1, 1) })
-            }
-          >
-            -
-          </button>
-        </div>
+        <OptionDropDown
+          label="Measures"
+          value={value.firstMesureIndex}
+          onChange={(e) =>
+            setValue({
+              ...value,
+              firstMesureIndex: parseInt(e.target.value, 10),
+            })
+          }
+        >
+          {/* displat only up to last num -1 */}
+          {[...Array(value.lastMesureIndex).keys()].map((n) => (
+            <option key={n} value={n}>
+              {n}
+            </option>
+          ))}
+        </OptionDropDown>
+        <OptionDropDown
+          value={value.lastMesureIndex}
+          onChange={(e) =>
+            setValue({
+              ...value,
+              lastMesureIndex: parseInt(e.target.value, 10),
+            })
+          }
+        >
+          {/* start at starting num + 1 */}
+          {[...Array(7 - value.firstMesureIndex).keys()].map((n) => (
+            <option key={n} value={n + value.firstMesureIndex + 1}>
+              {n + value.firstMesureIndex + 1}
+            </option>
+          ))}
+        </OptionDropDown>
+        <OptionDropDown
+          label="Octave"
+          value={value.octave}
+          onChange={(e) =>
+            setValue({ ...value, octave: parseInt(e.target.value, 10) })
+          }
+        >
+          {[...Array(7).keys()].map((n) => (
+            <option key={n} value={n + 1}>
+              {n + 1}
+            </option>
+          ))}
+        </OptionDropDown>
+        <button
+          className="default-button"
+          onClick={() =>
+            setValue({ ...value, octave: Math.min(value.octave + 1, 7) })
+          }
+        >
+          +
+        </button>
+        <button
+          className="default-button"
+          onClick={() =>
+            setValue({ ...value, octave: Math.max(value.octave - 1, 1) })
+          }
+        >
+          -
+        </button>
       </div>
       <div className="middle-midi-section">
         <div className="piano-roll">

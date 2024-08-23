@@ -8,6 +8,7 @@ import './styles/boardObjectOptions.css';
 import React, { useEffect } from 'react';
 import SwitchOptions from './boardObjectOptions/SwitchOptions';
 import HeroOptions from './boardObjectOptions/heroOptions/HeroOptions';
+import OptionDropDown from '../miniComponents/OptionDropDown';
 
 const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
   if (!sessionData.options.currentEditItem) return null;
@@ -49,10 +50,8 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
     let newWires = [...data.wires];
     newWires = newWires.filter((_, idx) => idx !== wireIdx);
     setData({ ...data, wires: newWires });
-    
   };
 
- 
   const handleSliderChange = (index, value) => {
     const newBoardObjects = data.boardObjects.map((obj, idx) => {
       if (idx === sessionData.options.currentEditItemIndex) {
@@ -98,18 +97,14 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
     const currentBoardObject = sessionData.options.currentEditItem;
 
     const iw = getInputWiresOnBoardObject(data.wires, currentBoardObject);
-    const ow = getOutputWiresOnBoardObject(
-      data.wires,
-      currentBoardObject,
-    );
+    const ow = getOutputWiresOnBoardObject(data.wires, currentBoardObject);
 
     setInputWires(iw);
     setOutputWires(ow);
 
     console.log('inputWires: ', iw);
     console.log('wires: ', data.wires);
-    
-  }, [sessionData.options.currentEditItem, data.wires])
+  }, [sessionData.options.currentEditItem, data.wires]);
 
   return (
     <div className="board-object-options">
@@ -158,8 +153,8 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
           {inputWires.map((wire, idx) => (
             <div key={idx} className="wire-listing">
               <span>
-                ({wire.start.col + 1}, {wire.start.row + 1}) ➔ ({wire.end.col + 1},{' '}
-                {wire.end.row + 1})
+                ({wire.start.col + 1}, {wire.start.row + 1}) ➔ (
+                {wire.end.col + 1}, {wire.end.row + 1})
               </span>
               <button
                 className="delete-wire-button"
@@ -173,9 +168,8 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
           {outputWires.map((wire, idx) => (
             <div key={wire.id} className="wire-listing">
               <span>
-                ({wire.start.col + 1}, {wire.start.row + 1}) ➔ ({wire.end.col + 1},{' '}
-                {wire.end.row + 1})
-
+                ({wire.start.col + 1}, {wire.start.row + 1}) ➔ (
+                {wire.end.col + 1}, {wire.end.row + 1})
               </span>
               <button
                 className="delete-wire-button"
@@ -207,22 +201,23 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
               </div>
             )}
             {/* dropdown */}
+
             {option.component === 'dropdown' && (
               <div className="option-container">
                 <label>{option.label}</label>
-                <select
+                <OptionDropDown
                   value={
                     data.boardObjects[sessionData.options.currentEditItemIndex]
                       .options[index].value
                   }
                   onChange={(e) => handleSliderChange(index, e.target.value)}
                 >
-                  {option.choices.map((choice, idx) => (
-                    <option key={idx} value={choice}>
+                  {option.choices.map((choice) => (
+                    <option key={choice} value={choice}>
                       {choice}
                     </option>
                   ))}
-                </select>
+                </OptionDropDown>
               </div>
             )}
             {option.component === 'FileExplorer' && (
@@ -256,16 +251,14 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
                 setData={setData}
               />
             )}
-            {
-              option.component === 'HeroOptions' && (
-                <HeroOptions
-                  data={data}
-                  setData={setData}
-                  sessionData={sessionData}
-                  setSessionData={setSessionData}
-                />
-              )
-            }
+            {option.component === 'HeroOptions' && (
+              <HeroOptions
+                data={data}
+                setData={setData}
+                sessionData={sessionData}
+                setSessionData={setSessionData}
+              />
+            )}
           </div>
         ))}
       </div>
