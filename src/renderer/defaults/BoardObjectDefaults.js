@@ -35,6 +35,7 @@ const defaultAmp = {
       prop: 'value',
       value: 100,
       label: 'Level',
+      heroEnabled: true
     },
   ],
 };
@@ -73,6 +74,7 @@ const defaultOscillator = {
       choices: ['sine', 'square', 'sawtooth', 'triangle'],
       value: 'sine',
       label: 'Waveform',
+      heroEnabled: true
     },
     {
       component: 'slider',
@@ -82,6 +84,7 @@ const defaultOscillator = {
       value: 440,
       label: 'Frequency',
       prop: 'frequency',
+      heroEnabled: true
     },
   ],
 };
@@ -115,6 +118,7 @@ const defaultHero = {
             targetBoardObjectId: null,
             action: null,
             id: generateRandomId(),
+            targetValue: null,
           }
         ]
       }

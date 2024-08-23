@@ -91,18 +91,47 @@ const StepOptions = ({ step, setStep, boardObjects }) => {
             <select
               className="default-dd"
               value={step.action}
-              onChange={(e) => setStep('action', e.target.value)}
+              onChange={(e) => setStep(step.id, 'action', e.target.value)}
             >
-              {boardObject.options.map((option) => {
+              <option value={null}>Select</option>
+              {boardObject.options.map((option, index) => {
+                if (!option.heroEnabled) {
+                  return null;
+                }
                 return (
-                  <option key={option.id} value={option.id}>
-                    {option.label}
+                  <option key={index} value={'Set ' + option.prop}>
+                    Set {option.label}
                   </option>
                 );
               })}
             </select>
           </div>
         )}
+        {/* if there is a step action, provide the necessary options */}
+        {step.targetBoardObjectId &&
+          boardObject &&
+          step.action &&
+          boardObject.options.map((option, index) => {
+            if (!option.heroEnabled) {
+              return null;
+            }
+            if (option.component === 'slider') {
+              return (
+                <div className="option-container">
+                  <input
+                    type="range"
+                    min={option.min}
+                    max={option.max}
+                    step={option.step}
+                    value={step.targetValue}
+                    onChange={(e) =>
+                      setStep(step.id, 'targetValue', e.target.value)
+                    }
+                  />
+                </div>
+              );
+            }
+          })}
       </div>
     </div>
   );
