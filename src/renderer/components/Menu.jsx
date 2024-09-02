@@ -4,6 +4,7 @@ import BoardObjectOptions from './options/BoardObjectOptions';
 import { startCreatingWire } from '../services/BoardObjectServices';
 import { playCircuit } from '../controllers/CircuitController';
 import ProjectDrawer from './options/ProjectDrawer';
+import { saveProject } from '../services/ProjectServices';
 
 const Menu = ({ data, setData, sessionData, setSessionData }) => {
   return (
@@ -27,6 +28,7 @@ const Menu = ({ data, setData, sessionData, setSessionData }) => {
         setSessionData={setSessionData}
         data={data}
         setData={setData}
+        saveProject={saveProject}
       />
     </div>
   );
@@ -43,11 +45,13 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
     playCircuit(data);
   };
 
-  const saveCurrentProject = () => {
-  }
+  const saveCurrentProject = async () => {
+    await saveProject(data);
+  };
 
   const toggleProjectDrawer = () => {
-  }
+    // Your existing code for toggling the project drawer
+  };
 
   return (
     <div className="control-menu-options">
@@ -63,7 +67,7 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
         Create Wire
       </div>
       <div className="default-button" onClick={saveCurrentProject}>
-        Save
+        Save Project
       </div>
       <ProjectDrawer />
     </div>

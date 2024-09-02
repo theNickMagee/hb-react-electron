@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Menu from './Menu';
 import MainComponent from './MainComponent';
 import MidiListener from './MidiListener';
-import { createDefaultProject } from '../services/ProjectServices';
+import { createDefaultProject, saveProject } from '../services/ProjectServices';
 
 function MainApp() {
   const [data, setData] = useState({
@@ -27,21 +27,11 @@ function MainApp() {
       open: false,
       currentEditItem: null,
     },
-    // if there is an output wire, deliver audio to output wire. if there is no output wire, and it is a 'PLAY' event, play audio. if it is a 'RENDER' event, render audio.
-    // you need a source before the midi
     events: {},
   });
 
-  const saveProject = async () => {
-    const result = await window.electron.ipcRenderer.invoke(
-      'save-project',
-      data,
-    );
-    if (result.success) {
-      console.log(`Project saved to ${result.filePath}`);
-    } else {
-      console.error('Failed to save project:', result.error);
-    }
+  const handleSaveProject = async () => {
+    await saveProject(data);
   };
 
   useEffect(() => {
