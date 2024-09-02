@@ -25,16 +25,18 @@ const ProjectDrawer = ({ sessionData, setSessionData }) => {
   };
 
   return (
-    <div className="project-drawer">
+    <div className="project-section">
       <div className="default-button" onClick={toggleDrawer}>
         {drawerOpen ? 'Close' : 'Open'} Project Drawer
       </div>
-      {drawerOpen &&
-        projects.map((project, index) => (
-          <div key={index} className="project-item">
-            {project}
-          </div>
-        ))}
+      <div className="project-drawer">
+        {drawerOpen &&
+          projects.map((project, index) => (
+            <div key={index} className="default-button project-item">
+              {project.replace('.hb', '')}
+            </div>
+          ))}
+      </div>
     </div>
   );
 };

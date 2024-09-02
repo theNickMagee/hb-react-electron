@@ -29,3 +29,17 @@
   width: 2.5rem;
   height: 2.5rem;
 }
+
+
+.project-drawer{
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.project-item{
+  max-width: 5rem;
+  width: fit-content;
+  padding: 0.2rem;
+  /* try to shring */
+  flex: 1;
+}
