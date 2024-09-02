@@ -144,18 +144,24 @@ const createWindow = async () => {
     return { success: false, error: 'No file path selected' };
   });
 
-  ipcMain.handle('read-saved-projects', async () => {
-    const savedProjectsDir = path.join(
-      app.getPath('userData'),
-      'savedProjects',
-    );
+  ipcMain.handle('read-saved-projects', async (event, folderPath) => {
     try {
-      const files = await fs.readdir(savedProjectsDir);
+      const files = await fs.readdir(folderPath);
       return files.filter((file) => file.endsWith('.hb'));
     } catch (error) {
       console.error('Failed to read saved projects directory:', error);
       return [];
     }
+  });
+
+  ipcMain.handle('set-project-drawer', async () => {
+    const { filePaths } = await dialog.showOpenDialog(mainWindow, {
+      properties: ['openDirectory'],
+    });
+    if (filePaths && filePaths.length > 0) {
+      return filePaths[0]; // Return the selected folder path
+    }
+    return null; // No folder selected
   });
 
   const menuBuilder = new MenuBuilder(mainWindow);

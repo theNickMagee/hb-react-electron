@@ -50,7 +50,21 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
   };
 
   const toggleProjectDrawer = () => {
-    // Your existing code for toggling the project drawer
+    setSessionData({
+      ...sessionData,
+      isProjectDrawerOpen: !sessionData.isProjectDrawerOpen,
+    });
+  };
+
+  const setProjectDrawer = async () => {
+    const folderPath =
+      await window.electron.ipcRenderer.invoke('set-project-drawer');
+    if (folderPath) {
+      setSessionData({
+        ...sessionData,
+        projectDrawerPath: folderPath,
+      });
+    }
   };
 
   return (
@@ -69,7 +83,13 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
       <div className="default-button" onClick={saveCurrentProject}>
         Save Project
       </div>
-      <ProjectDrawer />
+      <div className="default-button" onClick={setProjectDrawer}>
+        Set Drawer
+      </div>
+      <ProjectDrawer
+        sessionData={sessionData}
+        setSessionData={setSessionData}
+      />
     </div>
   );
 };
