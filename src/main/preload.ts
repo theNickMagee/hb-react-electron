@@ -1,6 +1,10 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
-export type Channels = 'ipc-example' | 'open-file-dialog';
+export type Channels =
+  | 'ipc-example'
+  | 'open-file-dialog'
+  | 'save-project'
+  | 'read-saved-projects';
 
 const electronHandler = {
   ipcRenderer: {

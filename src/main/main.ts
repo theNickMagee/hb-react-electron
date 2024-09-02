@@ -125,6 +125,39 @@ const createWindow = async () => {
     }
   });
 
+  ipcMain.handle('save-project', async (event, projectData) => {
+    const { filePath } = await dialog.showSaveDialog({
+      title: 'Save Project',
+      defaultPath: 'project.hb',
+      filters: [{ name: 'Hero Beats Project', extensions: ['hb'] }],
+    });
+
+    if (filePath) {
+      try {
+        await fs.writeFile(filePath, JSON.stringify(projectData, null, 2));
+        return { success: true, filePath };
+      } catch (error) {
+        console.error('Failed to save project:', error);
+        return { success: false, error };
+      }
+    }
+    return { success: false, error: 'No file path selected' };
+  });
+
+  ipcMain.handle('read-saved-projects', async () => {
+    const savedProjectsDir = path.join(
+      app.getPath('userData'),
+      'savedProjects',
+    );
+    try {
+      const files = await fs.readdir(savedProjectsDir);
+      return files.filter((file) => file.endsWith('.hb'));
+    } catch (error) {
+      console.error('Failed to read saved projects directory:', error);
+      return [];
+    }
+  });
+
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 
@@ -153,11 +186,18 @@ app.on('window-all-closed', () => {
 
 app
   .whenReady()
-  .then(() => {
+  .then(async () => {
+    const savedProjectsDir = path.join(
+      app.getPath('userData'),
+      'savedProjects',
+    );
+    try {
+      await fs.mkdir(savedProjectsDir, { recursive: true });
+    } catch (error) {
+      console.error('Failed to create saved projects directory:', error);
+    }
     createWindow();
     app.on('activate', () => {
-      // On macOS it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();
     });
   })

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Menu from './Menu';
 import MainComponent from './MainComponent';
 import MidiListener from './MidiListener';
@@ -12,9 +12,7 @@ function MainApp() {
   });
 
   const [savedData, setSavedData] = useState({
-    projects: [
-      {...createDefaultProject()},
-    ]
+    projects: [{ ...createDefaultProject() }],
   });
 
   const [sessionData, setSessionData] = useState({
@@ -33,9 +31,28 @@ function MainApp() {
     // you need a source before the midi
     events: {},
   });
-  
 
-  // on window load
+  const saveProject = async () => {
+    const result = await window.electron.ipcRenderer.invoke(
+      'save-project',
+      data,
+    );
+    if (result.success) {
+      console.log(`Project saved to ${result.filePath}`);
+    } else {
+      console.error('Failed to save project:', result.error);
+    }
+  };
+
+  useEffect(() => {
+    const loadSavedProjects = async () => {
+      const projects = await window.electron.ipcRenderer.invoke(
+        'read-saved-projects',
+      );
+      setSavedData({ projects });
+    };
+    loadSavedProjects();
+  }, []);
 
   return (
     <div className="main-app">
