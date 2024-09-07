@@ -78,7 +78,11 @@ const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
                 left: col * cellSize,
                 width: cellSize,
                 height: cellSize,
-                backgroundColor: isHovered ? '#333333' : 'transparent',
+                backgroundColor: isHovered
+                  ? sessionData.droppingItem.isDroppingItem
+                    ? '#555555' // Different hover effect when dropping an item
+                    : '#333333'
+                  : 'transparent',
                 border: editing ? '2px solid white' : '1px solid black',
                 boxSizing: 'border-box',
                 boxShadow:
@@ -94,7 +98,25 @@ const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
                 <img
                   src={boardObject.icon}
                   alt=""
-                  style={{ width: '100%', height: '100%' }}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    opacity: isHovered ? 0.5 : 1, // Change opacity on hover
+                  }}
+                />
+              )}
+              {isHovered && sessionData.droppingItem.isDroppingItem && (
+                <img
+                  src={sessionData.droppingItem.item.icon}
+                  alt=""
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    opacity: 0.5, // Different shade for the icon being dropped
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                  }}
                 />
               )}
             </div>

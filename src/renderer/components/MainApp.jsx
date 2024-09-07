@@ -28,6 +28,7 @@ function MainApp() {
       currentEditItem: null,
     },
     events: {},
+    tooltip: '',
   });
 
   const handleSaveProject = async () => {
