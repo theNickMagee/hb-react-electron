@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { addProjectToBoard } from '../../services/ProjectServices';
 
 const ProjectDrawer = ({ sessionData, setSessionData, setData, data }) => {
   const [projects, setProjects] = useState([]);
@@ -40,32 +41,6 @@ const ProjectDrawer = ({ sessionData, setSessionData, setData, data }) => {
     setDrawerOpen(!drawerOpen);
   };
 
-  const addProjectToBoard = async (projectFile) => {
-    console.log('project file: ', projectFile);
-    try {
-      const projectData = await window.electron.ipcRenderer.invoke(
-        'read-project-file',
-        `${sessionData.projectDrawerPath}/${projectFile}`,
-      );
-
-      console.log('project data: ', projectData);
-      if (projectData) {
-        setSessionData((prevSessionData) => ({
-          ...prevSessionData,
-          activeBoardObject: projectData.boardObjects,
-          activeBoardObjectIndex: projectData.boardObjects.length - 1,
-        }));
-        setData((prevData) => ({
-          ...prevData,
-          boardObjects: [...prevData.boardObjects, ...projectData.boardObjects],
-          wires: [...prevData.wires, ...projectData.wires],
-        }));
-      }
-    } catch (error) {
-      console.error('Failed to add project to board:', error);
-    }
-  };
-
   useEffect(() => {
     if (!sessionData.projectDrawerPath) {
       const projectDrawerPath = localStorage.getItem('projectDrawerPath');
@@ -89,7 +64,9 @@ const ProjectDrawer = ({ sessionData, setSessionData, setData, data }) => {
             <div
               key={index}
               className="default-button project-item"
-              onClick={() => addProjectToBoard(project)}
+              onClick={() =>
+                addProjectToBoard(project, sessionData, setSessionData, setData)
+              }
             >
               {project.replace('.hb', '')}
             </div>
