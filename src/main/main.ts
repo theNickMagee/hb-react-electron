@@ -164,6 +164,17 @@ const createWindow = async () => {
     return null; // No folder selected
   });
 
+  ipcMain.handle('read-project-file', async (event, filePath) => {
+    try {
+      const data = await fs.readFile(filePath, 'utf-8');
+      const projectData = JSON.parse(data);
+      return projectData;
+    } catch (error) {
+      console.error('Failed to read project file:', error);
+      return null;
+    }
+  });
+
   const menuBuilder = new MenuBuilder(mainWindow);
   menuBuilder.buildMenu();
 

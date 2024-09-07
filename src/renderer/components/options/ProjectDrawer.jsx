@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const ProjectDrawer = ({ sessionData, setSessionData }) => {
+const ProjectDrawer = ({ sessionData, setSessionData, setData, data }) => {
   const [projects, setProjects] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -24,6 +24,32 @@ const ProjectDrawer = ({ sessionData, setSessionData }) => {
     setDrawerOpen(!drawerOpen);
   };
 
+  const addProjectToBoard = async (projectFile) => {
+    console.log('project file: ', projectFile);
+    try {
+      const projectData = await window.electron.ipcRenderer.invoke(
+        'read-project-file',
+        `${sessionData.projectDrawerPath}/${projectFile}`,
+      );
+
+      console.log('project data: ', projectData);
+      if (projectData) {
+        setSessionData((prevSessionData) => ({
+          ...prevSessionData,
+          activeBoardObject: projectData.boardObjects,
+          activeBoardObjectIndex: projectData.boardObjects.length - 1,
+        }));
+        setData((prevData) => ({
+          ...prevData,
+          boardObjects: [...prevData.boardObjects, ...projectData.boardObjects],
+          wires: [...prevData.wires, ...projectData.wires],
+        }));
+      }
+    } catch (error) {
+      console.error('Failed to add project to board:', error);
+    }
+  };
+
   return (
     <div className="project-section">
       <div className="default-button" onClick={toggleDrawer}>
@@ -32,7 +58,11 @@ const ProjectDrawer = ({ sessionData, setSessionData }) => {
       <div className="project-drawer">
         {drawerOpen &&
           projects.map((project, index) => (
-            <div key={index} className="default-button project-item">
+            <div
+              key={index}
+              className="default-button project-item"
+              onClick={() => addProjectToBoard(project)}
+            >
               {project.replace('.hb', '')}
             </div>
           ))}

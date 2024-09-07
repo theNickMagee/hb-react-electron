@@ -89,6 +89,8 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
       <ProjectDrawer
         sessionData={sessionData}
         setSessionData={setSessionData}
+        data={data}
+        setData={setData}
       />
     </div>
   );
