@@ -4,6 +4,7 @@ import Menu from './Menu';
 import MainComponent from './MainComponent';
 import MidiListener from './MidiListener';
 import { createDefaultProject, saveProject } from '../services/ProjectServices';
+import ToolTip from './tooltip/ToolTip';
 
 function MainApp() {
   const [data, setData] = useState({
@@ -28,7 +29,9 @@ function MainApp() {
       currentEditItem: null,
     },
     events: {},
-    tooltip: '',
+    tooltip: {
+      message: 'Hello',
+    },
   });
 
   const handleSaveProject = async () => {
@@ -57,6 +60,11 @@ function MainApp() {
         data={data}
         setData={setData}
         sessionData={sessionData}
+        setSessionData={setSessionData}
+      />
+      <ToolTip
+        sessionData={sessionData}
+        data={data}
         setSessionData={setSessionData}
       />
       <MidiListener />
