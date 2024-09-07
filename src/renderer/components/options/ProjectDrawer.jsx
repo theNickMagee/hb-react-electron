@@ -63,10 +63,14 @@ const ProjectDrawer = ({ sessionData, setSessionData, setData, data }) => {
           projects.map((project, index) => (
             <div
               key={index}
-              className="default-button project-item"
-              onClick={() =>
-                addProjectToBoard(project, sessionData, setSessionData, setData)
-              }
+              className={`default-button project-item ${sessionData.isDroppingProject ? 'project-item-dropping' : ''}`}
+              onClick={() => {
+                setSessionData({
+                  ...sessionData,
+                  isDroppingProject: true,
+                  droppingProjectData: project,
+                });
+              }}
             >
               {project.replace('.hb', '')}
             </div>

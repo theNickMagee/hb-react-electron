@@ -19,7 +19,7 @@ const saveProject = async (data) => {
     }
 };
 
-const addProjectToBoard = async (projectFile, sessionData, setSessionData, setData) => {
+const addProjectToBoard = async (projectFile, sessionData, setSessionData, setData, originRow, originCol) => {
     console.log('project file: ', projectFile);
     try {
         const projectData = await window.electron.ipcRenderer.invoke(
@@ -29,14 +29,21 @@ const addProjectToBoard = async (projectFile, sessionData, setSessionData, setDa
 
         console.log('project data: ', projectData);
         if (projectData) {
+            const offsetBoardObjects = projectData.boardObjects.map(obj => ({
+                ...obj,
+                row: obj.row + originRow,
+                col: obj.col + originCol,
+            }));
+
             setSessionData((prevSessionData) => ({
                 ...prevSessionData,
-                activeBoardObject: projectData.boardObjects,
-                activeBoardObjectIndex: projectData.boardObjects.length - 1,
+                activeBoardObject: offsetBoardObjects,
+                activeBoardObjectIndex: offsetBoardObjects.length - 1,
+                isDroppingProject: false, // Stop dropping project
             }));
             setData((prevData) => ({
                 ...prevData,
-                boardObjects: [...prevData.boardObjects, ...projectData.boardObjects],
+                boardObjects: [...prevData.boardObjects, ...offsetBoardObjects],
                 wires: [...prevData.wires, ...projectData.wires],
             }));
         }

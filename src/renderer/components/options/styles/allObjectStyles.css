@@ -43,3 +43,7 @@
   /* try to shring */
   flex: 1;
 }
+
+.project-item-dropping {
+  background-color: #ffcc00; /* Change to your desired color */
+}

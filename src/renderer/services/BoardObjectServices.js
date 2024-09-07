@@ -1,3 +1,4 @@
+import { addProjectToBoard } from "./ProjectServices";
 import { generateRandomId } from "./util";
 
 const handleGridPress = (
@@ -26,9 +27,9 @@ const handleGridPress = (
     console.log('Dropping item at:', row, col);
     placeItem(row, col, sessionData, data, setData, setSessionData);
   } else if (sessionData.isDroppingProject) {
-    placeProject(row, col, sessionData, data, setData, setSessionData)
-  }
-  else if (sessionData.isCreatingWire) {
+    console.log("dropping: ", sessionData.droppingProjectData);
+    addProjectToBoard(sessionData.droppingProjectData, sessionData, setSessionData, setData, row, col);
+  } else if (sessionData.isCreatingWire) {
     console.log('Dropping wire at:', row, col);
     dropWire(row, col, sessionData, setSessionData, data, setData);
   } else if (boardObject && !sessionData.droppingItem.isDroppingItem) {
