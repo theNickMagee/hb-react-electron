@@ -5,10 +5,26 @@ const ProjectDrawer = ({ sessionData, setSessionData, setData, data }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const loadProjects = async () => {
-    if (sessionData.projectDrawerPath) {
+    let projectDrawerPath = sessionData.projectDrawerPath;
+    console.log('initial load projects sessionData: ', sessionData);
+    if (!projectDrawerPath) {
+      projectDrawerPath = localStorage.getItem('projectDrawerPath');
+      console.log(
+        'got project drawer path from localStorage: ',
+        projectDrawerPath,
+      );
+      if (projectDrawerPath) {
+        setSessionData({
+          ...sessionData,
+          projectDrawerPath,
+        });
+      }
+    }
+
+    if (projectDrawerPath) {
       const files = await window.electron.ipcRenderer.invoke(
         'read-saved-projects',
-        sessionData.projectDrawerPath,
+        projectDrawerPath,
       );
       setProjects(files);
     }
@@ -49,6 +65,18 @@ const ProjectDrawer = ({ sessionData, setSessionData, setData, data }) => {
       console.error('Failed to add project to board:', error);
     }
   };
+
+  useEffect(() => {
+    if (!sessionData.projectDrawerPath) {
+      const projectDrawerPath = localStorage.getItem('projectDrawerPath');
+      if (projectDrawerPath) {
+        setSessionData({
+          ...sessionData,
+          projectDrawerPath,
+        });
+      }
+    }
+  }, []);
 
   return (
     <div className="project-section">

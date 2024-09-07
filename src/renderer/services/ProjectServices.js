@@ -11,7 +11,11 @@ const saveProject = async (data) => {
     if (result.success) {
         console.log(`Project saved to ${result.filePath}`);
     } else {
-        console.error('Failed to save project:', result.error);
+        if (result.error === 'No file path selected') {
+            console.warn('Save operation was canceled by the user.');
+        } else {
+            console.error('Failed to save project:', result.error);
+        }
     }
 };
 
