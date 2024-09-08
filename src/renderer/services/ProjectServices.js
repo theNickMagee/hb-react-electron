@@ -66,8 +66,8 @@ const addProjectToBoard = async (projectFile, sessionData, setSessionData, setDa
             setSessionData((prevSessionData) => ({
                 ...prevSessionData,
                 activeBoardObject: offsetBoardObjects,
-                activeBoardObjectIndex: offsetBoardObjects.length - 1,
                 isDroppingProject: false, // Stop dropping project
+                droppingProjectData: null, // Reset dropping project data
             }));
             setData((prevData) => ({
                 ...prevData,
