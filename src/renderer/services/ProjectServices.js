@@ -46,6 +46,10 @@ const addProjectToBoard = async (projectFile, sessionData, setSessionData, setDa
             );
 
             if (hasOverlap) {
+                // setSessionData({
+                //     ...sessionData,
+                //     warningMessage: 'Cannot add project: Overlapping board objects detected.',
+                // });
                 console.warn('Cannot add project: Overlapping board objects detected.');
                 return;
             }

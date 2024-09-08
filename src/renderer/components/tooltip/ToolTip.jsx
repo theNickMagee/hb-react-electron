@@ -13,16 +13,33 @@ const ToolTip = ({ sessionData, setSessionData }) => {
       message = 'Creating wire';
     } else if (sessionData.options.open) {
       message = 'Editing options';
+    } else if (sessionData.warningMessage) {
+      //   message = sessionData.warningMessage;
+      //   setSessionData((prevData) => ({
+      //     ...prevData,
+      //     warningMessage: '',
+      //   }));
+      //   setTimeout(() => {
+      //     console.log('Timeout executed');
+      //     setSessionData((prevData) => {
+      //       console.log('Previous session data:', prevData);
+      //       const newData = {
+      //         ...prevData,
+      //         tooltip: {
+      //           ...prevData.tooltip,
+      //           message: '',
+      //         },
+      //       };
+      //       console.log('New session data:', newData);
+      //       return newData;
+      //     });
+      //   }, 3000);
     } else {
       message = '';
     }
 
     return message;
   };
-
-  //   useEffect(() => {
-  //     decideToolTip(sessionData);
-  //   }, [sessionData?.droppingItem.isDroppingItem, sessionData?.isCreatingWire]);
 
   return (
     <div className="tooltip">
