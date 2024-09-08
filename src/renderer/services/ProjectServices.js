@@ -35,6 +35,21 @@ const addProjectToBoard = async (projectFile, sessionData, setSessionData, setDa
                 col: obj.col + originCol,
             }));
 
+            // Ensure activeBoardObject is an array
+            const activeBoardObjects = sessionData.activeBoardObject || [];
+
+            // Check for overlap
+            const hasOverlap = offsetBoardObjects.some(newObj =>
+                activeBoardObjects.some(existingObj =>
+                    existingObj.row === newObj.row && existingObj.col === newObj.col
+                )
+            );
+
+            if (hasOverlap) {
+                console.warn('Cannot add project: Overlapping board objects detected.');
+                return;
+            }
+
             setSessionData((prevSessionData) => ({
                 ...prevSessionData,
                 activeBoardObject: offsetBoardObjects,
