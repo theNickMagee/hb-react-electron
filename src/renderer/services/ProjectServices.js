@@ -46,13 +46,22 @@ const addProjectToBoard = async (projectFile, sessionData, setSessionData, setDa
             );
 
             if (hasOverlap) {
-                // setSessionData({
-                //     ...sessionData,
-                //     warningMessage: 'Cannot add project: Overlapping board objects detected.',
-                // });
                 console.warn('Cannot add project: Overlapping board objects detected.');
                 return;
             }
+
+            // Translate wires to the new positions of the board objects
+            const offsetWires = projectData.wires.map(wire => ({
+                ...wire,
+                start: {
+                    row: wire.start.row + originRow,
+                    col: wire.start.col + originCol,
+                },
+                end: {
+                    row: wire.end.row + originRow,
+                    col: wire.end.col + originCol,
+                },
+            }));
 
             setSessionData((prevSessionData) => ({
                 ...prevSessionData,
@@ -63,7 +72,7 @@ const addProjectToBoard = async (projectFile, sessionData, setSessionData, setDa
             setData((prevData) => ({
                 ...prevData,
                 boardObjects: [...prevData.boardObjects, ...offsetBoardObjects],
-                wires: [...prevData.wires, ...projectData.wires],
+                wires: [...prevData.wires, ...offsetWires], // Add translated wires to the main data
             }));
         }
     } catch (error) {
