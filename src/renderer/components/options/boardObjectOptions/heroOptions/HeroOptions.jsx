@@ -112,12 +112,16 @@ const StepOptions = ({ step, setStep, boardObjects }) => {
           boardObject &&
           step.action &&
           boardObject.options.map((option, index) => {
-            if (!option.heroEnabled) {
+            if (
+              !option.heroEnabled ||
+              option.prop !== step.action.replace('Set ', '')
+            ) {
+              // check that this option is the one of the step.
               return null;
             }
             if (option.component === 'slider') {
               return (
-                <div className="option-container">
+                <div className="option-container" key={index}>
                   <input
                     type="range"
                     min={option.min}
@@ -131,6 +135,8 @@ const StepOptions = ({ step, setStep, boardObjects }) => {
                 </div>
               );
             }
+            // Add other option components here if needed
+            return null;
           })}
       </div>
     </div>
