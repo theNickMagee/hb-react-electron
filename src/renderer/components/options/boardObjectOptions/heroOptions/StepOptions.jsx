@@ -89,6 +89,8 @@ const StepOptions = ({ step, setStep, boardObjects }) => {
             // Add other option components here if needed
             return null;
           })}
+
+        {/* if there is an action selected, allow for the "Time" to be selected */}
       </div>
     </div>
   );

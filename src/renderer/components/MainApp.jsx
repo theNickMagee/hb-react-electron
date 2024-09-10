@@ -5,6 +5,7 @@ import MainComponent from './MainComponent';
 import MidiListener from './MidiListener';
 import { createDefaultProject, saveProject } from '../services/ProjectServices';
 import ToolTip from './tooltip/ToolTip';
+import Timeline from './timeline/Timeline';
 
 function MainApp() {
   const [data, setData] = useState({
@@ -28,9 +29,16 @@ function MainApp() {
       open: false,
       currentEditItem: null,
     },
-    events: {},
     tooltip: {
       message: 'Hello',
+    },
+    timeline: {
+      loop: false,
+      loopStart: 0,
+      loopEnd: 0,
+      bpm: 120,
+      numMeasures: 0,
+      startingMeasure: 0,
     },
   });
 
@@ -65,6 +73,12 @@ function MainApp() {
       <ToolTip
         sessionData={sessionData}
         data={data}
+        setSessionData={setSessionData}
+      />
+      <Timeline
+        data={data}
+        setData={setData}
+        sessionData={sessionData}
         setSessionData={setSessionData}
       />
       <MidiListener />
