@@ -9,7 +9,6 @@ const handleGridPress = (
   setData,
   setSessionData,
 ) => {
-  console.log('Grid pressed at:', row, col);
 
   const boardObject = data.boardObjects.find(
     (obj) => obj.row === row && obj.col === col,
@@ -24,17 +23,13 @@ const handleGridPress = (
     sessionData.options.currentEditItem.col === col;
 
   if (sessionData.droppingItem.isDroppingItem) {
-    console.log('Dropping item at:', row, col);
     placeItem(row, col, sessionData, data, setData, setSessionData);
   } else if (sessionData.isDroppingProject) {
-    console.log("dropping: ", sessionData.droppingProjectData);
     addProjectToBoard(sessionData.droppingProjectData, sessionData, setSessionData, setData, row, col);
   } else if (sessionData.isCreatingWire) {
-    console.log('Dropping wire at:', row, col);
     dropWire(row, col, sessionData, setSessionData, data, setData);
   } else if (boardObject && !sessionData.droppingItem.isDroppingItem) {
     if (isSameObjectClicked) {
-      console.log('Toggling edit options off for:', boardObject);
       setSessionData({
         ...sessionData,
         options: {
@@ -44,7 +39,6 @@ const handleGridPress = (
         },
       });
     } else {
-      console.log('Opening edit options for:', boardObject);
       setSessionData({
         ...sessionData,
         options: {

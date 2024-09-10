@@ -59,7 +59,6 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
   const setProjectDrawer = async () => {
     const folderPath =
       await window.electron.ipcRenderer.invoke('set-project-drawer');
-    console.log('setting path to :', folderPath);
     // set local storage
     if (folderPath) {
       localStorage.setItem('projectDrawerPath', folderPath);
