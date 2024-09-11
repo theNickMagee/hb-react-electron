@@ -162,3 +162,10 @@ body {
 .active {
   background-color: var(--secondary-mid);
 }
+
+
+.default-dd{
+  font-size: 0.6rem;
+  display: flex;
+  flex-direction: column;
+}

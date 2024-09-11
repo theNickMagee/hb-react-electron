@@ -12,4 +12,28 @@
     height: 9rem;
   }
   
-  
+.bpm-input {
+  width: 50px;
+  margin-left: 10px;
+  padding: 5px;
+  border: none;
+  border-radius: 3px;
+  background-color: transparent;
+  color: #fffafa
+}
+
+.timeline-header{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.timeline-options{
+    display: flex;
+    /* width: 100%; */
+}
+
+.textbox-label{
+    font-size: 0.6rem;
+    padding-left: 1rem
+}

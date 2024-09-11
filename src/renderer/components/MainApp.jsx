@@ -11,6 +11,10 @@ function MainApp() {
   const [data, setData] = useState({
     boardObjects: [],
     wires: [],
+    timeline: {
+      measures: 8,
+      bpm: 120,
+    },
   });
 
   const [savedData, setSavedData] = useState({
