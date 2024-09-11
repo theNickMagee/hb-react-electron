@@ -37,3 +37,8 @@
     font-size: 0.6rem;
     padding-left: 1rem
 }
+
+.timeline-content{
+    background-color: rgb(44, 44, 44);
+    height: 6rem;
+}
