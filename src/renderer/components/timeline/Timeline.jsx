@@ -44,7 +44,11 @@ const Timeline = ({ data, setData, setSessionData, sessionData }) => {
         </div>
       </div>
       <div className="timeline-content">
-        {/* for each hero, in the beginning have inactive or inactive - not right now but maybe in the future */}
+        <div className="timeline-hero-row">
+          {[...Array(data.timeline.measures).keys()].map((n) => (
+            <div className="timeline-measure"></div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -41,6 +41,7 @@ const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
             step={step}
             setStep={setStep}
             boardObjects={data.boardObjects}
+            numMeasures={data.timeline.measures}
           />
         );
       })}

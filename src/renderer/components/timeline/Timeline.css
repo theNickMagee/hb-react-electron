@@ -41,4 +41,20 @@
 .timeline-content{
     background-color: rgb(44, 44, 44);
     height: 6rem;
+    display: flex;
 }
+
+.timeline-hero-row{
+    display: flex;
+}
+
+.timeline-measure{
+    background-color: rgb(17, 17, 17);
+    width: 4rem;
+    height: 1.5rem;
+}
+
+.timeline-measure:hover{
+    background-color:rgb(54, 54, 54)
+}
+

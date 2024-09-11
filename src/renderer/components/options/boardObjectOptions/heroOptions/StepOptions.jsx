@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
+import OptionDropDown from '../../../miniComponents/OptionDropDown';
 
-const StepOptions = ({ step, setStep, boardObjects }) => {
+const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
   const [boardObject, setBoardObject] = React.useState(null);
 
   useEffect(() => {
@@ -42,8 +43,7 @@ const StepOptions = ({ step, setStep, boardObjects }) => {
               onChange={(e) => setStep(step.id, 'action', e.target.value)}
             >
               <option value={null}>Select</option>
-              <option value="Play path after">Play Path After</option>
-              <option value="Loop path after">Loop Path After</option>
+              {/* add 2 options here - 'play path after', and 'loop path after' */}
 
               {boardObject.options.map((option, index) => {
                 if (!option.heroEnabled) {
@@ -89,8 +89,19 @@ const StepOptions = ({ step, setStep, boardObjects }) => {
             // Add other option components here if needed
             return null;
           })}
-
-        {/* if there is an action selected, allow for the "Time" to be selected */}
+        {step.targetBoardObjectId && boardObject && step.action && (
+          <OptionDropDown
+            label="Measure"
+            value={step.measure}
+            onChange={(e) => setStep(step.id, 'measure', e.target.value)}
+          >
+            {[...Array(numMeasures + 1).keys()].map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
+          </OptionDropDown>
+        )}
       </div>
     </div>
   );
