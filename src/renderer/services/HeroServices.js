@@ -1,5 +1,6 @@
+const getAllHeroes = ({ data }) => {
+  // Assuming heroes are a type of board object
+  return data.boardObjects.filter(obj => obj.type === 'Hero');
+};
 
-
-const getAllHeros = () => {
-    // return array of heroes, which are a board object type. should have their steps in them
-}
+export { getAllHeroes };

@@ -41,11 +41,12 @@
 .timeline-content{
     background-color: rgb(44, 44, 44);
     height: 6rem;
-    display: flex;
+    overflow-y: scroll;
 }
 
 .timeline-hero-row{
     display: flex;
+    max-width: 100%;
 }
 
 .timeline-measure{

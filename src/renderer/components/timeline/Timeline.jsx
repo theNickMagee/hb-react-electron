@@ -1,12 +1,20 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import OptionDropDown from '../miniComponents/OptionDropDown';
 import './Timeline.css';
+import { getAllHeroes } from '../../services/HeroServices';
 
 const Timeline = ({ data, setData, setSessionData, sessionData }) => {
   const handleBpmChange = (e) => {
     const newBpm = parseInt(e.target.value, 10);
     setData({ ...data, timeline: { ...data.timeline, bpm: newBpm } });
   };
+
+  const [allHeroes, setAllHeroes] = useState([]);
+
+  useEffect(() => {
+    const heroes = getAllHeroes({ data });
+    setAllHeroes(heroes);
+  }, [data && data.boardObjects]);
 
   return (
     <div className="timeline">
@@ -44,11 +52,13 @@ const Timeline = ({ data, setData, setSessionData, sessionData }) => {
         </div>
       </div>
       <div className="timeline-content">
-        <div className="timeline-hero-row">
-          {[...Array(data.timeline.measures).keys()].map((n) => (
-            <div className="timeline-measure"></div>
-          ))}
-        </div>
+        {allHeroes.map((hero) => (
+          <div key={hero.id} className="timeline-hero-row">
+            {[...Array(data.timeline.measures).keys()].map((n) => (
+              <div key={n} className="timeline-measure"></div>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );
