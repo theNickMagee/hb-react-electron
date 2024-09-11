@@ -69,8 +69,17 @@ const playCircuit = async (data) => {
   }
 };
 
+
+const renderTimeline = (data) => {
+  // render a wav file based on the hero events
+
+  // sort hero events
+
+  // 
+}
+
 const handleCommand = (commandType, commandPayload, data, setData, sessionData, setSessionData) => {
 
 }
 
-export { playCircuit, handleMidiMessage, handleCommand };
+export { playCircuit, handleMidiMessage, handleCommand, renderTimeline };

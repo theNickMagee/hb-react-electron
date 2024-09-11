@@ -2,7 +2,7 @@ import React from 'react';
 import DefaultMenuOptions from './Menu/DefaultMenuOptions';
 import BoardObjectOptions from './options/BoardObjectOptions';
 import { startCreatingWire } from '../services/BoardObjectServices';
-import { playCircuit } from '../controllers/CircuitController';
+import { playCircuit, renderTimeline } from '../controllers/CircuitController';
 import ProjectDrawer from './options/ProjectDrawer';
 import { saveProject } from '../services/ProjectServices';
 
@@ -45,8 +45,13 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
     playCircuit(data);
   };
 
+  const render = () => {
+    renderTimeline(data);
+  };
+
   const saveCurrentProject = async () => {
-    await saveProject(data);
+    const sanitizedData = JSON.parse(JSON.stringify(data));
+    await saveProject(sanitizedData);
   };
 
   const toggleProjectDrawer = () => {
@@ -71,6 +76,9 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
 
   return (
     <div className="control-menu-options">
+      <div className="default-button" onClick={render}>
+        Render Timeline
+      </div>
       <div className="default-button" onClick={handlePlay}>
         Play
       </div>

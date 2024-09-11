@@ -183,7 +183,7 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
       )}
       <div className="board-object-option-container">
         {sessionData.options.currentEditItem.options.map((option, index) => (
-          <div>
+          <div key={index}>
             {option.component === 'slider' && (
               <div className="option-container">
                 <label>{option.label}</label>
@@ -200,8 +200,6 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
                 />
               </div>
             )}
-            {/* dropdown */}
-
             {option.component === 'dropdown' && (
               <div className="option-container">
                 <label>{option.label}</label>

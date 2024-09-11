@@ -43,8 +43,8 @@ const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
               onChange={(e) => setStep(step.id, 'action', e.target.value)}
             >
               <option value={null}>Select</option>
-              {/* add 2 options here - 'play path after', and 'loop path after' */}
-
+              <option value="play path after">Play Path After</option>
+              {/* <option value="loop path after">Loop Path After</option> */}
               {boardObject.options.map((option, index) => {
                 if (!option.heroEnabled) {
                   return null;
