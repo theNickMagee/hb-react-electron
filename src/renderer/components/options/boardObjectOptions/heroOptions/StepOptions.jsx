@@ -19,12 +19,12 @@ const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
           <div className="small-font">Board Object:</div>
           <select
             className="default-dd"
-            value={step.targetBoardObjectId}
+            value={step.targetBoardObjectId || ''}
             onChange={(e) =>
               setStep(step.id, 'targetBoardObjectId', e.target.value)
             }
           >
-            <option value={null}>Select</option>
+            <option value="">Select</option>
             {boardObjects.map((obj) => {
               return (
                 <option key={obj.id} value={obj.id}>

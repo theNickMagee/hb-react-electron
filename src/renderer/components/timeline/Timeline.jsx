@@ -14,12 +14,11 @@ const Timeline = ({ data, setData, setSessionData, sessionData }) => {
   useEffect(() => {
     const heroes = getAllHeroes({ data });
     setAllHeroes(heroes);
-    console.log('all heroes: ', allHeroes);
   }, [data && data.boardObjects]);
 
   const getHeroSteps = (heroId) => {
-    const hero = sessionData.options.currentEditItem;
-    if (hero && hero.id === heroId) {
+    const hero = data.boardObjects.find((obj) => obj.id === heroId);
+    if (hero) {
       return hero.options[0].value.steps;
     }
     return [];
