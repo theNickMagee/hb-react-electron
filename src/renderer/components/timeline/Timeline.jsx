@@ -14,7 +14,20 @@ const Timeline = ({ data, setData, setSessionData, sessionData }) => {
   useEffect(() => {
     const heroes = getAllHeroes({ data });
     setAllHeroes(heroes);
+    console.log('all heroes: ', allHeroes);
   }, [data && data.boardObjects]);
+
+  const getHeroSteps = (heroId) => {
+    const hero = sessionData.options.currentEditItem;
+    if (hero && hero.id === heroId) {
+      return hero.options[0].value.steps;
+    }
+    return [];
+  };
+
+  const isStepAtMeasure = (steps, measure) => {
+    return steps.some((step) => parseInt(step.measure, 10) === measure);
+  };
 
   return (
     <div className="timeline">
@@ -52,13 +65,19 @@ const Timeline = ({ data, setData, setSessionData, sessionData }) => {
         </div>
       </div>
       <div className="timeline-content">
-        {allHeroes.map((hero) => (
-          <div key={hero.id} className="timeline-hero-row">
-            {[...Array(data.timeline.measures).keys()].map((n) => (
-              <div key={n} className="timeline-measure"></div>
-            ))}
-          </div>
-        ))}
+        {allHeroes.map((hero) => {
+          const steps = getHeroSteps(hero.id);
+          return (
+            <div key={hero.id} className="timeline-hero-row">
+              {[...Array(data.timeline.measures).keys()].map((n) => (
+                <div
+                  key={n}
+                  className={`timeline-measure ${isStepAtMeasure(steps, n) ? 'highlight' : ''}`}
+                ></div>
+              ))}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

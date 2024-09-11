@@ -59,3 +59,7 @@
     background-color:rgb(54, 54, 54)
 }
 
+.highlight {
+  background-color: rgba(43, 169, 68, 0.496) !important; /* or any color you prefer for highlighting */
+}
+

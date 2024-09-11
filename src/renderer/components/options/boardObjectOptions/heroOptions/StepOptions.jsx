@@ -97,7 +97,7 @@ const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
           >
             {[...Array(numMeasures + 1).keys()].map((n) => (
               <option key={n} value={n}>
-                {n}
+                {n + 1}
               </option>
             ))}
           </OptionDropDown>
