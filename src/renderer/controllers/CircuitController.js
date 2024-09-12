@@ -70,6 +70,12 @@ const playCircuit = async (data) => {
 };
 
 const renderTimeline = async (data) => {
+  // Calculate the total time of the timeline
+  const bpm = data.timeline.bpm;
+  const measures = data.timeline.measures;
+  const timePerMeasure = 60 / bpm * 4; // Assuming 4 beats per measure
+  const totalTime = timePerMeasure * measures;
+
   // Sort hero events
   const sortedHeroes = data.boardObjects
     .filter((obj) => obj.type === 'Hero')

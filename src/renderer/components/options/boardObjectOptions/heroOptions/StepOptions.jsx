@@ -5,11 +5,8 @@ const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
   const [boardObject, setBoardObject] = React.useState(null);
 
   useEffect(() => {
-    // after a board object is selected, loop thru board Objects 'options
-    //set board object to the id presented based on boardObjects
     const obj = boardObjects.find((obj) => obj.id === step.targetBoardObjectId);
     setBoardObject(obj);
-    console.log('boardObject in StepOptions:', obj);
   }, [step.targetBoardObjectId, step.action]);
 
   return (
@@ -44,7 +41,6 @@ const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
             >
               <option value={null}>Select</option>
               <option value="play path after">Play Path After</option>
-              {/* <option value="loop path after">Loop Path After</option> */}
               {boardObject.options.map((option, index) => {
                 if (!option.heroEnabled) {
                   return null;
@@ -58,7 +54,6 @@ const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
             </select>
           </div>
         )}
-        {/* if there is a step action, provide the necessary options */}
         {step.targetBoardObjectId &&
           boardObject &&
           step.action &&
@@ -67,7 +62,6 @@ const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
               !option.heroEnabled ||
               option.prop !== step.action.replace('Set ', '')
             ) {
-              // check that this option is the one of the step.
               return null;
             }
             if (option.component === 'slider') {
@@ -86,7 +80,6 @@ const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
                 </div>
               );
             }
-            // Add other option components here if needed
             return null;
           })}
         {step.targetBoardObjectId && boardObject && step.action && (

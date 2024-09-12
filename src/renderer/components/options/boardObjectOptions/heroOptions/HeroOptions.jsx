@@ -8,27 +8,59 @@ const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
   const steps = hero.options[0].value.steps;
 
   const setStep = (stepid, key, value) => {
-    const currentBoardObject = sessionData.options.currentEditItem;
+    const currentBoardObject = { ...sessionData.options.currentEditItem };
 
-    // find step with id
+    // Find step with id
     let currentStep = currentBoardObject.options[0].value.steps.find(
       (step) => step.id === stepid,
     );
-    console.log('currentStep:', currentStep);
 
-    // update data
-    currentStep[key] = value;
+    // Update data
+    if (currentStep) {
+      const updatedSteps = currentBoardObject.options[0].value.steps.map(
+        (step) =>
+          step.id === stepid ? { ...currentStep, [key]: value } : step,
+      );
 
-    // update hero
-    setData({
-      ...data,
-      boardObjects: data.boardObjects.map((obj) => {
+      // Update hero with new steps
+      const newBoardObjects = data.boardObjects.map((obj) => {
         if (obj.id === currentBoardObject.id) {
-          return currentBoardObject;
+          return {
+            ...currentBoardObject,
+            options: [
+              {
+                ...currentBoardObject.options[0],
+                value: {
+                  ...currentBoardObject.options[0].value,
+                  steps: updatedSteps,
+                },
+              },
+            ],
+          };
         }
         return obj;
-      }),
-    });
+      });
+
+      setData({ ...data, boardObjects: newBoardObjects });
+      setSessionData({
+        ...sessionData,
+        options: {
+          ...sessionData.options,
+          currentEditItem: {
+            ...currentBoardObject,
+            options: [
+              {
+                ...currentBoardObject.options[0],
+                value: {
+                  ...currentBoardObject.options[0].value,
+                  steps: updatedSteps,
+                },
+              },
+            ],
+          },
+        },
+      });
+    }
   };
 
   return (
@@ -45,9 +77,6 @@ const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
           />
         );
       })}
-      {/* first show all board objects */}
-      {/* after board object is selected, show available functions, or actions, or sets they can take */}
-      {/* once the action is taken, show the other options (usually time or measure and bar) */}
     </div>
   );
 };

@@ -31,6 +31,17 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
     });
 
     setData({ ...data, boardObjects: newBoardObjects });
+    setSessionData({
+      ...sessionData,
+      options: {
+        ...sessionData.options,
+        currentEditItem: {
+          ...sessionData.options.currentEditItem,
+          options:
+            newBoardObjects[sessionData.options.currentEditItemIndex].options,
+        },
+      },
+    });
   };
 
   const handleDeleteBoardObject = () => {
