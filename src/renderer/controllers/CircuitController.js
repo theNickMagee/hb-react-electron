@@ -1,6 +1,7 @@
 const { getOrderedPaths } = require('../services/CircuitServices');
 import {
   createHeroEventObject,
+  getMasterTimeOfEvent,
   getPathOfHeroEvent,
 } from '../services/HeroServices'; // Import the function
 import {
@@ -84,34 +85,31 @@ const renderTimeline = async (data) => {
 
   let masterWavData = createInitialWavData();
 
-  // seperate hero events by path
-
+  // Separate hero events by path
   const pathHeroEvents = createHeroEventObject(data);
 
   console.log('pathHeroEvents: ', pathHeroEvents);
 
-  // loop thru hero events in order
+  // Loop through hero events in order
   for (let i = 0; i < pathHeroEvents.paths.length; i++) {
     const path = pathHeroEvents.paths[i].path;
     const heroEvents = pathHeroEvents.paths[i].events;
     for (let j = 0; j < heroEvents.length; j++) {
       const currentEvent = heroEvents[j];
-      let masterEventStartTime = currentEvent.time;
-      // if 'SET' event, update data
-      // render the ENTIRE PATH, regardless of start time and end time
+      console.log('currentEvent: ', currentEvent);
+      const masterEventStartTime = getMasterTimeOfEvent(currentEvent, bpm);
+      console.log('masterEventStartTime: ', masterEventStartTime);
+
+      // Render the entire path
       const pathWavData = await renderPath(path);
-      // if its play, set to master here
       console.log('pathWavData: ', pathWavData);
-      // figure out its duration. it will be the next hero events time - current. if that tine is after total path time, keep duration total path time
+
+      // Determine the duration for the current event
       let duration;
-      // if the time of next event is less than the wavData's time, then duration is the time of the next event - current event time
       let startTimeClip = 0;
-      let endTimeClip = pathWavData.audioData.length;
+      let endTimeClip = pathWavData.audioData.length / 44100;
 
-      // convert time to seconds
-      endTimeClip = endTimeClip / 44100;
-
-      // find the last 'Play' event
+      // Find the last 'Play' event
       let lastPlayEvent;
       for (let k = j; k >= 0; k--) {
         if (heroEvents[k].type === 'Play') {
@@ -119,38 +117,50 @@ const renderTimeline = async (data) => {
           break;
         }
       }
-      // if the last playEvent + pathDuration > masterEventStartTime, then clip wavData with start time of masterEventStartTime - lastPlayEvent.time
+
+      // Adjust startTimeClip if necessary
       if (lastPlayEvent) {
         if (lastPlayEvent.time + endTimeClip > masterEventStartTime) {
           startTimeClip = masterEventStartTime - lastPlayEvent.time;
         }
       }
 
-      // if there is a next vent, get its time
+      // Determine the end time clip based on the next event
       let nextEventTime;
       if (j < heroEvents.length - 1) {
-        nextEventTime = heroEvents[j + 1].time;
+        console.log('not last event: ', heroEvents[j + 1]);
+        // convert
+        nextEventTime = getMasterTimeOfEvent(heroEvents[j + 1], bpm);
       }
+      console.log('nextEventTime: ', nextEventTime);
 
       if (nextEventTime) {
         endTimeClip = nextEventTime - masterEventStartTime;
       }
 
-      // clip the wavData
+      // Clip the wavData
       const cutPathWavData = cutWavData(
         pathWavData,
         startTimeClip,
         endTimeClip,
       );
 
-      // PLACE the audio at the start time
-      // masterWavData = placeWavData(
-      //   masterWavData,
-      //   cutPathWavData,
-      //   currentEvent.time,
-      // );
+      console.log(
+        'cutPathWavData: ',
+        cutPathWavData,
+        startTimeClip,
+        endTimeClip,
+        cutPathWavData.audioData.length / 44100,
+      );
+
+      // Place the audio at the start time
+      masterWavData = placeWavData
     }
   }
+
+  console.log('masterWavData length: ', masterWavData.audioData.length / 44100);
+
+  // play master wav
 
   if (!masterWavData.audioData || masterWavData.audioData.length === 0) {
     console.error(
@@ -160,7 +170,7 @@ const renderTimeline = async (data) => {
     return;
   }
 
-  // playWavData(masterWavData);
+  playWavData(masterWavData);
 };
 
 const handleCommand = (

@@ -320,38 +320,28 @@ const renderPath = async (path) => {
   return wavData;
 };
 
-const cutWavData = (wavData, heroEvent, duration) => {
-  // Logic to cut the audio data based on the hero event's timing
-  const startSample = Math.floor(heroEvent.time * wavData.sampleRate);
-  const endSample = startSample + Math.floor(duration * wavData.sampleRate);
+const cutWavData = (wavData, startTime, endTime) => {
+  const { sampleRate, numChannels, bitsPerSample, audioData } = wavData;
 
-  const cutAudioData = wavData.audioData.slice(startSample, endSample);
+  const startSample = Math.floor(startTime * sampleRate);
+  const endSample = Math.floor(endTime * sampleRate);
+
+  if (startSample >= audioData.length || endSample <= startSample) {
+    console.error('Invalid start or end time for cutting wavData');
+    return wavData;
+  }
+
+  const newAudioData = audioData.slice(startSample, endSample);
 
   return {
-    ...wavData,
-    audioData: cutAudioData,
+    sampleRate,
+    numChannels,
+    bitsPerSample,
+    audioData: newAudioData,
   };
 };
 
-const placeWavData = (masterWavData, newWavData, heroEvent) => {
-  // Logic to place the new WAV data into the master WAV data
-  const startSample = Math.floor(heroEvent.time * masterWavData.sampleRate);
-
-  const combinedAudioData = new Int16Array(
-    masterWavData.audioData.length + newWavData.audioData.length,
-  );
-
-  // Copy existing master audio data
-  combinedAudioData.set(masterWavData.audioData, 0);
-
-  // Place new audio data at the correct position
-  combinedAudioData.set(newWavData.audioData, startSample);
-
-  return {
-    ...masterWavData,
-    audioData: combinedAudioData,
-  };
-};
+const placeWavData = (masterWavData, startTime, newWavData) => {}
 
 export {
   playWavFile,

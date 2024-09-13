@@ -4,40 +4,42 @@ const getAllHeroes = ({ data }) => {
 };
 
 const createHeroEventObject = (data) => {
-  const paths = [];
-  
+  const path = [];
+  const events = [];
+
   // Assuming data has a structure similar to the one used in getPathOfHeroEvent
   const heroEvents = getHeroEvents(data);
 
-  const {boardObjects} = data;
+  const { boardObjects } = data;
   heroEvents.forEach((heroEvent) => {
-    const pathHeroEvent = {
-      path: [],
-      events: [],
-    };
-
     // Find the starting board object for the hero event
-    const startBoardObject = boardObjects.find(obj => obj.id === heroEvent.targetBoardObjectId);
+    const startBoardObject = boardObjects.find(
+      (obj) => obj.id === heroEvent.targetBoardObjectId,
+    );
     if (startBoardObject) {
-      pathHeroEvent.path.push(startBoardObject);
-      
+      if (!path.includes(startBoardObject)) {
+        path.push(startBoardObject);
+      }
+
       // Assuming we want to find the path of the hero event
       const wires = data.wires || []; // Get wires if available
       const foundPaths = getPathOfHeroEvent(wires, boardObjects, heroEvent);
-      
-      // Add found paths to the pathHeroEvent
-      foundPaths.forEach(foundPath => {
-        pathHeroEvent.path.push(...foundPath);
+
+      // Add found paths to the path array if they're not already included
+      foundPaths.forEach((foundPath) => {
+        foundPath.forEach((obj) => {
+          if (!path.includes(obj)) {
+            path.push(obj);
+          }
+        });
       });
 
       // Add the hero event to the events array
-      pathHeroEvent.events.push(heroEvent);
+      events.push(heroEvent);
     }
-
-    paths.push(pathHeroEvent);
   });
 
-  return { paths };
+  return { paths: [{ path, events }] };
 };
 
 const getPathOfHeroEvent = (wires, boardObjects, heroEvent) => {
@@ -58,7 +60,9 @@ const getPathOfHeroEvent = (wires, boardObjects, heroEvent) => {
     path.push(boardObject);
 
     const outgoingWires = wires.filter(
-      (wire) => wire.start.row === boardObject.row && wire.start.col === boardObject.col
+      (wire) =>
+        wire.start.row === boardObject.row &&
+        wire.start.col === boardObject.col,
     );
 
     if (outgoingWires.length === 0) {
@@ -90,7 +94,12 @@ const getHeroEvents = (data) => {
   const heroEvents = [];
 
   heroes.forEach((hero) => {
-    if (hero.options && hero.options[0] && hero.options[0].value && hero.options[0].value.steps) {
+    if (
+      hero.options &&
+      hero.options[0] &&
+      hero.options[0].value &&
+      hero.options[0].value.steps
+    ) {
       hero.options[0].value.steps.forEach((step) => {
         heroEvents.push({
           heroId: hero.id,
@@ -106,4 +115,28 @@ const getHeroEvents = (data) => {
   return heroEvents;
 };
 
-export { getAllHeroes, getPathOfHeroEvent, createHeroEventObject };
+const getMasterTimeOfEvent = (event, bpm) => {
+  // Convert measure to an integer
+  const measureInt = parseInt(event.measure);
+
+  // Assume 4/4 time, so 4 beats per measure
+  const beatsPerMeasure = 4;
+
+  // Convert the beat offset (if any) from the event
+  const beatOffset = event.beatOffset || 0; // Default to 0 if no beat offset is provided
+
+  // Total beats is measures * beats per measure + beatOffset
+  const totalBeats = measureInt * beatsPerMeasure + beatOffset;
+
+  // Convert beats to time in seconds
+  const timeInSeconds = (totalBeats / bpm) * 60; // Since BPM is beats per minute, multiply by 60 to get seconds
+
+  return timeInSeconds;
+};
+
+export {
+  getAllHeroes,
+  getPathOfHeroEvent,
+  createHeroEventObject,
+  getMasterTimeOfEvent,
+};
