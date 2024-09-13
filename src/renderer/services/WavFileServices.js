@@ -308,14 +308,24 @@ const getString = (dataView, offset, length) => {
 };
 
 const renderPath = async (path, boardObjects) => {
-  // Logic to render the entire path based on the board objects
+  console.log('Path:', path); // Log the path being processed
   let renderedWavData = createInitialWavData(); // Initialize the WAV data
 
   for (const boardObject of path) {
+    console.log('Processing boardObject:', boardObject); // Log each board object
     const effectWavData = await applyEffectOnWavData(
       boardObject,
       renderedWavData,
     );
+
+    // Log the effectWavData to see what is returned
+    console.log('Effect wavData:', effectWavData);
+
+    if (!effectWavData.audioData || effectWavData.audioData.length === 0) {
+      console.error('Effect wavData is empty for boardObject:', boardObject);
+      continue; // Skip this boardObject if it produces no audio data
+    }
+
     renderedWavData = effectWavData; // Update the rendered WAV data
   }
 

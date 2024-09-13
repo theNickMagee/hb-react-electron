@@ -3,7 +3,45 @@ const getAllHeroes = ({ data }) => {
   return data.boardObjects.filter((obj) => obj.type === 'Hero');
 };
 
+const createHeroEventObject = (data) => {
+  const paths = [];
+  
+  // Assuming data has a structure similar to the one used in getPathOfHeroEvent
+  const heroEvents = getHeroEvents(data);
+
+  const {boardObjects} = data;
+  heroEvents.forEach((heroEvent) => {
+    const pathHeroEvent = {
+      path: [],
+      events: [],
+    };
+
+    // Find the starting board object for the hero event
+    const startBoardObject = boardObjects.find(obj => obj.id === heroEvent.targetBoardObjectId);
+    if (startBoardObject) {
+      pathHeroEvent.path.push(startBoardObject);
+      
+      // Assuming we want to find the path of the hero event
+      const wires = data.wires || []; // Get wires if available
+      const foundPaths = getPathOfHeroEvent(wires, boardObjects, heroEvent);
+      
+      // Add found paths to the pathHeroEvent
+      foundPaths.forEach(foundPath => {
+        pathHeroEvent.path.push(...foundPath);
+      });
+
+      // Add the hero event to the events array
+      pathHeroEvent.events.push(heroEvent);
+    }
+
+    paths.push(pathHeroEvent);
+  });
+
+  return { paths };
+};
+
 const getPathOfHeroEvent = (wires, boardObjects, heroEvent) => {
+  console.log('Hero Event:', heroEvent); // Log the hero event being processed
   const paths = [];
   const visited = new Set();
 
@@ -42,7 +80,30 @@ const getPathOfHeroEvent = (wires, boardObjects, heroEvent) => {
     }
   });
 
+  console.log('Paths found:', paths); // Log the paths found
   return paths;
 };
 
-export { getAllHeroes, getPathOfHeroEvent };
+const getHeroEvents = (data) => {
+  // Assuming hero events are stored in the boardObjects with type 'Hero'
+  const heroes = data.boardObjects.filter((obj) => obj.type === 'Hero');
+  const heroEvents = [];
+
+  heroes.forEach((hero) => {
+    if (hero.options && hero.options[0] && hero.options[0].value && hero.options[0].value.steps) {
+      hero.options[0].value.steps.forEach((step) => {
+        heroEvents.push({
+          heroId: hero.id,
+          targetBoardObjectId: step.targetBoardObjectId,
+          action: step.action,
+          targetValue: step.targetValue,
+          measure: step.measure,
+        });
+      });
+    }
+  });
+
+  return heroEvents;
+};
+
+export { getAllHeroes, getPathOfHeroEvent, createHeroEventObject };
