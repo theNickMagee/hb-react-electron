@@ -97,13 +97,10 @@ const renderTimeline = async (data) => {
 
     for (let j = 0; j < heroEvents.length; j++) {
       const currentEvent = heroEvents[j];
-      console.log('currentEvent: ', currentEvent);
       const masterEventStartTime = getMasterTimeOfEvent(currentEvent, bpm);
-      console.log('masterEventStartTime: ', masterEventStartTime);
 
       // Render the entire path
       const pathWavData = await renderPath(path);
-      console.log('pathWavData: ', pathWavData);
 
       // Determine the duration for the current event
       let duration;

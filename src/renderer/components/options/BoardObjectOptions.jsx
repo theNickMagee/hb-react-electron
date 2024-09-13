@@ -231,6 +231,7 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
             )}
             {option.component === 'FileExplorer' && (
               <FileExplorer
+                key={option.file} // Use the current file path as the key
                 initialFileName={
                   option.file ? option.file.split('/').pop() : undefined
                 }
