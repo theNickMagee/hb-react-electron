@@ -81,83 +81,24 @@ const renderTimeline = async (data) => {
     .filter((obj) => obj.type === 'Hero')
     .sort((a, b) => a.options[0].value.steps[0].time - b.options[0].value.steps[0].time);
 
-  // Initialize an array to hold all wavData
-  let allWavData = [];
+    // get all paths
 
-  // Process each play path after
-  for (const hero of sortedHeroes) {
-    const steps = hero.options[0].value.steps;
-    for (const step of steps) {
-      if (step.action === 'play path after') {
-        const orderedPaths = getOrderedPaths(data.wires, data.boardObjects);
-        for (let i = 0; i < orderedPaths.length; i++) {
-          const path = orderedPaths[i];
-          let wavData = createInitialWavData();
-          for (let j = 0; j < path.length; j++) {
-            const boardObject = path[j];
-            const newWavData = await applyEffectOnWavData(boardObject, wavData);
+    // loop thru hero events in order
 
-            // Check for 'Set Level' or other "set" hero events
-            if (boardObject.type === 'Hero' && boardObject.options[0].value.steps.some(s => s.action.startsWith('Set'))) {
-              // Split the path at this point
-              allWavData.push(newWavData);
-              wavData = createInitialWavData(); // Reset wavData for the next segment
-            } else {
-              wavData = newWavData;
-            }
+    // for each hero event, figure out its duration. it will be the next hero events time - current
 
-            // if we are at the end of the path, add the wavData to allWavData
-            if (j === path.length - 1) {
-              allWavData.push(newWavData);
-            }
-          }
-        }
-      }
-    }
-  }
+    // find the path associated with the event
 
-  // Combine all wavData into one big wav
-  const combinedWavData = combineWavData(allWavData);
+    // render the ENTIRE PATH, regardless of start time and end time
 
-  // Play the combined wavData
-  playWavData(combinedWavData);
+    // CUT the audio to its start time and end time
+
+    // PLACE the audio in the master audio
+
+    
 };
 
-// Helper function to combine multiple wavData objects into one
-const combineWavData = (wavDataArray) => {
-  if (wavDataArray.length === 0) return createInitialWavData();
 
-  const sampleRate = wavDataArray[0].sampleRate;
-  const numChannels = wavDataArray[0].numChannels;
-  const bitsPerSample = wavDataArray[0].bitsPerSample;
-
-  // Calculate the total length of the combined audio data
-  const totalLength = wavDataArray.reduce((sum, wavData) => {
-    if (wavData && wavData.audioData) {
-      return sum + wavData.audioData.length;
-    }
-    return sum;
-  }, 0);
-
-  // Create a new Int16Array to hold the combined audio data
-  const combinedAudioData = new Int16Array(totalLength);
-
-  // Copy each wavData's audioData into the combinedAudioData
-  let offset = 0;
-  for (const wavData of wavDataArray) {
-    if (wavData && wavData.audioData) {
-      combinedAudioData.set(wavData.audioData, offset);
-      offset += wavData.audioData.length;
-    }
-  }
-
-  return {
-    sampleRate,
-    numChannels,
-    bitsPerSample,
-    audioData: combinedAudioData,
-  };
-};
 
 const handleCommand = (commandType, commandPayload, data, setData, sessionData, setSessionData) => {
 
