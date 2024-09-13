@@ -1,13 +1,18 @@
 const { getOrderedPaths } = require('../services/CircuitServices');
+import { getPathOfHeroEvent } from '../services/HeroServices'; // Import the function
 import {
   loadWavData,
   createInitialWavData,
   playWavData,
+  renderPath,
+  cutWavData,
+  placeWavData,
 } from '../services/WavFileServices';
 import { applyAmp } from '../services/AmpServices';
 import { applyMidiEvents, handleNoteOn } from '../services/MidiServices';
 import { processOscillator } from '../services/OscillatorServices';
 import { processSwitch } from '../services/SwitchServices';
+import { render } from '@testing-library/react';
 
 // handleMidiMessage
 const handleMidiMessage = (midiMessage) => {
@@ -73,35 +78,79 @@ const renderTimeline = async (data) => {
   // Calculate the total time of the timeline
   const bpm = data.timeline.bpm;
   const measures = data.timeline.measures;
-  const timePerMeasure = 60 / bpm * 4; // Assuming 4 beats per measure
+  const timePerMeasure = (60 / bpm) * 4; // Assuming 4 beats per measure
   const totalTime = timePerMeasure * measures;
+
+  // declare master wav
+  const masterWavData = createInitialWavData();
 
   // Sort hero events
   const sortedHeroes = data.boardObjects
     .filter((obj) => obj.type === 'Hero')
-    .sort((a, b) => a.options[0].value.steps[0].time - b.options[0].value.steps[0].time);
+    .sort(
+      (a, b) =>
+        a.options[0].value.steps[0].time - b.options[0].value.steps[0].time,
+    );
 
-    // get all paths
+  // get all paths
+  const paths = getOrderedPaths(data.wires, data.boardObjects);
+  // for each path, get its hero events sorted
+  const pathHeroEvents = paths.map((path) => {
+    return path
+      .filter((obj) => obj.type === 'Hero')
+      .sort(
+        (a, b) =>
+          a.options[0].value.steps[0].time - b.options[0].value.steps[0].time,
+      );
+  });
 
-    // loop thru hero events in order
+  // for each path's hero events, loop thru hero events in order
+  for (let i = 0; i < pathHeroEvents.length; i++) {
+    const heroEvents = pathHeroEvents[i];
+    for (let j = 0; j < heroEvents.length; j++) {
+      const heroEvent = heroEvents[j];
+      // render the ENTIRE PATH with current options, regardless of start time and end time
+      const renderedPath = await renderPath(
+        getPathOfHeroEvent(data.wires, data.boardObjects, heroEvent),
+        data.boardObjects,
+      );
+      // for each hero event, figure out its duration. it will be the next hero events time - current. if there is no next hero event, the duration will be the entire path duration
+      const nextHeroEvent = heroEvents[j + 1];
+      let duration;
+      if (nextHeroEvent) {
+        duration =
+          nextHeroEvent.options[0].value.steps[0].time -
+          heroEvent.options[0].value.steps[0].time;
+      } else {
+        duration = renderedPath.duration;
+      }
+      // CUT the audio to its start time and end time
+      const newWavData = cutWavData(renderedPath.wavData, heroEvent, duration);
 
-    // for each hero event, figure out its duration. it will be the next hero events time - current
+      // PLACE the audio in the master audio
+      masterWavData = placeWavData(masterWavData, newWavData, heroEvent);
 
-    // find the path associated with the event
+      // exit loop
+    }
+  }
 
-    // render the ENTIRE PATH, regardless of start time and end time
-
-    // CUT the audio to its start time and end time
-
-    // PLACE the audio in the master audio
-
-    
+  // play master wav file for path
+  playWavData(masterWavData);
 };
 
+const handleCommand = (
+  commandType,
+  commandPayload,
+  data,
+  setData,
+  sessionData,
+  setSessionData,
+) => {};
 
-
-const handleCommand = (commandType, commandPayload, data, setData, sessionData, setSessionData) => {
-
-}
-
-export { playCircuit, handleMidiMessage, handleCommand, renderTimeline };
+export {
+  playCircuit,
+  handleMidiMessage,
+  handleCommand,
+  renderTimeline,
+  applyEffectOnWavData,
+};

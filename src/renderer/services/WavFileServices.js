@@ -2,6 +2,8 @@
 // const path = require('path');
 // const { AudioContext } = require('web-audio-api');
 
+import { applyEffectOnWavData } from '../controllers/CircuitController';
+
 function playWavFile(filePath) {
   // play the wav file
 }
@@ -305,6 +307,54 @@ const getString = (dataView, offset, length) => {
   return str;
 };
 
+const renderPath = async (path, boardObjects) => {
+  // Logic to render the entire path based on the board objects
+  let renderedWavData = createInitialWavData(); // Initialize the WAV data
+
+  for (const boardObject of path) {
+    const effectWavData = await applyEffectOnWavData(
+      boardObject,
+      renderedWavData,
+    );
+    renderedWavData = effectWavData; // Update the rendered WAV data
+  }
+
+  return renderedWavData; // Return the final rendered WAV data
+};
+
+const cutWavData = (wavData, heroEvent, duration) => {
+  // Logic to cut the audio data based on the hero event's timing
+  const startSample = Math.floor(heroEvent.time * wavData.sampleRate);
+  const endSample = startSample + Math.floor(duration * wavData.sampleRate);
+
+  const cutAudioData = wavData.audioData.slice(startSample, endSample);
+
+  return {
+    ...wavData,
+    audioData: cutAudioData,
+  };
+};
+
+const placeWavData = (masterWavData, newWavData, heroEvent) => {
+  // Logic to place the new WAV data into the master WAV data
+  const startSample = Math.floor(heroEvent.time * masterWavData.sampleRate);
+
+  const combinedAudioData = new Int16Array(
+    masterWavData.audioData.length + newWavData.audioData.length,
+  );
+
+  // Copy existing master audio data
+  combinedAudioData.set(masterWavData.audioData, 0);
+
+  // Place new audio data at the correct position
+  combinedAudioData.set(newWavData.audioData, startSample);
+
+  return {
+    ...masterWavData,
+    audioData: combinedAudioData,
+  };
+};
+
 export {
   playWavFile,
   handleNoOutputWires,
@@ -312,4 +362,7 @@ export {
   handleWavData,
   loadWavData,
   playWavData,
+  renderPath,
+  placeWavData,
+  cutWavData,
 };
