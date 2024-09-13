@@ -96,30 +96,59 @@ const renderTimeline = async (data) => {
     const heroEvents = pathHeroEvents.paths[i].events;
     for (let j = 0; j < heroEvents.length; j++) {
       const currentEvent = heroEvents[j];
+      let masterEventStartTime = currentEvent.time;
       // if 'SET' event, update data
-
       // render the ENTIRE PATH, regardless of start time and end time
-      const pathWavData = renderPath(path, totalTime);
+      const pathWavData = await renderPath(path);
+      // if its play, set to master here
       console.log('pathWavData: ', pathWavData);
-      // figure out its duration. it will be the next hero events time - current
+      // figure out its duration. it will be the next hero events time - current. if that tine is after total path time, keep duration total path time
       let duration;
-      if (j === heroEvents.length - 1) {
-        duration = totalTime - currentEvent.time;
-      } else {
-        duration = heroEvents[j + 1].time - currentEvent.time;
+      // if the time of next event is less than the wavData's time, then duration is the time of the next event - current event time
+      let startTimeClip = 0;
+      let endTimeClip = pathWavData.audioData.length;
+
+      // convert time to seconds
+      endTimeClip = endTimeClip / 44100;
+
+      // find the last 'Play' event
+      let lastPlayEvent;
+      for (let k = j; k >= 0; k--) {
+        if (heroEvents[k].type === 'Play') {
+          lastPlayEvent = heroEvents[k];
+          break;
+        }
       }
-      // CUT the audio to its start time and end time
+      // if the last playEvent + pathDuration > masterEventStartTime, then clip wavData with start time of masterEventStartTime - lastPlayEvent.time
+      if (lastPlayEvent) {
+        if (lastPlayEvent.time + endTimeClip > masterEventStartTime) {
+          startTimeClip = masterEventStartTime - lastPlayEvent.time;
+        }
+      }
+
+      // if there is a next vent, get its time
+      let nextEventTime;
+      if (j < heroEvents.length - 1) {
+        nextEventTime = heroEvents[j + 1].time;
+      }
+
+      if (nextEventTime) {
+        endTimeClip = nextEventTime - masterEventStartTime;
+      }
+
+      // clip the wavData
       const cutPathWavData = cutWavData(
         pathWavData,
-        currentEvent.time,
-        duration,
+        startTimeClip,
+        endTimeClip,
       );
+
       // PLACE the audio at the start time
-      masterWavData = placeWavData(
-        masterWavData,
-        cutPathWavData,
-        currentEvent.time,
-      );
+      // masterWavData = placeWavData(
+      //   masterWavData,
+      //   cutPathWavData,
+      //   currentEvent.time,
+      // );
     }
   }
 
@@ -131,7 +160,7 @@ const renderTimeline = async (data) => {
     return;
   }
 
-  playWavData(masterWavData);
+  // playWavData(masterWavData);
 };
 
 const handleCommand = (
