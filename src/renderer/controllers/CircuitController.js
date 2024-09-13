@@ -83,7 +83,6 @@ const renderTimeline = async (data) => {
   const timePerMeasure = (60 / bpm) * 4;
   const totalTime = timePerMeasure * measures;
 
-  let masterWavData = createInitialWavData();
 
   // Separate hero events by path
   const pathHeroEvents = createHeroEventObject(data);
@@ -94,6 +93,8 @@ const renderTimeline = async (data) => {
   for (let i = 0; i < pathHeroEvents.paths.length; i++) {
     const path = pathHeroEvents.paths[i].path;
     const heroEvents = pathHeroEvents.paths[i].events;
+  let masterWavData = createInitialWavData();
+
     for (let j = 0; j < heroEvents.length; j++) {
       const currentEvent = heroEvents[j];
       console.log('currentEvent: ', currentEvent);
@@ -155,22 +156,14 @@ const renderTimeline = async (data) => {
 
       // Place the audio at the start time
       masterWavData = placeWavData(masterWavData, masterEventStartTime, cutPathWavData);
+
     }
+    playWavData(masterWavData);
+
   }
 
-  console.log('masterWavData length: ', masterWavData.audioData.length / 44100);
 
-  // play master wav
 
-  if (!masterWavData.audioData || masterWavData.audioData.length === 0) {
-    console.error(
-      'Master wavData is empty after processing all hero events:',
-      masterWavData,
-    );
-    return;
-  }
-
-  playWavData(masterWavData);
 };
 
 const handleCommand = (
