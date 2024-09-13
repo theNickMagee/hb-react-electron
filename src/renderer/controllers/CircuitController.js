@@ -83,7 +83,6 @@ const renderTimeline = async (data) => {
   const timePerMeasure = (60 / bpm) * 4;
   const totalTime = timePerMeasure * measures;
 
-
   // Separate hero events by path
   const pathHeroEvents = createHeroEventObject(data);
 
@@ -93,7 +92,7 @@ const renderTimeline = async (data) => {
   for (let i = 0; i < pathHeroEvents.paths.length; i++) {
     const path = pathHeroEvents.paths[i].path;
     const heroEvents = pathHeroEvents.paths[i].events;
-  let masterWavData = createInitialWavData();
+    let masterWavData = createInitialWavData();
 
     for (let j = 0; j < heroEvents.length; j++) {
       const currentEvent = heroEvents[j];
@@ -109,19 +108,19 @@ const renderTimeline = async (data) => {
 
       // Find the last 'Play' event
       let lastPlayEvent;
-      for (let k = j; k >= 0; k--) {
-        if (heroEvents[k].type === 'Play') {
-          lastPlayEvent = heroEvents[k];
-          break;
-        }
-      }
+      // for (let k = j; k >= 0; k--) {
+      //   if (heroEvents[k].type === 'Play') {
+      //     lastPlayEvent = heroEvents[k];
+      //     break;
+      //   }
+      // }
 
       // Adjust startTimeClip if necessary
-      if (lastPlayEvent) {
-        if (lastPlayEvent.time + endTimeClip > masterEventStartTime) {
-          startTimeClip = masterEventStartTime - lastPlayEvent.time;
-        }
-      }
+      // if (lastPlayEvent) {
+      //   if (lastPlayEvent.time + endTimeClip > masterEventStartTime) {
+      //     startTimeClip = masterEventStartTime - lastPlayEvent.time;
+      //   }
+      // }
 
       // Determine the end time clip based on the next event
       let nextEventTime;
@@ -156,11 +155,7 @@ const renderTimeline = async (data) => {
 
     }
     playWavData(masterWavData);
-
   }
-
-
-
 };
 
 const handleCommand = (

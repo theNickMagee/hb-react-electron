@@ -1,3 +1,5 @@
+import { getOrderedPaths } from './CircuitServices';
+
 const getAllHeroes = ({ data }) => {
   // Assuming heroes are a type of board object
   return data.boardObjects.filter((obj) => obj.type === 'Hero');
@@ -8,27 +10,26 @@ const createHeroEventObject = (data) => {
   const pathMap = new Map();
 
   const heroEvents = getHeroEvents(data);
-  const { boardObjects } = data;
+  const { boardObjects, wires } = data;
 
-  heroEvents.forEach((heroEvent) => {
-    const startBoardObject = boardObjects.find(
-      (obj) => obj.id === heroEvent.targetBoardObjectId,
-    );
+  // Find all paths in the board
+  const allPaths = getOrderedPaths(wires, boardObjects);
 
-    if (startBoardObject) {
-      const wires = data.wires || [];
-      const foundPaths = getPathOfHeroEvent(wires, boardObjects, heroEvent);
-
-      foundPaths.forEach((foundPath) => {
-        const pathKey = foundPath.map((obj) => obj.id).join('-');
-
-        if (!pathMap.has(pathKey)) {
-          pathMap.set(pathKey, { path: foundPath, events: [] });
-        }
-
-        pathMap.get(pathKey).events.push(heroEvent);
-      });
+  // Iterate over each path
+  allPaths.forEach((path) => {
+    const pathKey = path.map((obj) => obj.id).join('-');
+    if (!pathMap.has(pathKey)) {
+      pathMap.set(pathKey, { path, events: [] });
     }
+
+    // Check each board object in the path for hero events
+    path.forEach((boardObject) => {
+      heroEvents.forEach((heroEvent) => {
+        if (boardObject.id === heroEvent.targetBoardObjectId) {
+          pathMap.get(pathKey).events.push(heroEvent);
+        }
+      });
+    });
   });
 
   pathMap.forEach((value) => paths.push(value));

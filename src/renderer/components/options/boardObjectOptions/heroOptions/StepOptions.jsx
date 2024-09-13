@@ -41,6 +41,8 @@ const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
             >
               <option value={null}>Select</option>
               <option value="play path after">Play Path After</option>
+              <option value="play path before">Play Path Before</option>
+
               {boardObject.options.map((option, index) => {
                 if (!option.heroEnabled) {
                   return null;
