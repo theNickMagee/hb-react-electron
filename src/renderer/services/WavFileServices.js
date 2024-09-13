@@ -307,29 +307,17 @@ const getString = (dataView, offset, length) => {
   return str;
 };
 
-const renderPath = async (path, boardObjects) => {
-  console.log('Path:', path); // Log the path being processed
-  let renderedWavData = createInitialWavData(); // Initialize the WAV data
+const renderPath = async (path) => {
+  let wavData = createInitialWavData();
+  for (let j = 0; j < path.length; j++) {
+    const boardObject = path[j];
+    const newWavData = await applyEffectOnWavData(boardObject, wavData);
 
-  for (const boardObject of path) {
-    console.log('Processing boardObject:', boardObject); // Log each board object
-    const effectWavData = await applyEffectOnWavData(
-      boardObject,
-      renderedWavData,
-    );
-
-    // Log the effectWavData to see what is returned
-    console.log('Effect wavData:', effectWavData);
-
-    if (!effectWavData.audioData || effectWavData.audioData.length === 0) {
-      console.error('Effect wavData is empty for boardObject:', boardObject);
-      continue; // Skip this boardObject if it produces no audio data
-    }
-
-    renderedWavData = effectWavData; // Update the rendered WAV data
+    // if we are at the end fo the path, play the wavData
+    wavData = newWavData;
   }
 
-  return renderedWavData; // Return the final rendered WAV data
+  return wavData;
 };
 
 const cutWavData = (wavData, heroEvent, duration) => {

@@ -1,5 +1,8 @@
 const { getOrderedPaths } = require('../services/CircuitServices');
-import { createHeroEventObject, getPathOfHeroEvent } from '../services/HeroServices'; // Import the function
+import {
+  createHeroEventObject,
+  getPathOfHeroEvent,
+} from '../services/HeroServices'; // Import the function
 import {
   loadWavData,
   createInitialWavData,
@@ -12,7 +15,6 @@ import { applyAmp } from '../services/AmpServices';
 import { applyMidiEvents, handleNoteOn } from '../services/MidiServices';
 import { processOscillator } from '../services/OscillatorServices';
 import { processSwitch } from '../services/SwitchServices';
-import { render } from '@testing-library/react';
 
 // handleMidiMessage
 const handleMidiMessage = (midiMessage) => {
@@ -77,32 +79,56 @@ const playCircuit = async (data) => {
 const renderTimeline = async (data) => {
   const bpm = data.timeline.bpm;
   const measures = data.timeline.measures;
-  const timePerMeasure = (60 / bpm) * 4; 
+  const timePerMeasure = (60 / bpm) * 4;
   const totalTime = timePerMeasure * measures;
 
   let masterWavData = createInitialWavData();
 
-    // seperate hero events by path
+  // seperate hero events by path
 
-    
   const pathHeroEvents = createHeroEventObject(data);
 
-  console.log("pathHeroEvents: ", pathHeroEvents)
+  console.log('pathHeroEvents: ', pathHeroEvents);
 
-   // loop thru hero events in order
+  // loop thru hero events in order
+  for (let i = 0; i < pathHeroEvents.paths.length; i++) {
+    const path = pathHeroEvents.paths[i].path;
+    const heroEvents = pathHeroEvents.paths[i].events;
+    for (let j = 0; j < heroEvents.length; j++) {
+      const currentEvent = heroEvents[j];
+      // if 'SET' event, update data
 
-    // for each hero event, figure out its duration. it will be the next hero events time - current
-
-    // find the path associated with the event
-
-    // render the ENTIRE PATH, regardless of start time and end time
-
-    // CUT the audio to its start time and end time
-  
+      // render the ENTIRE PATH, regardless of start time and end time
+      const pathWavData = renderPath(path, totalTime);
+      console.log('pathWavData: ', pathWavData);
+      // figure out its duration. it will be the next hero events time - current
+      let duration;
+      if (j === heroEvents.length - 1) {
+        duration = totalTime - currentEvent.time;
+      } else {
+        duration = heroEvents[j + 1].time - currentEvent.time;
+      }
+      // CUT the audio to its start time and end time
+      const cutPathWavData = cutWavData(
+        pathWavData,
+        currentEvent.time,
+        duration,
+      );
+      // PLACE the audio at the start time
+      masterWavData = placeWavData(
+        masterWavData,
+        cutPathWavData,
+        currentEvent.time,
+      );
+    }
+  }
 
   if (!masterWavData.audioData || masterWavData.audioData.length === 0) {
-    console.error('Master wavData is empty after processing all hero events:', masterWavData);
-    return; 
+    console.error(
+      'Master wavData is empty after processing all hero events:',
+      masterWavData,
+    );
+    return;
   }
 
   playWavData(masterWavData);
