@@ -154,7 +154,7 @@ const renderTimeline = async (data) => {
       );
 
       // Place the audio at the start time
-      masterWavData = placeWavData
+      masterWavData = placeWavData(masterWavData, masterEventStartTime, cutPathWavData);
     }
   }
 

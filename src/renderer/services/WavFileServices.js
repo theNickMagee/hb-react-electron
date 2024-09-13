@@ -95,6 +95,11 @@ const handleWavData = (boardObjectOptions, wavData) => {
 };
 
 const playWavData = (wavData) => {
+  if (!wavData) {
+    console.error('wavData is undefined');
+    return;
+  }
+
   console.log('Playing wavData:', wavData);
 
   // Ensure audioData is resolved if it's a Promise
@@ -103,8 +108,8 @@ const playWavData = (wavData) => {
   // Debugging: Check the length of audioData
   console.log('Audio data length:', audioData.length);
 
-  if (audioData.length === 0) {
-    console.error('Audio data is empty');
+  if (!audioData || audioData.length === 0) {
+    console.error('Audio data is undefined or empty');
     return;
   }
 
@@ -341,7 +346,30 @@ const cutWavData = (wavData, startTime, endTime) => {
   };
 };
 
-const placeWavData = (masterWavData, startTime, newWavData) => {}
+const placeWavData = (masterWavData, startTime, newWavData) => {
+  const { sampleRate, numChannels, bitsPerSample, audioData: masterAudioData } = masterWavData;
+  const { audioData: newAudioData } = newWavData;
+
+  const startSample = Math.floor(startTime * sampleRate) * numChannels;
+  const endSample = startSample + newAudioData.length;
+
+  // Create a new audio data array with the appropriate length
+  const resultLength = Math.max(masterAudioData.length, endSample);
+  const resultAudioData = new Int16Array(resultLength);
+
+  // Copy the master audio data
+  resultAudioData.set(masterAudioData);
+
+  // Insert the new audio data at the specified position
+  resultAudioData.set(newAudioData, startSample);
+
+  return {
+    sampleRate,
+    numChannels,
+    bitsPerSample,
+    audioData: resultAudioData,
+  };
+};
 
 export {
   playWavFile,
