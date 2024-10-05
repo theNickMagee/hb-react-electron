@@ -116,6 +116,8 @@ const defaultHero = {
       value: 'medusa',
       label: 'Character',
       heroEnabled: false,
+      currentFrame: 0,
+      currentState: 'idle',
     },
     {
       component: 'HeroOptions',

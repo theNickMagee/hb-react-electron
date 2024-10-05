@@ -16,6 +16,7 @@ import { applyAmp } from '../services/AmpServices';
 import { applyMidiEvents, handleNoteOn } from '../services/MidiServices';
 import { processOscillator } from '../services/OscillatorServices';
 import { processSwitch } from '../services/SwitchServices';
+import { runHeroAnimations } from './AnimationController';
 
 // handleMidiMessage
 const handleMidiMessage = (midiMessage) => {
@@ -151,9 +152,14 @@ const renderTimeline = async (data) => {
       );
 
       // Place the audio at the start time
-      masterWavData = placeWavData(masterWavData, masterEventStartTime, cutPathWavData);
-
+      masterWavData = placeWavData(
+        masterWavData,
+        masterEventStartTime,
+        cutPathWavData,
+      );
     }
+    // runHeroAnimations
+    runHeroAnimations(pathHeroEvents, bpm);
     playWavData(masterWavData);
   }
 };

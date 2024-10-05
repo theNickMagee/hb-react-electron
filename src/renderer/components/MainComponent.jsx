@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { handleGridPress } from '../services/BoardObjectServices';
 import { hasNoOutgoingWires } from '../services/WireServices';
+import Hero from './MainComponentComponents/Hero';
 
 const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
   const gridSize = 8;
@@ -94,7 +95,7 @@ const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
               onMouseLeave={handleMouseLeave}
               onClick={() => handleMouseClick(row, col)}
             >
-              {boardObject && (
+              {boardObject && boardObject.type !== 'Hero' && (
                 <img
                   src={boardObject.icon}
                   alt=""
@@ -104,6 +105,9 @@ const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
                     opacity: isHovered ? 0.5 : 1, // Change opacity on hover
                   }}
                 />
+              )}
+              {boardObject && boardObject.type === 'Hero' && (
+                <Hero data={boardObject} isHovered={isHovered} />
               )}
               {isHovered && sessionData.droppingItem.isDroppingItem && (
                 <img
