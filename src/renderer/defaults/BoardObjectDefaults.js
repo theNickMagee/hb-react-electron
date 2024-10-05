@@ -35,7 +35,7 @@ const defaultAmp = {
       prop: 'value',
       value: 100,
       label: 'Level',
-      heroEnabled: true
+      heroEnabled: true,
     },
   ],
 };
@@ -74,7 +74,7 @@ const defaultOscillator = {
       choices: ['sine', 'square', 'sawtooth', 'triangle'],
       value: 'sine',
       label: 'Waveform',
-      heroEnabled: true
+      heroEnabled: true,
     },
     {
       component: 'slider',
@@ -84,7 +84,7 @@ const defaultOscillator = {
       value: 440,
       label: 'Frequency',
       prop: 'frequency',
-      heroEnabled: true
+      heroEnabled: true,
     },
   ],
 };
@@ -111,6 +111,13 @@ const defaultHero = {
   type: 'Hero',
   options: [
     {
+      component: 'dropdown',
+      choices: ['medusa', 'gladiator'],
+      value: 'medusa',
+      label: 'Character',
+      heroEnabled: false,
+    },
+    {
       component: 'HeroOptions',
       value: {
         steps: [
@@ -119,10 +126,9 @@ const defaultHero = {
             action: null,
             id: generateRandomId(),
             targetValue: null,
-          }
-        ]
-      }
-
+          },
+        ],
+      },
     },
   ],
 };

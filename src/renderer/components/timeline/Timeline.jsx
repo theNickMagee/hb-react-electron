@@ -25,6 +25,7 @@ const Timeline = ({ data, setData, setSessionData, sessionData }) => {
   };
 
   const isStepAtMeasure = (steps, measure) => {
+    if (!steps) return;
     return steps.some((step) => parseInt(step.measure, 10) === measure);
   };
 

@@ -43,6 +43,43 @@ const medusaAnimationCoords = {
   },
 };
 
-const gladiatorAnimationCoords = { ...medusaAnimationCoords };
+const gladiatorAnimationCoords = {
+  // set sprite images for gladiator
+  attack: {
+    sprite: gladiatorSpriteAttack,
+    frames: 6,
+    coords: {
+      0: { x: 0, y: 0, w: 150, h: 125 },
+      1: { x: 150, y: 0, w: 150, h: 125 },
+      2: { x: 300, y: 0, w: 150, h: 125 },
+      3: { x: 450, y: 0, w: 150, h: 125 },
+      4: { x: 600, y: 0, w: 150, h: 125 },
+      5: { x: 750, y: 0, w: 150, h: 125 },
+    },
+  },
+  idle: {
+    sprite: gladiatorSpriteIdle,
+    frames: 6,
+    coords: {
+      0: { x: 0, y: 0, w: 150, h: 125 },
+      1: { x: 150, y: 0, w: 150, h: 125 },
+      2: { x: 300, y: 0, w: 150, h: 125 },
+      3: { x: 450, y: 0, w: 150, h: 125 },
+      4: { x: 600, y: 0, w: 150, h: 125 },
+      5: { x: 750, y: 0, w: 150, h: 125 },
+    },
+  },
+  move: {
+    direction: 'left',
+    sprite: gladiatorSpriteWalk,
+    frames: 4,
+    coords: {
+      0: { x: 0, y: 0, w: 150, h: 125 },
+      1: { x: 150, y: 0, w: 150, h: 125 },
+      2: { x: 300, y: 0, w: 150, h: 125 },
+      3: { x: 450, y: 0, w: 150, h: 125 },
+    },
+  },
+};
 
 export { medusaAnimationCoords, gladiatorAnimationCoords };

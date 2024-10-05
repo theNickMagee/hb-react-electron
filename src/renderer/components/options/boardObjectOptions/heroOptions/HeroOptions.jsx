@@ -5,19 +5,19 @@ import StepOptions from './StepOptions';
 const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
   const hero = sessionData.options.currentEditItem;
 
-  const steps = hero.options[0].value.steps;
+  const steps = hero.options[1].value.steps;
 
   const setStep = (stepid, key, value) => {
     const currentBoardObject = { ...sessionData.options.currentEditItem };
 
     // Find step with id
-    let currentStep = currentBoardObject.options[0].value.steps.find(
+    let currentStep = currentBoardObject.options[1].value.steps.find(
       (step) => step.id === stepid,
     );
 
     // Update data
     if (currentStep) {
-      const updatedSteps = currentBoardObject.options[0].value.steps.map(
+      const updatedSteps = currentBoardObject.options[1].value.steps.map(
         (step) =>
           step.id === stepid ? { ...currentStep, [key]: value } : step,
       );
@@ -29,9 +29,9 @@ const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
             ...currentBoardObject,
             options: [
               {
-                ...currentBoardObject.options[0],
+                ...currentBoardObject.options[1],
                 value: {
-                  ...currentBoardObject.options[0].value,
+                  ...currentBoardObject.options[1].value,
                   steps: updatedSteps,
                 },
               },
@@ -50,9 +50,9 @@ const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
             ...currentBoardObject,
             options: [
               {
-                ...currentBoardObject.options[0],
+                ...currentBoardObject.options[1],
                 value: {
-                  ...currentBoardObject.options[0].value,
+                  ...currentBoardObject.options[1].value,
                   steps: updatedSteps,
                 },
               },
@@ -66,7 +66,7 @@ const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
   return (
     <div className="hero-options">
       Steps
-      {steps.map((step) => {
+      {steps?.map((step) => {
         return (
           <StepOptions
             key={step.id}
