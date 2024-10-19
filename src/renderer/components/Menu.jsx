@@ -46,7 +46,7 @@ const ControlMenuOptions = ({ sessionData, setSessionData, data, setData }) => {
   };
 
   const render = () => {
-    renderTimeline(data);
+    renderTimeline(data, setData);
   };
 
   const saveCurrentProject = async () => {

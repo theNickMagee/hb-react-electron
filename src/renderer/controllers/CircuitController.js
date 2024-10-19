@@ -78,7 +78,7 @@ const playCircuit = async (data) => {
   }
 };
 
-const renderTimeline = async (data) => {
+const renderTimeline = async (data, setData) => {
   const bpm = data.timeline.bpm;
   const measures = data.timeline.measures;
   const timePerMeasure = (60 / bpm) * 4;
@@ -159,7 +159,7 @@ const renderTimeline = async (data) => {
       );
     }
     // runHeroAnimations
-    runHeroAnimations(pathHeroEvents, bpm);
+    runHeroAnimations(pathHeroEvents, bpm, data, setData);
     playWavData(masterWavData);
   }
 };

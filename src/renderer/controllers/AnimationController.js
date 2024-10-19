@@ -1,14 +1,26 @@
 import { medusaAnimationCoords } from '../defaults/HeroAnimationDefaults';
 import { gladiatorAnimationCoords } from '../defaults/HeroAnimationDefaults';
 
-const runHeroAnimations = (heroEvents, bpm, setAnimationData) => {
-  // set animation data to {
-  //     heroId, state, frame
-  // }
+class HeroStateChange {
+  constructor(heroId, time, newState, newFrame) {
+    this.heroId = heroId;
+    this.time = time;
+    this.newState = newState;
+    this.newFrame = newFrame;
+  }
+}
+
+const runHeroAnimations = (heroEvents, bpm, data, setData) => {
+  // loop thru events and create prpoper state changes
+
+  // heroEvents is an odd object
+  // [{events: [{heroId, targetBoardObjectId, measure}], path: []
+
+  let stateChanges = [];
 
   console.log('runHeroAnimations: ', heroEvents);
 
-  //
+  // will need to find hero and set options[0] currentFrame and currentState accordingly
 };
 
 const getCoordsFromFrameAndState = (heroName, state, frame) => {
@@ -43,6 +55,5 @@ const getCoordsFromFrameAndState = (heroName, state, frame) => {
     icon: null, // Return null as default for the sprite
   };
 };
-
 
 export { runHeroAnimations, getCoordsFromFrameAndState };
