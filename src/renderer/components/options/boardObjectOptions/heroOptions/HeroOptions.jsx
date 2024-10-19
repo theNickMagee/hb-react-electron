@@ -24,19 +24,21 @@ const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
           step.id === stepid ? { ...currentStep, [key]: value } : step,
       );
 
+      let currentObjData = null;
       // Update hero with new steps
       const newBoardObjects = data.boardObjects.map((obj) => {
         if (obj.id === currentBoardObject.id) {
+          currentObjData = obj;
           return {
             ...currentBoardObject,
             options: [
               {
-                ...currentBoardObject.options[0],
+                ...obj.options[0],
               },
               {
-                ...currentBoardObject.options[1],
+                ...obj.options[1],
                 value: {
-                  ...currentBoardObject.options[1].value,
+                  ...obj.options[1].value,
                   steps: updatedSteps,
                 },
               },
@@ -46,7 +48,12 @@ const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
         return obj;
       });
 
-      setData({ ...data, boardObjects: newBoardObjects });
+      setData((prevData) => {
+        return {
+          ...prevData,
+          boardObjects: newBoardObjects,
+        };
+      });
       setSessionData({
         ...sessionData,
         options: {
@@ -55,12 +62,12 @@ const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
             ...currentBoardObject,
             options: [
               {
-                ...currentBoardObject.options[0],
+                ...currentObjData.options[0],
               },
               {
-                ...currentBoardObject.options[1],
+                ...currentObjData.options[1],
                 value: {
-                  ...currentBoardObject.options[1].value,
+                  ...currentObjData.options[1].value,
                   steps: updatedSteps,
                 },
               },

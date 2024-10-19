@@ -77,7 +77,7 @@ const runHeroAnimations = (heroEvents, bpm, data, setData) => {
         let newHero = { ...hero };
         newHero.options[0].currentFrame = idleStateChanges[i][j].newFrame;
         newHero.options[0].currentState = idleStateChanges[i][j].newState;
-        console.log('newHero: ', newHero);
+        console.log('newHero: ', idleStateChanges[i][j].newFrame);
         setData((prevData) => {
           let newData = { ...prevData };
           let heroIndex = newData.boardObjects.findIndex(

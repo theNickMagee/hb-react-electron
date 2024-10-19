@@ -87,6 +87,9 @@ const renderTimeline = async (data, setData) => {
   // Separate hero events by path
   const pathHeroEvents = createHeroEventObject(data);
 
+  // runHeroAnimations
+  runHeroAnimations(pathHeroEvents, bpm, data, setData);
+
   console.log('pathHeroEvents: ', pathHeroEvents);
 
   // Loop through hero events in order
@@ -105,6 +108,10 @@ const renderTimeline = async (data, setData) => {
       // Determine the duration for the current event
       let duration;
       let startTimeClip = 0;
+      // if no pathWavData, skip
+      if (!pathWavData) {
+        continue;
+      }
       let endTimeClip = pathWavData.audioData.length / 44100;
 
       // Find the last 'Play' event
@@ -158,8 +165,7 @@ const renderTimeline = async (data, setData) => {
         cutPathWavData,
       );
     }
-    // runHeroAnimations
-    runHeroAnimations(pathHeroEvents, bpm, data, setData);
+
     playWavData(masterWavData);
   }
 };
