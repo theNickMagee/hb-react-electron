@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { getCoordsFromFrameAndState } from '../../controllers/AnimationController';
 
-const Hero = ({ data, isHovered }) => {
+const Hero = ({ data, isHovered, cellSize }) => {
   useEffect(() => {
     console.log('Hero data:', data);
   }, [data]);
@@ -17,14 +17,26 @@ const Hero = ({ data, isHovered }) => {
   return (
     <div
       style={{
-        width: `${w}px`, // Width of the frame to display
-        height: `${h}px`, // Height of the frame to display
-        backgroundImage: `url(${icon})`, // Sprite sheet as background
-        backgroundPosition: `-${x}px -${y}px`, // Position to show the correct frame
-        backgroundRepeat: 'no-repeat', // Do not repeat the background image
-        opacity: isHovered ? 0.5 : 1, // Adjust opacity on hover
+        width: `${cellSize}px`,
+        height: `${cellSize}px`,
+        overflow: 'hidden',
       }}
-    />
+    >
+      {' '}
+      {/* Added overflow: hidden */}
+      <div
+        style={{
+          width: `${w}px`, // Width of the frame to display
+          height: `${h}px`, // Height of the frame to display
+          backgroundImage: `url(${icon})`, // Sprite sheet as background
+          backgroundPosition: `-${x}px -${y}px`, // Position to show the correct frame
+          backgroundRepeat: 'no-repeat', // Do not repeat the background image
+          opacity: isHovered ? 0.5 : 1, // Adjust opacity on hover
+          transform: `scale(${50 / w}, ${50 / h})`, // Scale to fit within 50x50 div
+          transformOrigin: 'top left', // Keep the scale origin at the top-left corner
+        }}
+      />
+    </div>
   );
 };
 
