@@ -25,7 +25,7 @@ const runHeroAnimations = (heroEvents, bpm, data, setData) => {
 
   // we wil use only the events array
 
-  // let stateChanges = createHeroStateChanges(heroEvents, bpm);
+  let stateChanges = createHeroStateChanges(heroEvents, bpm);
 
   // console.log('runHeroAnimations stateChanges: ', stateChanges);
 
@@ -43,9 +43,9 @@ const runHeroAnimations = (heroEvents, bpm, data, setData) => {
   // flatten the array
   uniqueHeroIds = uniqueHeroIds.flat();
   console.log('uniqueHeroIds: ', uniqueHeroIds, data);
-  let idleStateChanges = [];
+  let allStateChanges = [];
   for (let i = 0; i < uniqueHeroIds.length; i++) {
-    idleStateChanges.push([]);
+    allStateChanges.push([]);
     let hero = getHeroById(data, uniqueHeroIds[i]);
     let heroFrameIndex = 0;
     for (let j = 0; j < totalTime * fps; j++) {
@@ -55,7 +55,7 @@ const runHeroAnimations = (heroEvents, bpm, data, setData) => {
       } else {
         heroFrameIndex = 0;
       }
-      idleStateChanges[i].push(
+      allStateChanges[i].push(
         new HeroStateChange(
           uniqueHeroIds[i],
           j / fps,
@@ -67,26 +67,43 @@ const runHeroAnimations = (heroEvents, bpm, data, setData) => {
     }
   }
 
-  console.log('runHeroAnimations idleStateChanges: ', idleStateChanges);
+  console.log('runHeroAnimations allStateChanges: ', allStateChanges);
+
+  // now go thru state changes, and set accordingly
+  for (let i = 0; i < stateChanges.length; i++) {
+    for (let j = 0; j < stateChanges[i].length; j++) {
+      let hero = getHeroById(data, stateChanges[i][j].heroId);
+      let newHero = { ...hero };
+      newHero.options[0].currentFrame = stateChanges[i][j].newFrame;
+      newHero.options[0].currentState = stateChanges[i][j].newState;
+      // find idle state changes and remove them for this time frame
+      let idleStateChangeIndex = allStateChanges[i].findIndex(
+        (stateChange) => stateChange.time === stateChanges[i][j].time,
+      );
+      allStateChanges[i].splice(idleStateChangeIndex, 1);
+      // add new state change
+      allStateChanges[i].push(stateChanges[i][j]);
+    }
+  }
 
   // now for each idle change, setTimeout setData to the currentFrame and currentState
-  for (let i = 0; i < idleStateChanges.length; i++) {
-    for (let j = 0; j < idleStateChanges[i].length; j++) {
+  for (let i = 0; i < allStateChanges.length; i++) {
+    for (let j = 0; j < allStateChanges[i].length; j++) {
       setTimeout(() => {
-        let hero = getHeroById(data, idleStateChanges[i][j].heroId);
+        let hero = getHeroById(data, allStateChanges[i][j].heroId);
         let newHero = { ...hero };
-        newHero.options[0].currentFrame = idleStateChanges[i][j].newFrame;
-        newHero.options[0].currentState = idleStateChanges[i][j].newState;
-        console.log('newHero: ', idleStateChanges[i][j].newFrame);
+        newHero.options[0].currentFrame = allStateChanges[i][j].newFrame;
+        newHero.options[0].currentState = allStateChanges[i][j].newState;
+        console.log('newHero: ', allStateChanges[i][j].newState);
         setData((prevData) => {
           let newData = { ...prevData };
           let heroIndex = newData.boardObjects.findIndex(
-            (obj) => obj.id === idleStateChanges[i][j].heroId,
+            (obj) => obj.id === allStateChanges[i][j].heroId,
           );
           newData.boardObjects[heroIndex] = newHero;
           return newData;
         });
-      }, idleStateChanges[i][j].time * 1000);
+      }, allStateChanges[i][j].time * 1000);
     }
   }
 };
@@ -131,16 +148,6 @@ const createHeroStateChanges = (heroEvents, bpm) => {
               allEvents[i].heroId,
               allEvents[i].time - 0.1,
               'move',
-              0,
-              allEvents[i].event.targetBoardObjectId,
-            ),
-          );
-          // then add one to IDLE based on FPS and number of frames in coords
-          stateChanges[j].push(
-            new HeroStateChange(
-              allEvents[i].heroId,
-              allEvents[i].time + 1 / fps,
-              'idle',
               0,
               allEvents[i].event.targetBoardObjectId,
             ),
