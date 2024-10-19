@@ -137,6 +137,13 @@ const getHeroById = (data, heroId) => {
 
 const getHeroNextFrame = (heroName, currentState, currentFrame) => {
   if (heroName === 'medusa') {
+    console.log(
+      "looking for next frame in medusa's animation: ",
+      currentState,
+      currentFrame,
+      medusaAnimationCoords[currentState.toLowerCase()],
+      !medusaAnimationCoords[currentState.toLowerCase()][currentFrame + 1],
+    );
     // if the next frame does not exist in the currentState, return 0
     if (!medusaAnimationCoords[currentState.toLowerCase()][currentFrame + 1]) {
       return 0;
@@ -153,6 +160,30 @@ const getHeroNextFrame = (heroName, currentState, currentFrame) => {
   return currentFrame + 1;
 };
 
+const heroHasNextFrame = (heroName, currentState, currentFrame) => {
+  console.log(
+    'heroHasNextFrame: ',
+    heroName,
+    currentState,
+    currentFrame,
+    medusaAnimationCoords[currentState.toLowerCase()],
+  );
+  if (heroName === 'medusa') {
+    if (
+      medusaAnimationCoords[currentState.toLowerCase()].coords[currentFrame]
+    ) {
+      return true;
+    }
+  }
+  if (heroName === 'gladiator') {
+    if (!gladiatorAnimationCoords[currentState.toLowerCase()]) {
+      return false;
+    }
+  }
+
+  return false;
+};
+
 export {
   getAllHeroes,
   getPathOfHeroEvent,
@@ -160,4 +191,5 @@ export {
   getMasterTimeOfEvent,
   getHeroById,
   getHeroNextFrame,
+  heroHasNextFrame,
 };

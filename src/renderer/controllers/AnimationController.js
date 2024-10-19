@@ -4,6 +4,7 @@ import {
   getHeroById,
   getHeroNextFrame,
   getMasterTimeOfEvent,
+  heroHasNextFrame,
 } from '../services/HeroServices';
 
 class HeroStateChange {
@@ -46,17 +47,45 @@ const runHeroAnimations = (heroEvents, bpm, data, setData) => {
   for (let i = 0; i < uniqueHeroIds.length; i++) {
     idleStateChanges.push([]);
     let hero = getHeroById(data, uniqueHeroIds[i]);
-    let nextFrame = getHeroNextFrame(hero.options[0].value, 'IDLE', 0);
+    let heroFrameIndex = 0;
     for (let j = 0; j < totalTime * fps; j++) {
+      if (heroHasNextFrame(hero.options[0].value, 'IDLE', heroFrameIndex)) {
+        console.log('heroHasNextFrame: ', heroFrameIndex);
+        heroFrameIndex++;
+      } else {
+        heroFrameIndex = 0;
+      }
       idleStateChanges[i].push(
-        new HeroStateChange(uniqueHeroIds[i], j / fps, 'IDLE', j % 4, null),
+        new HeroStateChange(
+          uniqueHeroIds[i],
+          j / fps,
+          'IDLE',
+          heroFrameIndex,
+          null,
+        ),
       );
     }
   }
 
   console.log('runHeroAnimations idleStateChanges: ', idleStateChanges);
 
-  // now for each idle change, setTimeout setData
+  // now for each idle change, setTimeout setData to the currentFrame and currentState
+  for (let i = 0; i < idleStateChanges.length; i++) {
+    for (let j = 0; j < idleStateChanges[i].length; j++) {
+      setTimeout(() => {
+        let hero = getHeroById(data, idleStateChanges[i][j].heroId);
+        let newHero = { ...hero };
+        newHero.options[0].currentFrame = idleStateChanges[i][j].newFrame;
+        newHero.options[0].currentState = idleStateChanges[i][j].newState;
+        setData({
+          ...data,
+          boardObjects: data.boardObjects.map((obj) =>
+            obj.id === newHero.id ? newHero : obj,
+          ),
+        });
+      }, idleStateChanges[i][j].time * 1000);
+    }
+  }
 };
 
 const createHeroStateChanges = (heroEvents, bpm) => {
