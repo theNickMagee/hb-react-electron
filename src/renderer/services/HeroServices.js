@@ -170,14 +170,16 @@ const heroHasNextFrame = (heroName, currentState, currentFrame) => {
   );
   if (heroName === 'medusa') {
     if (
-      medusaAnimationCoords[currentState.toLowerCase()].coords[currentFrame]
+      medusaAnimationCoords[currentState.toLowerCase()].coords[currentFrame + 1]
     ) {
       return true;
     }
   }
   if (heroName === 'gladiator') {
     if (
-      gladiatorAnimationCoords[currentState.toLowerCase()].coords[currentFrame]
+      gladiatorAnimationCoords[currentState.toLowerCase()].coords[
+        currentFrame + 1
+      ]
     ) {
       return true;
     }

@@ -59,7 +59,7 @@ const gladiatorAnimationCoords = {
   },
   idle: {
     sprite: gladiatorSpriteIdle,
-    frames: 6,
+    frames: 4,
     coords: {
       0: { x: 0, y: 0, w: 150, h: 100 },
       1: { x: 150, y: 0, w: 150, h: 100 },
