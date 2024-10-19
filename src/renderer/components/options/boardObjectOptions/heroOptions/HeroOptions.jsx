@@ -3,7 +3,9 @@ import React, { useEffect } from 'react';
 import StepOptions from './StepOptions';
 
 const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
-  const hero = sessionData.options.currentEditItem;
+  const hero = { ...sessionData.options.currentEditItem };
+
+  console.log('hero YAYA', hero);
 
   const steps = hero.options[1].value.steps;
 
@@ -29,6 +31,9 @@ const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
             ...currentBoardObject,
             options: [
               {
+                ...currentBoardObject.options[0],
+              },
+              {
                 ...currentBoardObject.options[1],
                 value: {
                   ...currentBoardObject.options[1].value,
@@ -49,6 +54,9 @@ const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
           currentEditItem: {
             ...currentBoardObject,
             options: [
+              {
+                ...currentBoardObject.options[0],
+              },
               {
                 ...currentBoardObject.options[1],
                 value: {

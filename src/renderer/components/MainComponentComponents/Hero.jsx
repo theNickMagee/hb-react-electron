@@ -32,7 +32,7 @@ const Hero = ({ data, isHovered, cellSize }) => {
           backgroundPosition: `-${x}px -${y}px`, // Position to show the correct frame
           backgroundRepeat: 'no-repeat', // Do not repeat the background image
           opacity: isHovered ? 0.5 : 1, // Adjust opacity on hover
-          transform: `scale(${50 / w}, ${50 / h})`, // Scale to fit within 50x50 div
+          transform: `scale(${cellSize / w}, ${cellSize / h})`, // Scale to fit within 50x50 div
           transformOrigin: 'top left', // Keep the scale origin at the top-left corner
         }}
       />

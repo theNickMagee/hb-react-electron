@@ -19,7 +19,7 @@ const Timeline = ({ data, setData, setSessionData, sessionData }) => {
   const getHeroSteps = (heroId) => {
     const hero = data.boardObjects.find((obj) => obj.id === heroId);
     if (hero) {
-      return hero.options[0].value.steps;
+      return hero.options[1].value.steps;
     }
     return [];
   };

@@ -91,11 +91,11 @@ const getHeroEvents = (data) => {
   heroes.forEach((hero) => {
     if (
       hero.options &&
-      hero.options[0] &&
-      hero.options[0].value &&
-      hero.options[0].value.steps
+      hero.options[1] &&
+      hero.options[1].value &&
+      hero.options[1].value.steps
     ) {
-      hero.options[0].value.steps.forEach((step) => {
+      hero.options[1].value.steps.forEach((step) => {
         heroEvents.push({
           heroId: hero.id,
           targetBoardObjectId: step.targetBoardObjectId,

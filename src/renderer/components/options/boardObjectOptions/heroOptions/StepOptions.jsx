@@ -6,6 +6,12 @@ const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
 
   useEffect(() => {
     const obj = boardObjects.find((obj) => obj.id === step.targetBoardObjectId);
+    console.log(
+      'step.targetBoardObjectId',
+      step.targetBoardObjectId,
+      step.action,
+      obj,
+    );
     setBoardObject(obj);
   }, [step.targetBoardObjectId, step.action]);
 
