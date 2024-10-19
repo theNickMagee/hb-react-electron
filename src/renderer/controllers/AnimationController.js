@@ -49,7 +49,7 @@ const runHeroAnimations = (heroEvents, bpm, data, setData) => {
     let hero = getHeroById(data, uniqueHeroIds[i]);
     let heroFrameIndex = 0;
     for (let j = 0; j < totalTime * fps; j++) {
-      if (heroHasNextFrame(hero.options[0].value, 'IDLE', heroFrameIndex)) {
+      if (heroHasNextFrame(hero.options[0].value, 'idle', heroFrameIndex)) {
         console.log('heroHasNextFrame: ', heroFrameIndex);
         heroFrameIndex++;
       } else {
@@ -59,7 +59,7 @@ const runHeroAnimations = (heroEvents, bpm, data, setData) => {
         new HeroStateChange(
           uniqueHeroIds[i],
           j / fps,
-          'IDLE',
+          'idle',
           heroFrameIndex,
           null,
         ),
@@ -77,11 +77,14 @@ const runHeroAnimations = (heroEvents, bpm, data, setData) => {
         let newHero = { ...hero };
         newHero.options[0].currentFrame = idleStateChanges[i][j].newFrame;
         newHero.options[0].currentState = idleStateChanges[i][j].newState;
-        setData({
-          ...data,
-          boardObjects: data.boardObjects.map((obj) =>
-            obj.id === newHero.id ? newHero : obj,
-          ),
+        console.log('newHero: ', newHero);
+        setData((prevData) => {
+          let newData = { ...prevData };
+          let heroIndex = newData.boardObjects.findIndex(
+            (obj) => obj.id === idleStateChanges[i][j].heroId,
+          );
+          newData.boardObjects[heroIndex] = newHero;
+          return newData;
         });
       }, idleStateChanges[i][j].time * 1000);
     }
@@ -127,7 +130,7 @@ const createHeroStateChanges = (heroEvents, bpm) => {
             new HeroStateChange(
               allEvents[i].heroId,
               allEvents[i].time - 0.1,
-              'MOVE',
+              'move',
               0,
               allEvents[i].event.targetBoardObjectId,
             ),
@@ -137,7 +140,7 @@ const createHeroStateChanges = (heroEvents, bpm) => {
             new HeroStateChange(
               allEvents[i].heroId,
               allEvents[i].time + 1 / fps,
-              'IDLE',
+              'idle',
               0,
               allEvents[i].event.targetBoardObjectId,
             ),
