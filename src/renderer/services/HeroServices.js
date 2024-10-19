@@ -1,4 +1,6 @@
 import { getOrderedPaths } from './CircuitServices';
+import { medusaAnimationCoords } from '../defaults/HeroAnimationDefaults';
+import { gladiatorAnimationCoords } from '../defaults/HeroAnimationDefaults';
 
 const getAllHeroes = ({ data }) => {
   // Assuming heroes are a type of board object
@@ -129,9 +131,33 @@ const getMasterTimeOfEvent = (event, bpm) => {
   return timeInSeconds;
 };
 
+const getHeroById = (data, heroId) => {
+  return data.boardObjects.find((obj) => obj.id === heroId);
+};
+
+const getHeroNextFrame = (heroName, currentState, currentFrame) => {
+  if (heroName === 'medusa') {
+    // if the next frame does not exist in the currentState, return 0
+    if (!medusaAnimationCoords[currentState.toLowerCase()][currentFrame + 1]) {
+      return 0;
+    }
+  }
+  if (heroName === 'gladiator') {
+    // if the next frame does not exist in the currentState, return 0
+    if (
+      !gladiatorAnimationCoords[currentState.toLowerCase()][currentFrame + 1]
+    ) {
+      return 0;
+    }
+  }
+  return currentFrame + 1;
+};
+
 export {
   getAllHeroes,
   getPathOfHeroEvent,
   createHeroEventObject,
   getMasterTimeOfEvent,
+  getHeroById,
+  getHeroNextFrame,
 };
