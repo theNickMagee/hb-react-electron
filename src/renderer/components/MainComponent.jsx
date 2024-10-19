@@ -107,7 +107,11 @@ const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
                 />
               )}
               {boardObject && boardObject.type === 'Hero' && (
-                <Hero data={boardObject} isHovered={isHovered} />
+                <Hero
+                  data={boardObject}
+                  isHovered={isHovered}
+                  cellSize={cellSize}
+                />
               )}
               {isHovered && sessionData.droppingItem.isDroppingItem && (
                 <img

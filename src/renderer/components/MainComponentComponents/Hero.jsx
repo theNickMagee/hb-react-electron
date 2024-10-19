@@ -15,15 +15,14 @@ const Hero = ({ data, isHovered }) => {
   console.log('hero coords:', x, y, w, h, icon);
 
   return (
-    <img
-      src={icon} // setAnimationData.sprite
-      alt=""
+    <div
       style={{
-        // width: `${w}px`, // Width of the cropped section
-        // height: `${h}px`, // Height of the cropped section
-        objectFit: 'contain', // Ensures that the image is not scaled
-        objectPosition: `-${x}px -${y}px`, // Positioning the image to show the desired section
-        opacity: isHovered ? 0.5 : 1, // Change opacity on hover
+        width: `${w}px`, // Width of the frame to display
+        height: `${h}px`, // Height of the frame to display
+        backgroundImage: `url(${icon})`, // Sprite sheet as background
+        backgroundPosition: `-${x}px -${y}px`, // Position to show the correct frame
+        backgroundRepeat: 'no-repeat', // Do not repeat the background image
+        opacity: isHovered ? 0.5 : 1, // Adjust opacity on hover
       }}
     />
   );
