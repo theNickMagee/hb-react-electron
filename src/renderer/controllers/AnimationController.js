@@ -111,6 +111,8 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
     }
   }
 
+  // for every measure, add sequence of idle animation if it doesnt already have an animation
+
   return stateChanges;
 };
 
