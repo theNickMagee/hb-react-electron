@@ -9,7 +9,15 @@ import {
 } from '../services/HeroServices';
 
 class HeroStateChange {
-  constructor(heroId, time, newState, newFrame, targetBoardObjectId) {
+  constructor(
+    heroId,
+    time,
+    newState,
+    newFrame,
+    targetBoardObjectId,
+    offsetX = 0,
+    offsetY = 0,
+  ) {
     this.heroId = heroId;
     this.time = time;
     this.newState = newState;
@@ -55,6 +63,10 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
   let allEvents = [];
 
   const fps = 20;
+
+  // find width and height of the board
+  const boardWidth = data.gridSize * data.cellSize;
+  const boardHeight = data.gridSize * data.cellSize;
 
   for (let i = 0; i < heroEvents.paths.length; i++) {
     for (let j = 0; j < heroEvents.paths[i].events.length; j++) {
