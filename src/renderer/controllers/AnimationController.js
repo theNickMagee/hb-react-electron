@@ -90,6 +90,8 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
         0,
         null,
         hero.id,
+        hero.row,
+        hero.col,
       );
       stateChanges[i].push([...heroStateChanges]);
     }
@@ -120,6 +122,8 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
             0,
             allEvents[i].event.targetBoardObjectId,
             hero.id,
+            hero.row,
+            hero.col,
           );
 
           // add attack
@@ -130,6 +134,8 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
             0,
             allEvents[i].event.targetBoardObjectId,
             hero.id,
+            hero.row,
+            hero.col,
           );
 
           console.log('heroMoveStateChanges: ', [...heroMoveStateChanges]);

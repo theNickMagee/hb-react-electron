@@ -206,6 +206,8 @@ const createAnimationStateChanges = (
     initialFrame,
     targetBoardObjectId,
     heroId,
+    heroRow,
+    heroCol,
   );
   // if the state is 'move', final frame should have offSetX and offsetY to targetBoardObject
   // if state is attack, all frames should be positioned left targetBoardObject
