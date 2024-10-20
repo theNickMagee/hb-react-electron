@@ -117,6 +117,10 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
           allEvents[i].event.action.startsWith('play path') ||
           allEvents[i].event.action.startsWith('set')
         ) {
+          // get board object
+          let targetBoardObject = data.boardObjects.find(
+            (obj) => obj.id === allEvents[i].event.targetBoardObjectId,
+          );
           // add a 'MOVE' state change 0.1 seconds before the event
           // stateChanges[j].push(
           //   new HeroStateChange(
@@ -132,7 +136,7 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
             allEvents[i].time - 0.1,
             'move',
             0,
-            allEvents[i].event.targetBoardObjectId,
+            targetBoardObject,
             hero.id,
             hero.row,
             hero.col,
@@ -144,7 +148,7 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
             allEvents[i].time + 0.1,
             'attack',
             0,
-            allEvents[i].event.targetBoardObjectId,
+            targetBoardObject,
             hero.id,
             hero.row,
             hero.col,

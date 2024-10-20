@@ -195,62 +195,40 @@ const createAnimationStateChanges = (
   time,
   state,
   initialFrame,
-  targetBoardObjectId,
+  targetBoardObject,
   heroId,
   heroRow,
   heroCol,
   canvasWidth, // in px
   canvasHeight, // in px
 ) => {
-  console.log(
-    'creating animation state changes for hero: ',
-    heroCharacter,
-    time,
-    state,
-    initialFrame,
-    targetBoardObjectId,
-    heroId,
-  );
   // if the state is 'move', final frame should have offSetX and offsetY to targetBoardObject
   // if state is attack, all frames should be positioned left targetBoardObject
   // targetBoardObject has row and col
   // USE - hero row and col
-  // USE - w and h of canvas
+  // USE - w and h of canva
+  let characterState = null;
   if (heroCharacter === 'medusa') {
-    // coords is an object not an array
-    const medusaState = medusaAnimationCoords[state];
-    const totalFrames = medusaState.frames;
-    const stateChanges = [];
-    for (let i = initialFrame; i < totalFrames; i++) {
-      let stateChange = new HeroStateChange(
-        heroId,
-        time - 0.1 * (totalFrames - i),
-        state,
-        i,
-        targetBoardObjectId,
-      );
-      stateChanges.push(stateChange);
-    }
-    return stateChanges;
+    characterState = medusaAnimationCoords[state];
   }
   if (heroCharacter === 'gladiator') {
-    // coords is an object not an array
-    const gladiatorState = gladiatorAnimationCoords[state];
-    const totalFrames = gladiatorState.frames;
-    const stateChanges = [];
-    for (let i = initialFrame + 1; i < totalFrames + 1; i++) {
-      let stateChange = new HeroStateChange(
-        heroId,
-        time,
-        state,
-        i,
-        targetBoardObjectId,
-      );
-      stateChanges.push(stateChange);
-    }
-    return stateChanges;
+    characterState = gladiatorAnimationCoords[state];
   }
-  return [];
+
+  // coords is an object not an array
+  const totalFrames = characterState.frames;
+  const stateChanges = [];
+  for (let i = initialFrame; i < totalFrames; i++) {
+    let stateChange = new HeroStateChange(
+      heroId,
+      time - 0.1 * (totalFrames - i),
+      state,
+      i,
+      targetBoardObject ? targetBoardObject.id : null,
+    );
+    stateChanges.push(stateChange);
+  }
+  return stateChanges;
 };
 
 export {
