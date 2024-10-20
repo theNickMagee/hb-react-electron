@@ -100,8 +100,6 @@ const playWavData = (wavData) => {
     return;
   }
 
-  console.log('Playing wavData:', wavData);
-
   // Ensure audioData is resolved if it's a Promise
   const audioData = wavData.audioData;
 
@@ -109,7 +107,7 @@ const playWavData = (wavData) => {
   console.log('Audio data length:', audioData.length);
 
   if (!audioData || audioData.length === 0) {
-    console.error('Audio data is undefined or empty');
+    // console.error('Audio data is undefined or empty');
     return;
   }
 
@@ -347,7 +345,12 @@ const cutWavData = (wavData, startTime, endTime) => {
 };
 
 const placeWavData = (masterWavData, startTime, newWavData) => {
-  const { sampleRate, numChannels, bitsPerSample, audioData: masterAudioData } = masterWavData;
+  const {
+    sampleRate,
+    numChannels,
+    bitsPerSample,
+    audioData: masterAudioData,
+  } = masterWavData;
   const { audioData: newAudioData } = newWavData;
 
   const startSample = Math.floor(startTime * sampleRate) * numChannels;

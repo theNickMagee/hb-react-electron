@@ -16,8 +16,6 @@ const adjustVolumeBasedOnScale = (wavData, value, min, max) => {
   // Destructure the wavData object to get the necessary properties
   const { sampleRate, numChannels, bitsPerSample, audioData } = wavData;
 
-  console.log('sanity check: ', audioData);
-
   return {
     sampleRate,
     numChannels,

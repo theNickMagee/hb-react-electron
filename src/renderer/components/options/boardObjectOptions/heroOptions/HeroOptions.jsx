@@ -5,8 +5,6 @@ import StepOptions from './StepOptions';
 const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
   const hero = { ...sessionData.options.currentEditItem };
 
-  console.log('hero YAYA', hero);
-
   const steps = hero.options[1].value.steps;
 
   const setStep = (stepid, key, value) => {

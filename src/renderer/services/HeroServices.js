@@ -132,6 +132,7 @@ const getMasterTimeOfEvent = (event, bpm) => {
 };
 
 const getHeroById = (data, heroId) => {
+  console.log('getHeroById: ', heroId);
   return data.boardObjects.find((obj) => obj.id === heroId);
 };
 
@@ -161,13 +162,13 @@ const getHeroNextFrame = (heroName, currentState, currentFrame) => {
 };
 
 const heroHasNextFrame = (heroName, currentState, currentFrame) => {
-  console.log(
-    'heroHasNextFrame: ',
-    heroName,
-    currentState,
-    currentFrame,
-    gladiatorAnimationCoords[currentState.toLowerCase()],
-  );
+  // console.log(
+  //   'heroHasNextFrame: ',
+  //   heroName,
+  //   currentState,
+  //   currentFrame,
+  //   gladiatorAnimationCoords[currentState.toLowerCase()],
+  // );
   if (heroName === 'medusa') {
     if (
       medusaAnimationCoords[currentState.toLowerCase()].coords[currentFrame + 1]
@@ -188,6 +189,70 @@ const heroHasNextFrame = (heroName, currentState, currentFrame) => {
   return false;
 };
 
+const createAnimationStateChanges = (
+  heroCharacter,
+  time,
+  state,
+  initialFrame,
+  targetBoardObjectId,
+  heroId,
+) => {
+  console.log(
+    'creating animation state changes for hero: ',
+    heroCharacter,
+    time,
+    state,
+    initialFrame,
+    targetBoardObjectId,
+    heroId,
+  );
+  if (heroCharacter === 'medusa') {
+    // coords is an object not an array
+    const medusaState = medusaAnimationCoords[state];
+    const totalFrames = medusaState.frames;
+    const stateChanges = [];
+    for (let i = initialFrame; i < totalFrames; i++) {
+      let stateChange = new HeroStateChange(
+        heroId,
+        time - 0.1 * (totalFrames - i),
+        state,
+        i,
+        targetBoardObjectId,
+      );
+      stateChanges.push(stateChange);
+    }
+    return stateChanges;
+  }
+  if (heroCharacter === 'gladiator') {
+    // coords is an object not an array
+    const gladiatorState = gladiatorAnimationCoords[state];
+    const totalFrames = gladiatorState.frames;
+    const stateChanges = [];
+    for (let i = initialFrame + 1; i < totalFrames + 1; i++) {
+      let stateChange = new HeroStateChange(
+        heroId,
+        time,
+        state,
+        i,
+        targetBoardObjectId,
+      );
+      stateChanges.push(stateChange);
+    }
+    return stateChanges;
+  }
+  return [];
+};
+
+class HeroStateChange {
+  constructor(heroId, time, newState, newFrame, targetBoardObjectId) {
+    this.heroId = heroId;
+    this.time = time;
+    this.newState = newState;
+    this.newFrame = newFrame;
+    this.targetBoardObjectId = targetBoardObjectId;
+  }
+}
+
 export {
   getAllHeroes,
   getPathOfHeroEvent,
@@ -196,4 +261,5 @@ export {
   getHeroById,
   getHeroNextFrame,
   heroHasNextFrame,
+  createAnimationStateChanges,
 };

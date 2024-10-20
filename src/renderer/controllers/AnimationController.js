@@ -1,6 +1,7 @@
 import { medusaAnimationCoords } from '../defaults/HeroAnimationDefaults';
 import { gladiatorAnimationCoords } from '../defaults/HeroAnimationDefaults';
 import {
+  createAnimationStateChanges,
   getHeroById,
   getHeroNextFrame,
   getMasterTimeOfEvent,
@@ -18,97 +19,39 @@ class HeroStateChange {
 }
 
 const runHeroAnimations = (heroEvents, bpm, data, setData) => {
-  // loop thru events and create prpoper state changes
   console.log('runHeroAnimations: ', heroEvents, bpm, data);
-  // heroEvents is an odd object
-  // {paths: [events: [{heroId, targetBoardObjectId, measure}]]}
 
-  // we wil use only the events array
+  let allStateChanges = createHeroStateChanges(heroEvents, bpm, data);
 
-  let stateChanges = createHeroStateChanges(heroEvents, bpm);
+  console.log('runHeroAnimations stateChanges: ', allStateChanges);
 
-  // console.log('runHeroAnimations stateChanges: ', stateChanges);
-
-  // will need to find hero and set options[0] currentFrame and currentState accordingly
-
-  // to start, lets ignore createHeroStateChanges and just create stateChanges to increment the currentFrame of the hero
-  let totalTime = data.timeline.measures * (60 / bpm) * 4;
-
-  let fps = 20;
-
-  // create state Change array for each hero
-  let uniqueHeroIds = heroEvents.paths.map((path) =>
-    path.events.map((event) => event.heroId),
-  );
-  // flatten the array
-  uniqueHeroIds = uniqueHeroIds.flat();
-  console.log('uniqueHeroIds: ', uniqueHeroIds, data);
-  let allStateChanges = [];
-  for (let i = 0; i < uniqueHeroIds.length; i++) {
-    allStateChanges.push([]);
-    let hero = getHeroById(data, uniqueHeroIds[i]);
-    let heroFrameIndex = 0;
-    for (let j = 0; j < totalTime * fps; j++) {
-      if (heroHasNextFrame(hero.options[0].value, 'idle', heroFrameIndex)) {
-        console.log('heroHasNextFrame: ', heroFrameIndex);
-        heroFrameIndex++;
-      } else {
-        heroFrameIndex = 0;
-      }
-      allStateChanges[i].push(
-        new HeroStateChange(
-          uniqueHeroIds[i],
-          j / fps,
-          'idle',
-          heroFrameIndex,
-          null,
-        ),
-      );
-    }
-  }
-
-  console.log('runHeroAnimations allStateChanges: ', allStateChanges);
-
-  // now go thru state changes, and set accordingly
-  for (let i = 0; i < stateChanges.length; i++) {
-    for (let j = 0; j < stateChanges[i].length; j++) {
-      let hero = getHeroById(data, stateChanges[i][j].heroId);
-      let newHero = { ...hero };
-      newHero.options[0].currentFrame = stateChanges[i][j].newFrame;
-      newHero.options[0].currentState = stateChanges[i][j].newState;
-      // find idle state changes and remove them for this time frame
-      let idleStateChangeIndex = allStateChanges[i].findIndex(
-        (stateChange) => stateChange.time === stateChanges[i][j].time,
-      );
-      allStateChanges[i].splice(idleStateChangeIndex, 1);
-      // add new state change
-      allStateChanges[i].push(stateChanges[i][j]);
-    }
-  }
-
-  // now for each idle change, setTimeout setData to the currentFrame and currentState
+  // Iterate through each level of the nested arrays in allStateChanges
   for (let i = 0; i < allStateChanges.length; i++) {
-    for (let j = 0; j < allStateChanges[i].length; j++) {
-      setTimeout(() => {
-        let hero = getHeroById(data, allStateChanges[i][j].heroId);
-        let newHero = { ...hero };
-        newHero.options[0].currentFrame = allStateChanges[i][j].newFrame;
-        newHero.options[0].currentState = allStateChanges[i][j].newState;
-        console.log('newHero: ', allStateChanges[i][j].newState);
-        setData((prevData) => {
-          let newData = { ...prevData };
-          let heroIndex = newData.boardObjects.findIndex(
-            (obj) => obj.id === allStateChanges[i][j].heroId,
-          );
-          newData.boardObjects[heroIndex] = newHero;
-          return newData;
-        });
-      }, allStateChanges[i][j].time * 1000);
+    for (let k = 0; k < allStateChanges[i].length; k++) {
+      // Loop through the second level
+      for (let j = 0; j < allStateChanges[i][k].length; j++) {
+        // Loop through the innermost array
+        setTimeout(() => {
+          let hero = getHeroById(data, allStateChanges[i][k][j].heroId); // Correct access to heroId
+          let newHero = { ...hero };
+          newHero.options[0].currentFrame = allStateChanges[i][k][j].newFrame;
+          newHero.options[0].currentState = allStateChanges[i][k][j].newState;
+
+          setData((prevData) => {
+            let newData = { ...prevData };
+            let heroIndex = newData.boardObjects.findIndex(
+              (obj) => obj.id === allStateChanges[i][k][j].heroId, // Correct access to heroId
+            );
+            newData.boardObjects[heroIndex] = newHero;
+            return newData;
+          });
+        }, allStateChanges[i][k][j].time * 1000); // Correct access to time
+      }
     }
   }
 };
 
-const createHeroStateChanges = (heroEvents, bpm) => {
+const createHeroStateChanges = (heroEvents, bpm, data) => {
   let allEvents = [];
 
   const fps = 20;
@@ -137,21 +80,32 @@ const createHeroStateChanges = (heroEvents, bpm) => {
 
   for (let i = 0; i < allEvents.length; i++) {
     for (let j = 0; j < heroIds.length; j++) {
+      const hero = getHeroById(data, allEvents[i].heroId);
       if (allEvents[i].heroId === heroIds[j]) {
         if (
           allEvents[i].event.action.startsWith('play path') ||
           allEvents[i].event.action.startsWith('set')
         ) {
           // add a 'MOVE' state change 0.1 seconds before the event
-          stateChanges[j].push(
-            new HeroStateChange(
-              allEvents[i].heroId,
-              allEvents[i].time - 0.1,
-              'move',
-              0,
-              allEvents[i].event.targetBoardObjectId,
-            ),
+          // stateChanges[j].push(
+          //   new HeroStateChange(
+          //     allEvents[i].heroId,
+          //     allEvents[i].time - 0.1,
+          //     'move',
+          //     0,
+          //     allEvents[i].event.targetBoardObjectId,
+          //   ),
+          // );
+          let heroMoveStateChanges = createAnimationStateChanges(
+            hero.options[0].value,
+            allEvents[i].time,
+            'move',
+            0,
+            allEvents[i].event.targetBoardObjectId,
+            hero.id,
           );
+          console.log('heroMoveStateChanges: ', [...heroMoveStateChanges]);
+          stateChanges[j].push([...heroMoveStateChanges]);
         }
       }
     }
@@ -161,8 +115,6 @@ const createHeroStateChanges = (heroEvents, bpm) => {
 };
 
 const getCoordsFromFrameAndState = (heroName, state, frame) => {
-  console.log('getCoordsFromFrameAndState: ', heroName, state, frame);
-
   if (heroName === 'medusa') {
     const medusaState = medusaAnimationCoords[state];
     if (medusaState && frame < medusaState.frames) {

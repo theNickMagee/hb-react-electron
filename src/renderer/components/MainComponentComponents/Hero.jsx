@@ -2,17 +2,11 @@ import { useEffect } from 'react';
 import { getCoordsFromFrameAndState } from '../../controllers/AnimationController';
 
 const Hero = ({ data, isHovered, cellSize }) => {
-  useEffect(() => {
-    console.log('Hero data:', data);
-  }, [data]);
-
   const { x, y, w, h, icon } = getCoordsFromFrameAndState(
     data.options[0].value,
     data.options[0].currentState,
     data.options[0].currentFrame,
   );
-
-  console.log('hero coords:', x, y, w, h, icon);
 
   return (
     <div

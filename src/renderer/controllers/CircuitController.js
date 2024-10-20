@@ -87,6 +87,8 @@ const renderTimeline = async (data, setData) => {
   // Separate hero events by path
   const pathHeroEvents = createHeroEventObject(data);
 
+  console.log('rendering tmeline, pathHeroEvents: ', pathHeroEvents);
+
   // runHeroAnimations
   runHeroAnimations(pathHeroEvents, bpm, data, setData);
 
@@ -150,13 +152,13 @@ const renderTimeline = async (data, setData) => {
         endTimeClip,
       );
 
-      console.log(
-        'cutPathWavData: ',
-        cutPathWavData,
-        startTimeClip,
-        endTimeClip,
-        cutPathWavData.audioData.length / 44100,
-      );
+      // console.log(
+      //   'cutPathWavData: ',
+      //   cutPathWavData,
+      //   startTimeClip,
+      //   endTimeClip,
+      //   cutPathWavData.audioData.length / 44100,
+      // );
 
       // Place the audio at the start time
       masterWavData = placeWavData(
