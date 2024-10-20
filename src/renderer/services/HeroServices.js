@@ -202,32 +202,72 @@ const createAnimationStateChanges = (
   canvasWidth, // in px
   canvasHeight, // in px
 ) => {
-  // if the state is 'move', final frame should have offSetX and offsetY to targetBoardObject
-  // if state is attack, all frames should be positioned left targetBoardObject
-  // targetBoardObject has row and col
-  // USE - hero row and col
-  // USE - w and h of canva
+  // Get the animation details for the character
   let characterState = null;
   if (heroCharacter === 'medusa') {
     characterState = medusaAnimationCoords[state];
-  }
-  if (heroCharacter === 'gladiator') {
+  } else if (heroCharacter === 'gladiator') {
     characterState = gladiatorAnimationCoords[state];
   }
 
-  // coords is an object not an array
+  if (!characterState) return []; // Return early if no valid state is found for the hero
+
+  // Calculate the grid cell size based on canvas width and height
+  const numRows = 8;
+  const numCols = 8;
+  const cellWidth = canvasWidth / numCols;
+  const cellHeight = canvasHeight / numRows;
+
+  // Calculate hero's initial position in pixels
+  const heroX = heroCol * cellWidth;
+  const heroY = heroRow * cellHeight;
+
+  // Calculate target's position in pixels
+  const targetX = targetBoardObject ? targetBoardObject.col * cellWidth : 0;
+  const targetY = targetBoardObject ? targetBoardObject.row * cellHeight : 0;
+
   const totalFrames = characterState.frames;
   const stateChanges = [];
+
   for (let i = initialFrame; i < totalFrames; i++) {
+    let offsetX = 0;
+    let offsetY = 0;
+
+    // Handle the 'move' state
+    if (state === 'move') {
+      // Calculate the hero's position moving towards the target
+      if (i === totalFrames - 1) {
+        // Final frame has the hero at the target position
+        offsetX = targetX;
+        offsetY = targetY;
+      } else {
+        // Intermediate frames interpolate between hero's current and target positions
+        const percentComplete = (i + 1) / totalFrames;
+        offsetX = heroX + (targetX - heroX) * percentComplete;
+        offsetY = heroY + (targetY - heroY) * percentComplete;
+      }
+    }
+
+    // Handle the 'attack' state
+    if (state === 'attack') {
+      // For 'attack', all frames are positioned left of the target
+      offsetX = targetX - cellWidth; // Left of the target
+      offsetY = targetY; // Same vertical alignment
+    }
+
+    // Create the state change object with calculated offsets
     let stateChange = new HeroStateChange(
       heroId,
-      time - 0.1 * (totalFrames - i),
+      time + i * 0.1, // Adjust time for each frame as needed
       state,
       i,
       targetBoardObject ? targetBoardObject.id : null,
+      offsetX,
+      offsetY,
     );
     stateChanges.push(stateChange);
   }
+
   return stateChanges;
 };
 
