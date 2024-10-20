@@ -1,6 +1,7 @@
 import { getOrderedPaths } from './CircuitServices';
 import { medusaAnimationCoords } from '../defaults/HeroAnimationDefaults';
 import { gladiatorAnimationCoords } from '../defaults/HeroAnimationDefaults';
+import { HeroStateChange } from '../controllers/AnimationController';
 
 const getAllHeroes = ({ data }) => {
   // Assuming heroes are a type of board object
@@ -206,6 +207,11 @@ const createAnimationStateChanges = (
     targetBoardObjectId,
     heroId,
   );
+  // if the state is 'move', final frame should have offSetX and offsetY to targetBoardObject
+  // if state is attack, all frames should be positioned left targetBoardObject
+  // targetBoardObject has row and col
+  // NEEDS - hero row and col
+  // NEEDS - w and h of canvas
   if (heroCharacter === 'medusa') {
     // coords is an object not an array
     const medusaState = medusaAnimationCoords[state];
@@ -242,16 +248,6 @@ const createAnimationStateChanges = (
   }
   return [];
 };
-
-class HeroStateChange {
-  constructor(heroId, time, newState, newFrame, targetBoardObjectId) {
-    this.heroId = heroId;
-    this.time = time;
-    this.newState = newState;
-    this.newFrame = newFrame;
-    this.targetBoardObjectId = targetBoardObjectId;
-  }
-}
 
 export {
   getAllHeroes,

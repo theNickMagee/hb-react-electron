@@ -174,4 +174,4 @@ const getCoordsFromFrameAndState = (heroName, state, frame) => {
   };
 };
 
-export { runHeroAnimations, getCoordsFromFrameAndState };
+export { runHeroAnimations, getCoordsFromFrameAndState, HeroStateChange };
