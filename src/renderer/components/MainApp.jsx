@@ -11,6 +11,8 @@ function MainApp() {
   const [data, setData] = useState({
     boardObjects: [],
     wires: [],
+    cellSize: 50,
+    gridSize: 8,
     timeline: {
       measures: 8,
       bpm: 120,

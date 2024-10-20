@@ -4,8 +4,8 @@ import { hasNoOutgoingWires } from '../services/WireServices';
 import Hero from './MainComponentComponents/Hero';
 
 const MainComponent = ({ data, setData, sessionData, setSessionData }) => {
-  const gridSize = 8;
-  const cellSize = 50; // size of each cell in the grid
+  const gridSize = data.gridSize; // size of the grid
+  const cellSize = data.cellSize; // size of each cell
   const [hoveredCell, setHoveredCell] = useState(null);
 
   const handleMouseOver = (row, col) => {
