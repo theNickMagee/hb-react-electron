@@ -78,6 +78,23 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
     stateChanges.push([]);
   }
 
+  // for every measure, add sequence of idle animation if it doesnt already have an animation
+  const numMeasures = data.timeline.measures;
+  for (let i = 0; i < heroIds.length; i++) {
+    for (let j = 0; j < numMeasures; j++) {
+      let hero = getHeroById(data, heroIds[i]);
+      let heroStateChanges = createAnimationStateChanges(
+        hero.options[0].value,
+        (j * 60) / bpm,
+        'idle',
+        0,
+        null,
+        hero.id,
+      );
+      stateChanges[i].push([...heroStateChanges]);
+    }
+  }
+
   for (let i = 0; i < allEvents.length; i++) {
     for (let j = 0; j < heroIds.length; j++) {
       const hero = getHeroById(data, allEvents[i].heroId);
@@ -110,8 +127,6 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
       }
     }
   }
-
-  // for every measure, add sequence of idle animation if it doesnt already have an animation
 
   return stateChanges;
 };
