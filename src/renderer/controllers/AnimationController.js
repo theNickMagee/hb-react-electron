@@ -115,14 +115,26 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
           // );
           let heroMoveStateChanges = createAnimationStateChanges(
             hero.options[0].value,
-            allEvents[i].time,
+            allEvents[i].time - 0.1,
             'move',
             0,
             allEvents[i].event.targetBoardObjectId,
             hero.id,
           );
+
+          // add attack
+          let heroAttackStateChanges = createAnimationStateChanges(
+            hero.options[0].value,
+            allEvents[i].time + 0.1,
+            'attack',
+            0,
+            allEvents[i].event.targetBoardObjectId,
+            hero.id,
+          );
+
           console.log('heroMoveStateChanges: ', [...heroMoveStateChanges]);
           stateChanges[j].push([...heroMoveStateChanges]);
+          stateChanges[j].push([...heroAttackStateChanges]);
         }
       }
     }
