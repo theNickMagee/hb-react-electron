@@ -199,72 +199,62 @@ const createAnimationStateChanges = (
   heroId,
   heroRow,
   heroCol,
-  canvasWidth, // in px
-  canvasHeight, // in px
+  canvasWidth = 400,
+  canvasHeight = 400,
 ) => {
   // Get the animation details for the character
   let characterState = null;
   if (heroCharacter === 'medusa') {
-    characterState = medusaAnimationCoords[state];
+    characterState = medusaAnimationCoords[state.toLowerCase()];
   } else if (heroCharacter === 'gladiator') {
-    characterState = gladiatorAnimationCoords[state];
+    characterState = gladiatorAnimationCoords[state.toLowerCase()];
   }
 
-  if (!characterState) return []; // Return early if no valid state is found for the hero
+  if (!characterState) return [];
 
   // Calculate the grid cell size based on canvas width and height
   const numRows = 8;
   const numCols = 8;
-  const cellWidth = canvasWidth / numCols;
-  const cellHeight = canvasHeight / numRows;
+  const cellWidth = Math.floor(canvasWidth / numCols);
+  const cellHeight = Math.floor(canvasHeight / numRows);
 
-  // Calculate hero's initial position in pixels
-  const heroX = heroCol * cellWidth;
-  const heroY = heroRow * cellHeight;
-
-  // Calculate target's position in pixels
-  const targetX = targetBoardObject ? targetBoardObject.col * cellWidth : 0;
-  const targetY = targetBoardObject ? targetBoardObject.row * cellHeight : 0;
+  if (isNaN(cellWidth) || isNaN(cellHeight)) {
+    console.error('Invalid cell dimensions:', { canvasWidth, canvasHeight, numCols, numRows });
+    return [];
+  }
 
   const totalFrames = characterState.frames;
   const stateChanges = [];
 
   for (let i = initialFrame; i < totalFrames; i++) {
-    let offsetX = 0;
-    let offsetY = 0;
+    let offsetX = heroCol * cellWidth;
+    let offsetY = heroRow * cellHeight;
 
-    // Handle the 'move' state
-    if (state === 'move') {
-      // Calculate the hero's position moving towards the target
-      if (i === totalFrames - 1) {
-        // Final frame has the hero at the target position
-        offsetX = targetX;
-        offsetY = targetY;
-      } else {
-        // Intermediate frames interpolate between hero's current and target positions
-        const percentComplete = (i + 1) / totalFrames;
-        offsetX = heroX + (targetX - heroX) * percentComplete;
-        offsetY = heroY + (targetY - heroY) * percentComplete;
-        console.log('offsetX: ', offsetX, 'offsetY: ', offsetY);
-      }
+    if (state.toLowerCase() === 'move' && targetBoardObject) {
+      // Calculate the distance to move
+      const dx = targetBoardObject.col * cellWidth - offsetX;
+      const dy = targetBoardObject.row * cellHeight - offsetY;
+
+      // Calculate progress through the animation
+      const progress = (i + 1) / totalFrames;
+
+      // Update position based on progress
+      offsetX += dx * progress;
+      offsetY += dy * progress;
+    } else if (state.toLowerCase() === 'attack' && targetBoardObject) {
+      // For attack, position the hero one cell to the left of the target
+      offsetX = (targetBoardObject.col - 1) * cellWidth;
+      offsetY = targetBoardObject.row * cellHeight;
     }
 
-    // Handle the 'attack' state
-    if (state === 'attack') {
-      // For 'attack', all frames are positioned left of the target
-      offsetX = targetX - cellWidth; // Left of the target
-      offsetY = targetY; // Same vertical alignment
-    }
-
-    // Create the state change object with calculated offsets
     let stateChange = new HeroStateChange(
       heroId,
-      time + i * 0.1, // Adjust time for each frame as needed
+      time + i * 0.1,
       state,
       i,
       targetBoardObject ? targetBoardObject.id : null,
-      offsetX,
-      offsetY,
+      Math.floor(offsetX),
+      Math.floor(offsetY)
     );
     stateChanges.push(stateChange);
   }

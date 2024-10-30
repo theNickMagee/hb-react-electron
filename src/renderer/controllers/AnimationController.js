@@ -23,6 +23,8 @@ class HeroStateChange {
     this.newState = newState;
     this.newFrame = newFrame;
     this.targetBoardObjectId = targetBoardObjectId;
+    this.offsetX = offsetX;
+    this.offsetY = offsetY;
   }
 }
 
@@ -106,6 +108,8 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
         hero.id,
         hero.row,
         hero.col,
+        boardWidth,
+        boardHeight
       );
       stateChanges[i].push([...heroStateChanges]);
     }
@@ -142,6 +146,8 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
             hero.id,
             hero.row,
             hero.col,
+            boardWidth,
+            boardHeight
           );
 
           // add attack
@@ -154,6 +160,8 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
             hero.id,
             hero.row,
             hero.col,
+            boardWidth,
+            boardHeight
           );
 
           console.log('heroMoveStateChanges: ', [...heroMoveStateChanges]);
