@@ -245,6 +245,7 @@ const createAnimationStateChanges = (
         const percentComplete = (i + 1) / totalFrames;
         offsetX = heroX + (targetX - heroX) * percentComplete;
         offsetY = heroY + (targetY - heroY) * percentComplete;
+        console.log('offsetX: ', offsetX, 'offsetY: ', offsetY);
       }
     }
 

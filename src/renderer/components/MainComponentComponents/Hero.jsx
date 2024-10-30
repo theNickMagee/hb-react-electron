@@ -8,6 +8,9 @@ const Hero = ({ data, isHovered, cellSize }) => {
     data.options[0].currentFrame,
   );
 
+  if (data.options[0].offsetX) {
+    console.log('offsetX: ', data.options[0].offsetX);
+  }
   return (
     <div
       style={{

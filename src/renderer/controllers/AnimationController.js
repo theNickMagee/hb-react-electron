@@ -44,7 +44,9 @@ const runHeroAnimations = (heroEvents, bpm, data, setData) => {
           let newHero = { ...hero };
           newHero.options[0].currentFrame = allStateChanges[i][k][j].newFrame;
           newHero.options[0].currentState = allStateChanges[i][k][j].newState;
-
+          // offsetX and offsetY are not being used
+          newHero.options[0].offsetX = allStateChanges[i][k][j].offsetX;
+          newHero.options[0].offsetY = allStateChanges[i][k][j].offsetY;
           setData((prevData) => {
             let newData = { ...prevData };
             let heroIndex = newData.boardObjects.findIndex(
