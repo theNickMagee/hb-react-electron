@@ -8,29 +8,33 @@ const Hero = ({ data, isHovered, cellSize }) => {
     data.options[0].currentFrame,
   );
 
-  if (data.options[0].offsetX) {
-    console.log('offsetX: ', data.options[0].offsetX);
-  }
+  const hasOffset =
+    data.options[0].offsetX !== undefined &&
+    data.options[0].offsetY !== undefined;
+
   return (
     <div
       style={{
         width: `${cellSize}px`,
         height: `${cellSize}px`,
         overflow: 'hidden',
+        position: hasOffset ? 'fixed' : 'relative',
+        left: hasOffset ? `${data.options[0].offsetX}px` : '0',
+        top: hasOffset ? `${data.options[0].offsetY}px` : '0',
+        zIndex: hasOffset ? 1000 : 1,
+        pointerEvents: 'none',
       }}
     >
-      {' '}
-      {/* Added overflow: hidden */}
       <div
         style={{
-          width: `${w}px`, // Width of the frame to display
-          height: `${h}px`, // Height of the frame to display
-          backgroundImage: `url(${icon})`, // Sprite sheet as background
-          backgroundPosition: `-${x}px -${y}px`, // Position to show the correct frame
-          backgroundRepeat: 'no-repeat', // Do not repeat the background image
-          opacity: isHovered ? 0.5 : 1, // Adjust opacity on hover
-          transform: `scale(${cellSize / w}, ${cellSize / h})`, // Scale to fit within 50x50 div
-          transformOrigin: 'top left', // Keep the scale origin at the top-left corner
+          width: `${w}px`,
+          height: `${h}px`,
+          backgroundImage: `url(${icon})`,
+          backgroundPosition: `-${x}px -${y}px`,
+          backgroundRepeat: 'no-repeat',
+          opacity: isHovered ? 0.5 : 1,
+          transform: `scale(${cellSize / w}, ${cellSize / h})`,
+          transformOrigin: 'top left',
         }}
       />
     </div>
