@@ -17,6 +17,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-x: hidden;
 }
 
 /* root color vars */
@@ -28,6 +29,7 @@ body {
   --secondary-mid: #c4c4c46d;
   --base-mid: #2b2b2b;
   --white: #f8f8f8;
+  --secondary-mid-2: #464646ad;
 }
 
 .main-app {
@@ -38,6 +40,8 @@ body {
   background-color: var(--base);
   padding: 1rem;
   height: 100vh;
+  /* hide horizontal scroll */
+  overflow-x: hidden;
 }
 
 .menu {
@@ -163,9 +167,11 @@ body {
   background-color: var(--secondary-mid);
 }
 
-
-.default-dd{
+.default-dd {
   font-size: 0.6rem;
   display: flex;
   flex-direction: column;
+  /* dark colors */
+  background-color: var(--base-mid);
+  color: var(--secondary);
 }

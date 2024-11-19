@@ -35,3 +35,6 @@
 }
 
 /* title input is an <input  and has whit ebg by defAULT */
+.option-container {
+  margin: 1rem 0;
+}

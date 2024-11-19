@@ -213,13 +213,14 @@ const BoardObjectOptions = ({ sessionData, setSessionData, data, setData }) => {
             )}
             {option.component === 'dropdown' && (
               <div className="option-container">
-                <label>{option.label}</label>
+                {/* <label>{option.label}</label> */}
                 <OptionDropDown
                   value={
                     data.boardObjects[sessionData.options.currentEditItemIndex]
                       .options[index].value
                   }
                   onChange={(e) => handleSliderChange(index, e.target.value)}
+                  label={option.label}
                 >
                   {option.choices.map((choice) => (
                     <option key={choice} value={choice}>

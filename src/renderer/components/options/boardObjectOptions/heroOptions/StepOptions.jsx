@@ -19,7 +19,7 @@ const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
     <div className="step">
       <div className="step-bos">
         <div className="step-option">
-          <div className="small-font">Board Object:</div>
+          <div className="small-font">Target</div>
           <select
             className="default-dd"
             value={step.targetBoardObjectId || ''}
