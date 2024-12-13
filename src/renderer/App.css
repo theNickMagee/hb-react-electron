@@ -30,6 +30,7 @@ body {
   --base-mid: #2b2b2b;
   --white: #f8f8f8;
   --secondary-mid-2: #464646ad;
+  --secondary-mid-trans: #c4c4c43a;
 }
 
 .main-app {
@@ -174,4 +175,16 @@ body {
   /* dark colors */
   background-color: var(--base-mid);
   color: var(--secondary);
+}
+
+.small-button {
+  padding: 0.1rem;
+  background-color: var(--secondary-mid-trans);
+  color: var(--secondary);
+  font-size: small;
+  border: var(--secondary-mid-trans) 1px solid;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
 }

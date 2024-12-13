@@ -76,6 +76,133 @@ const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
     }
   };
 
+  const deleteStep = (stepid) => {
+    const currentBoardObject = { ...sessionData.options.currentEditItem };
+
+    const updatedSteps = currentBoardObject.options[1].value.steps.filter(
+      (step) => step.id !== stepid,
+    );
+
+    let currentObjData = null;
+    // Update hero with new steps
+    const newBoardObjects = data.boardObjects.map((obj) => {
+      if (obj.id === currentBoardObject.id) {
+        currentObjData = obj;
+        return {
+          ...currentBoardObject,
+          options: [
+            {
+              ...obj.options[0],
+            },
+            {
+              ...obj.options[1],
+              value: {
+                ...obj.options[1].value,
+                steps: updatedSteps,
+              },
+            },
+          ],
+        };
+      }
+      return obj;
+    });
+
+    setData((prevData) => {
+      return {
+        ...prevData,
+        boardObjects: newBoardObjects,
+      };
+    });
+    setSessionData({
+      ...sessionData,
+      options: {
+        ...sessionData.options,
+        currentEditItem: {
+          ...currentBoardObject,
+          options: [
+            {
+              ...currentObjData.options[0],
+            },
+            {
+              ...currentObjData.options[1],
+              value: {
+                ...currentObjData.options[1].value,
+                steps: updatedSteps,
+              },
+            },
+          ],
+        },
+      },
+    });
+  };
+
+  const addStep = () => {
+    const currentBoardObject = { ...sessionData.options.currentEditItem };
+
+    const newStep = {
+      id: Date.now(),
+      targetBoardObjectId: '',
+      action: '',
+    };
+
+    const updatedSteps = [
+      ...currentBoardObject.options[1].value.steps,
+      newStep,
+    ];
+
+    let currentObjData = null;
+    // Update hero with new steps
+    const newBoardObjects = data.boardObjects.map((obj) => {
+      if (obj.id === currentBoardObject.id) {
+        currentObjData = obj;
+        return {
+          ...currentBoardObject,
+          options: [
+            {
+              ...obj.options[0],
+            },
+            {
+              ...obj.options[1],
+              value: {
+                ...obj.options[1].value,
+                steps: updatedSteps,
+              },
+            },
+          ],
+        };
+      }
+      return obj;
+    });
+
+    setData((prevData) => {
+      return {
+        ...prevData,
+        boardObjects: newBoardObjects,
+      };
+    });
+    setSessionData({
+      ...sessionData,
+      options: {
+        ...sessionData.options,
+        currentEditItem: {
+          ...currentBoardObject,
+          options: [
+            {
+              ...currentObjData.options[0],
+            },
+            {
+              ...currentObjData.options[1],
+              value: {
+                ...currentObjData.options[1].value,
+                steps: updatedSteps,
+              },
+            },
+          ],
+        },
+      },
+    });
+  };
+
   return (
     <div className="hero-options">
       Steps
@@ -87,9 +214,13 @@ const HeroOptions = ({ data, setData, sessionData, setSessionData }) => {
             setStep={setStep}
             boardObjects={data.boardObjects}
             numMeasures={data.timeline.measures}
+            deleteStep={deleteStep}
           />
         );
       })}
+      <div className="add-step-container small-button" onClick={addStep}>
+        Add
+      </div>
     </div>
   );
 };

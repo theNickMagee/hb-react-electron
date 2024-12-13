@@ -8,4 +8,8 @@
   background-color: var(--secondary-mid-2);
   padding: 0.24rem;
   margin: 0.6rem 0 0.6rem 0;
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+  align-items: center;
 }

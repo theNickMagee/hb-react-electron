@@ -109,7 +109,7 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
         hero.row,
         hero.col,
         boardWidth,
-        boardHeight
+        boardHeight,
       );
       stateChanges[i].push([...heroStateChanges]);
     }
@@ -147,7 +147,7 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
             hero.row,
             hero.col,
             boardWidth,
-            boardHeight
+            boardHeight,
           );
 
           // add attack
@@ -161,7 +161,7 @@ const createHeroStateChanges = (heroEvents, bpm, data) => {
             hero.row,
             hero.col,
             boardWidth,
-            boardHeight
+            boardHeight,
           );
 
           console.log('heroMoveStateChanges: ', [...heroMoveStateChanges]);
@@ -182,6 +182,7 @@ const getCoordsFromFrameAndState = (heroName, state, frame) => {
       return {
         ...medusaState.coords[frame],
         icon: medusaState.sprite, // Return the sprite (icon)
+        isFacingLeft: medusaState.isFacingLeft,
       };
     }
   }

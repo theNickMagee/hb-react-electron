@@ -9,6 +9,7 @@ const medusaAnimationCoords = {
   attack: {
     sprite: medusaSpriteAttack, // Reference to your sprite image
     frames: 6,
+    isFacingLeft: true,
     coords: {
       0: { x: 0, y: 0, w: 150, h: 125 },
       1: { x: 150, y: 0, w: 150, h: 125 },
@@ -31,7 +32,7 @@ const medusaAnimationCoords = {
     },
   },
   move: {
-    direction: 'left',
+    isFacingLeft: true,
     sprite: medusaSpriteWalk,
     frames: 4,
     coords: {

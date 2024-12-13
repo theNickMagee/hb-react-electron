@@ -2,11 +2,13 @@ import { useEffect } from 'react';
 import { getCoordsFromFrameAndState } from '../../controllers/AnimationController';
 
 const Hero = ({ data, isHovered, cellSize }) => {
-  const { x, y, w, h, icon } = getCoordsFromFrameAndState(
+  const { x, y, w, h, icon, isFacingLeft } = getCoordsFromFrameAndState(
     data.options[0].value,
     data.options[0].currentState,
     data.options[0].currentFrame,
   );
+
+  console.log('isFacingLeft:', isFacingLeft);
 
   const hasOffset =
     data.options[0].offsetX !== undefined &&
@@ -23,6 +25,7 @@ const Hero = ({ data, isHovered, cellSize }) => {
         top: hasOffset ? `${data.options[0].offsetY}px` : '0',
         zIndex: hasOffset ? 1000 : 1,
         pointerEvents: 'none',
+        transform: isFacingLeft ? 'scaleX(-1)' : 'none',
       }}
     >
       <div

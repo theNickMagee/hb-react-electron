@@ -1,7 +1,14 @@
 import React, { useEffect } from 'react';
 import OptionDropDown from '../../../miniComponents/OptionDropDown';
+import '../styles/heroOptions.css';
 
-const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
+const StepOptions = ({
+  numMeasures,
+  step,
+  setStep,
+  boardObjects,
+  deleteStep,
+}) => {
   const [boardObject, setBoardObject] = React.useState(null);
 
   useEffect(() => {
@@ -103,6 +110,12 @@ const StepOptions = ({ numMeasures, step, setStep, boardObjects }) => {
             ))}
           </OptionDropDown>
         )}
+      </div>
+      {/* delete step */}
+      <div className="right-step-buttons">
+        <div className="small-button" onClick={() => deleteStep(step.id)}>
+          X
+        </div>
       </div>
     </div>
   );
