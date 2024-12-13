@@ -8,11 +8,15 @@ const Hero = ({ data, isHovered, cellSize }) => {
     data.options[0].currentFrame,
   );
 
-  console.log('isFacingLeft:', isFacingLeft);
-
   const hasOffset =
     data.options[0].offsetX !== undefined &&
     data.options[0].offsetY !== undefined;
+
+  // Store the last valid position
+  const position = {
+    left: hasOffset ? `${data.options[0].offsetX}px` : '0',
+    top: hasOffset ? `${data.options[0].offsetY}px` : '0',
+  };
 
   return (
     <div
@@ -21,11 +25,12 @@ const Hero = ({ data, isHovered, cellSize }) => {
         height: `${cellSize}px`,
         overflow: 'hidden',
         position: hasOffset ? 'fixed' : 'relative',
-        left: hasOffset ? `${data.options[0].offsetX}px` : '0',
-        top: hasOffset ? `${data.options[0].offsetY}px` : '0',
+        left: position.left,
+        top: position.top,
         zIndex: hasOffset ? 1000 : 1,
         pointerEvents: 'none',
         transform: isFacingLeft ? 'scaleX(-1)' : 'none',
+        transition: 'left 0.1s, top 0.1s', // Add smooth transition
       }}
     >
       <div
